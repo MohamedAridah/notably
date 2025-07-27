@@ -1,5 +1,17 @@
-import Image from "next/image";
+import Features from "@/components/features";
+import { HeroHeader } from "@/components/(header)/header";
+import HeroSection from "@/components/hero-section";
+import CallToAction from "@/components/call-to-action";
+import Footer from "@/components/footer";
 
 export default function Home() {
- "
+  return (
+    <main>
+      <HeroHeader />
+      <HeroSection />
+      <Features />
+      <CallToAction/>
+      <Footer/>
+    </main>
+  );
 }
