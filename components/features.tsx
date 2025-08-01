@@ -19,7 +19,7 @@ export default function Features() {
           <Card className="group bg-background">
             <CardHeader className="pb-3">
               <CardDecorator>
-                <NotebookPen className="size-6" aria-hidden />
+                <NotebookPen className="size-8" aria-hidden />
               </CardDecorator>
               <h3 className="mt-6 font-medium">Quick Notes</h3>
             </CardHeader>
@@ -35,7 +35,7 @@ export default function Features() {
           <Card className="group bg-background">
             <CardHeader className="pb-3">
               <CardDecorator>
-                <Code className="size-6" aria-hidden />
+                <Code className="size-8" aria-hidden />
               </CardDecorator>
               <h3 className="mt-6 font-medium">Developer Friendly</h3>
             </CardHeader>
@@ -52,7 +52,7 @@ export default function Features() {
           <Card className="group bg-background">
             <CardHeader className="pb-3">
               <CardDecorator>
-                <ShieldCheck className="size-6" aria-hidden />
+                <ShieldCheck className="size-8" aria-hidden />
               </CardDecorator>
               <h3 className="mt-6 font-medium">Secure by Design</h3>
             </CardHeader>
