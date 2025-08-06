@@ -25,8 +25,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, StarsIcon } from "lucide-react";
 
 export default function SignInForm() {
   const form = useForm<z.infer<typeof SignInSchema>>({
@@ -40,19 +41,18 @@ export default function SignInForm() {
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (data: z.infer<typeof SignInSchema>) => {
-    console.log("Form submitted with data:", data);
     const { success, message } = await SignInUser(data);
     if (success) {
-      form.reset();
+      replace("/dashboard");
       toast.success(message);
-      replace("/");
+      form.reset();
       return;
     }
     toast.error(message);
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card>
       <CardHeader>
         <CardTitle>Login to your account</CardTitle>
         <CardDescription>
@@ -106,15 +106,14 @@ export default function SignInForm() {
               )}
             />
             <div className="flex flex-col gap-3">
-              <Button
-                type="submit"
-                className="w-full hover:cursor-pointer"
-                disabled={isLoading}
-              >
+              <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? <Loader2 className="animate-spin" /> : "Login"}
               </Button>
-              <Button variant="outline" className="w-full hover:cursor-pointer">
+              <Button variant="outline" className="w-full" type="button">
                 Login with Google
+                <Badge variant="outline" className="flex items-center">
+                  <StarsIcon /> soon
+                </Badge>
               </Button>
             </div>
           </form>

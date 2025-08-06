@@ -58,6 +58,7 @@ export default function ResetPassword({
           >
             Hi <strong>{username}</strong>,
             <br />
+            <br />
             We received a request to reset your Notably account password. For
             your security, please click the button below to set a new password.
             

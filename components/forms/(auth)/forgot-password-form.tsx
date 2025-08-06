@@ -39,7 +39,6 @@ export default function ForgotPasswordForm() {
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (data: z.infer<typeof ForgotPasswordSchema>) => {
-    console.log("Form submitted with data:", data);
     const { success, message } = await ForgotUserPassword({
       email: data.email,
       redirectTo: "/reset-password",
@@ -58,7 +57,7 @@ export default function ForgotPasswordForm() {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card>
       <CardHeader>
         <CardTitle>Forgot your password?</CardTitle>
         <CardDescription>
@@ -87,7 +86,7 @@ export default function ForgotPasswordForm() {
             />
             <Button
               type="submit"
-              className="w-full hover:cursor-pointer"
+              className="w-full"
               disabled={isLoading}
             >
               {isLoading ? (

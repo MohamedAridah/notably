@@ -1,4 +1,3 @@
-import { auth } from "@/lib/auth";
 import z from "zod";
 
 const authSchema = z.object({

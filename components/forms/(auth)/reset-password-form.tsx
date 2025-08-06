@@ -55,7 +55,6 @@ export default function ResetPasswordForm() {
     );
 
   const onSubmit = async (data: z.infer<typeof ResetPasswordSchema>) => {
-    console.log("Form submitted with data:", data);
     const { success, message } = await ResetUserPassword({
       newPassword: data.password,
       token,
@@ -71,7 +70,7 @@ export default function ResetPasswordForm() {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card>
       <CardHeader>
         <CardTitle>Reset your password</CardTitle>
         <CardDescription>
@@ -110,7 +109,7 @@ export default function ResetPasswordForm() {
             />
             <Button
               type="submit"
-              className="w-full hover:cursor-pointer"
+              className="w-full"
               disabled={isLoading}
             >
               {isLoading ? (

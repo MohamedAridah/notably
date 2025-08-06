@@ -25,8 +25,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, StarsIcon } from "lucide-react";
 
 export default function SignUpForm() {
   const form = useForm<z.infer<typeof SignUpSchema>>({
@@ -42,18 +43,19 @@ export default function SignUpForm() {
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (data: z.infer<typeof SignUpSchema>) => {
-    console.log("Form submitted with data:", data);
     const { success, message } = await SignUpUser(data);
     if (success) {
       form.reset();
-      toast.success(message);
+      toast.success("Sign up successfully", {
+        description: message,
+      });
       replace("/verify?process=email-verification&value=" + data.email);
       return;
     }
     toast.error(message);
   };
   return (
-    <Card className="w-full max-w-md mx-auto my-10">
+    <Card>
       <CardHeader>
         <CardTitle>Create an account</CardTitle>
         <CardDescription>
@@ -134,16 +136,18 @@ export default function SignUpForm() {
               )}
             />
             <div className="flex flex-col gap-3">
-              {" "}
               <Button
                 type="submit"
-                className="w-full hover:cursor-pointer"
+                className="w-full"
                 disabled={isLoading}
               >
                 {isLoading ? <Loader2 className="animate-spin" /> : "Sign up"}
               </Button>
-              <Button variant="outline" className="w-full">
-                Sign up with Google
+              <Button variant="outline" className="w-full" type="button">
+                Login with Google
+                <Badge variant="outline" className="flex items-center">
+                  <StarsIcon /> soon
+                </Badge>
               </Button>
             </div>
           </form>

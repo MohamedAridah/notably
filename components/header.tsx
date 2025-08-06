@@ -6,9 +6,10 @@ import { useScroll } from "motion/react";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/utils/logo";
 import ThemeToggler from "@/components/utils/theme-toggler";
-import MobileSheet from "@/components/(header)/mobile-sheet";
+import MobileSheet from "@/components/utils/mobile-sheet";
 import NavLinks from "@/components/utils/nav-links";
 import AuthButtons from "@/components/utils/auth-buttons";
+import { SheetFooter } from "@/components/ui/sheet";
 
 export const HeroHeader = () => {
   const [menuState, setMenuState] = React.useState<boolean>(false);
@@ -55,7 +56,12 @@ export const HeroHeader = () => {
                 <AuthButtons />
               </div>
 
-              <MobileSheet state={menuState} />
+              <MobileSheet state={menuState}>
+                <NavLinks className="flex flex-col gap-4 p-4 pt-0 font-medium" />
+                <SheetFooter>
+                  <AuthButtons />
+                </SheetFooter>
+              </MobileSheet>
             </div>
           </div>
         </div>

@@ -5,10 +5,13 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { MailCheckIcon, ShieldAlert } from "lucide-react";
+import { ChevronLeft, MailCheckIcon, ShieldAlert } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const PROCESSES = ["email-verification", "forgot-password"];
 
@@ -54,6 +57,11 @@ const VerifyEmailSent = ({ email }: { email: string }) => {
           for a verification link
         </p>
       </CardContent>
+      <CardFooter>
+        <Button size="sm" variant="ghost" className="mx-auto underline ">
+          <ChevronLeft /> <Link href="/sign-in">Back to Login</Link>
+        </Button>
+      </CardFooter>
     </Card>
   );
 };
@@ -63,7 +71,7 @@ const ForgotPasswordSent = ({ email }: { email: string }) => {
     <Card className="w-full max-w-md mx-auto my-5 text-center gap-4">
       <CardHeader className="text-center">
         <MailCheckIcon className="text-center size-10 mx-auto text-green-500" />
-        <CardTitle className="text-2xl mt-3">Reset Password Sent</CardTitle>
+        <CardTitle className="text-2xl mt-3">Reset Password link Sent</CardTitle>
       </CardHeader>
       <CardContent>
         <p>
@@ -72,6 +80,11 @@ const ForgotPasswordSent = ({ email }: { email: string }) => {
           for a reset link.
         </p>
       </CardContent>
+      <CardFooter>
+        <Button size="sm" variant="ghost" className="mx-auto underline ">
+          <ChevronLeft /> <Link href="/sign-in">Back to Login</Link>
+        </Button>
+      </CardFooter>
     </Card>
   );
 };

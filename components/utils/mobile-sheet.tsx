@@ -1,14 +1,21 @@
 import {
   Sheet,
   SheetContent,
-  SheetFooter,
+  SheetHeader,
+  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
-import AuthButtons from "@/components/utils/auth-buttons";
-import NavLinks from "@/components/utils/nav-links";
 
-export default function MobileSheet({ state: menuState }: { state: boolean }) {
+interface MobileSheetProps {
+  children: React.ReactNode;
+  state?: boolean;
+}
+
+export default function MobileSheet({
+  children,
+  state: menuState,
+}: MobileSheetProps) {
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -20,10 +27,10 @@ export default function MobileSheet({ state: menuState }: { state: boolean }) {
         </button>
       </SheetTrigger>
       <SheetContent>
-        <NavLinks className="flex flex-col gap-4 p-4 pt-10 font-medium" />
-        <SheetFooter>
-          <AuthButtons />
-        </SheetFooter>
+        <SheetHeader>
+          <SheetTitle className="sr-only">hello</SheetTitle>
+        </SheetHeader>
+        {children}
       </SheetContent>
     </Sheet>
   );

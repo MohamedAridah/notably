@@ -32,7 +32,7 @@ export const SignUpUser = async (data: SignUpUserParams) => {
 export const SignInUser = async (data: SignInUserParams) => {
   try {
     await auth.api.signInEmail({ body: data });
-    return { success: true, message: "User signed in successfully" };
+    return { success: true, message: "Signed in successfully" };
   } catch (error) {
     return {
       success: false,
@@ -56,7 +56,7 @@ export const ForgotUserPassword = async (data: ForgrotUserPasswordParams) => {
     });
     return {
       success: true,
-      message: "Password reset link sent to your email.",
+      message: "Please check your email for a password reset link.",
     };
   } catch (error) {
     return {

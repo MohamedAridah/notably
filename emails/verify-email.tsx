@@ -58,6 +58,7 @@ export default function VerifyEmail({
           >
             Hi <strong>{username}</strong>,
             <br />
+            <br />
             Thank you for signing up for Notably! Please confirm your email
             address to activate your account and get started.
           </Text>

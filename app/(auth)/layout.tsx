@@ -14,7 +14,7 @@ export default function AuthLayout({
       >
         <ChevronLeft className="size-5" /> Home
       </Link>
-      {children}
+      <div className="w-full max-w-md mx-auto my-10">{children}</div>
     </section>
   );
 }
