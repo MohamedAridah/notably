@@ -69,7 +69,7 @@ export default function EditNotebookDialog({
           processText="Updating"
           size="sm"
           className="group-hover/notebook-buttons:opacity-100"
-          classNameAsIocn="hover:text-green-500 hover:bg-transparent"
+          classNameAsIocn="hover:text-green-500"
         />
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

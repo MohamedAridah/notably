@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Notabky . Think Better",
+  title: "Notably . Think Better",
   description:
     "Supercharge your workflow with Notably — the smartest way to capture, organize, and link dev notes, code snippets, and technical insights",
   authors: [

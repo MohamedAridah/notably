@@ -1,6 +1,14 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import PageWrapper from "@/components/page-wrapper";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: {
+    default: "Dashboard | Notabky . Think Better",
+    template:"%s | Notably"
+  },
+};
 
 export default function DashboardLayout({
   children,

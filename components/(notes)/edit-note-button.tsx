@@ -70,7 +70,7 @@ export default function EditNoteDialog({
           processText="Updating"
           size="sm"
           className="group-hover/note-buttons:opacity-100"
-          classNameAsIocn="hover:text-green-500 hover:bg-transparent"
+          classNameAsIocn="hover:text-green-500"
         />
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

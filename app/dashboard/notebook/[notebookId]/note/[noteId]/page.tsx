@@ -7,6 +7,20 @@ import { Loader2, ShieldAlert } from "lucide-react";
 import { type JSONContent } from "@tiptap/react";
 import DeleteNoteDialog from "@/components/(notes)/delete-note-button";
 import EditNoteDialog from "@/components/(notes)/edit-note-button";
+import { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Params;
+}): Promise<Metadata> {
+  const noteId = (await params).noteId;
+  const { note } = await getNoteById(noteId);
+
+  return {
+    title: note?.title,
+  };
+}
 
 type Params = Promise<{
   noteId: string;
@@ -31,13 +45,16 @@ export default async function NotePage({ params }: { params: Params }) {
     content = (
       <>
         <div className="flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-semibold group/note-buttons">
-              {note?.title}
-            </h1>
+          <div className="flex items-center gap-2 group/note-buttons">
+            <h1 className="text-xl font-semibold">{note?.title}</h1>
             <div className="flex items-center gap-1">
               <EditNoteDialog note={note} noteId={note.id} asIcon iconHidden />
-              <DeleteNoteDialog noteId={note.id} asIcon iconHidden />
+              <DeleteNoteDialog
+                noteId={note.id}
+                asIcon
+                iconHidden
+                callbackURL={`/dashboard/notebook/${note.notebookId}`}
+              />
             </div>
           </div>
           <div className="flex -items-center gap-2">

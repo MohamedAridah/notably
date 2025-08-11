@@ -2,11 +2,25 @@ import { getNotebookById } from "@/server/notebooks";
 import CreateNoteDialog from "@/components/(notes)/create-note-button";
 import NoteCard from "@/components/(notes)/note";
 import BreadCrumbUI from "@/components/utils/breadcrumb";
-import { NotebookText, PenBoxIcon, ShieldAlert } from "lucide-react";
+import { NotebookText, ShieldAlert } from "lucide-react";
 import Message from "@/components/utils/message";
 import { Badge } from "@/components/ui/badge";
 import EditNotebookDialog from "@/components/(notebooks)/edit-notebook-button";
 import DeleteNotebookDialog from "@/components/(notebooks)/delete-notebook-button";
+import { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Params;
+}): Promise<Metadata> {
+  const notebookId = (await params).notebookId;
+  const { notebook } = await getNotebookById(notebookId);
+
+  return {
+    title: notebook?.name,
+  };
+}
 
 type Params = Promise<{
   notebookId: string;

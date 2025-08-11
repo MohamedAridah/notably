@@ -18,7 +18,7 @@ export default function Notebook({
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 group/notebook-buttons">
             {notebook.name}
             <EditNotebookDialog
               notebookId={notebook.id}

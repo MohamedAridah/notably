@@ -10,12 +10,16 @@ import {
 import { buttonVariants } from "@/components/ui/button";
 import DeleteNoteDialog from "@/components/(notes)/delete-note-button";
 import { ExternalLinkIcon } from "lucide-react";
+import EditNoteDialog from "./edit-note-button";
 
 export default function NoteCard({ note }: { note: Note }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{note.title}</CardTitle>
+        <CardTitle className="flex items-center gap-2 group/note-buttons">
+          {note.title}
+          <EditNoteDialog note={note} noteId={note.id} asIcon iconHidden />
+        </CardTitle>
         <CardDescription>Click view to see note content.</CardDescription>
       </CardHeader>
       <CardFooter className="ml-auto gap-2">
