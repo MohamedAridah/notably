@@ -1,8 +1,6 @@
 "use client";
 
 import z from "zod";
-import { authClient } from "@/lib/auth-client";
-import { createNote } from "@/server/notes";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { NoteSchema } from "@/validations/zod/note-schemas";
@@ -16,49 +14,22 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { Note } from "@prisma/client";
 
-export default function NoteForm({ closeForm }: { closeForm: () => void }) {
-  const searchParams = useSearchParams();
-  console.log(searchParams.keys());
+type FormProps = {
+  note?: Partial<Note>;
+  onSubmit: (data: z.infer<typeof NoteSchema>) => Promise<void>;
+};
 
+export default function NoteForm({ onSubmit, note }: FormProps) {
   const form = useForm<z.infer<typeof NoteSchema>>({
     resolver: zodResolver(NoteSchema),
     defaultValues: {
-      title: "",
-      content: "",
+      title: note?.title || "",
     },
   });
   const isLoading = form.formState.isSubmitting;
-
-  const onSubmit = async (data: z.infer<typeof NoteSchema>) => {
-    const { data: session } = await authClient.getSession();
-    const userId = session?.user.id;
-
-    if (!userId) {
-      toast.error("You must be signed in to create a note.");
-      return;
-    }
-
-    try {
-      const { success, message } = await createNote(
-        data.title,
-        data.content as string,
-        "c89fb470-d755-4e2e-890a-c0ac69572872"
-      );
-      if (success) {
-        closeForm();
-        toast.success(message);
-        form.reset();
-        return;
-      }
-      toast.error(message);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   return (
     <Form {...form}>
@@ -72,23 +43,6 @@ export default function NoteForm({ closeForm }: { closeForm: () => void }) {
               <FormControl>
                 <Input
                   placeholder="Note name..."
-                  className="placeholder:text-sm"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="content"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Content</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Note content..."
                   className="placeholder:text-sm"
                   {...field}
                 />

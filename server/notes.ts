@@ -8,7 +8,7 @@ import { revalidatePath } from "next/cache";
 
 export const createNote = async (
   title: string,
-  content: string,
+  content: InputJsonValue,
   notebookId: string
 ) => {
   try {
@@ -49,7 +49,7 @@ export const getNoteById = async (id: string) => {
   }
 };
 
-export const updateNote = async (id: string, values: Note) => {
+export const updateNote = async (id: string, values: Partial<Note>) => {
   try {
     const note = await prisma.note.update({
       where: {

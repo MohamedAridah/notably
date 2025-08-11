@@ -1,6 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { authClient } from "@/lib/auth-client";
+import z from "zod";
+import { createNotebook } from "@/server/notebooks";
+import { NotebookSchema } from "@/validations/zod/notebook-schemas";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,14 +15,37 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import NotebookForm from "@/components/forms/(notebooks)/notebook-form";
+import { toast } from "sonner";
 
 export default function CreateNotebookDialog() {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const onSubmit = async (data: z.infer<typeof NotebookSchema>) => {
+    const { data: session } = await authClient.getSession();
+    const userId = session?.user.id;
+
+    if (!userId) {
+      toast.error("You must be signed in to create a notebook.");
+      return;
+    }
+
+    try {
+      const { success, message } = await createNotebook(data.name, userId);
+      if (success) {
+        toast.success(message);
+        setIsOpen(false);
+      } else {
+        toast.error(message);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Create Notebook</Button>
+        <Button>Create Notebook</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -28,7 +55,7 @@ export default function CreateNotebookDialog() {
           </DialogDescription>
         </DialogHeader>
 
-        <NotebookForm closeForm={() => setIsOpen(false)} />
+        <NotebookForm onSubmit={onSubmit} />
       </DialogContent>
     </Dialog>
   );

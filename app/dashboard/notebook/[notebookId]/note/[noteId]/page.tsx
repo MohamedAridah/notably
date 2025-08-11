@@ -1,12 +1,84 @@
-import BreadCrumbUI from "@/components/utils/breadcrumb";
+import { Suspense } from "react";
 import { getNoteById } from "@/server/notes";
+import BreadCrumbUI from "@/components/utils/breadcrumb";
+import Message from "@/components/utils/message";
+import { RichTextEditor } from "@/components/text-editor/editor";
+import { Loader2, ShieldAlert } from "lucide-react";
+import { type JSONContent } from "@tiptap/react";
+import DeleteNoteDialog from "@/components/(notes)/delete-note-button";
+import EditNoteDialog from "@/components/(notes)/edit-note-button";
 
 type Params = Promise<{
   noteId: string;
 }>;
+
 export default async function NotePage({ params }: { params: Params }) {
   const { noteId } = await params;
   const { note } = await getNoteById(noteId);
+
+  let content = null;
+
+  if (!note) {
+    content = (
+      <Message
+        Icon={
+          <ShieldAlert className="text-center size-10 mx-auto mb-3 text-orange-400" />
+        }
+        description="Note is not found"
+      />
+    );
+  } else {
+    content = (
+      <>
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-semibold group/note-buttons">
+              {note?.title}
+            </h1>
+            <div className="flex items-center gap-1">
+              <EditNoteDialog note={note} noteId={note.id} asIcon iconHidden />
+              <DeleteNoteDialog noteId={note.id} asIcon iconHidden />
+            </div>
+          </div>
+          <div className="flex -items-center gap-2">
+            <DeleteNoteDialog
+              noteId={noteId}
+              callbackURL={`/dashboard/notebook/${note.notebookId}`}
+            />
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <p className="text-sm">
+            Created at:{" "}
+            <span>{new Date(note?.createdAt as Date).toDateString()}</span>
+          </p>
+          <p className="text-sm">
+            Last updated at:{" "}
+            <span>{new Date(note?.updatedAt as Date).toDateString()}</span>
+          </p>
+        </div>
+
+        <section className="my-10">
+          <Suspense
+            fallback={
+              <Message
+                Icon={
+                  <Loader2 className="text-center size-7 mx-auto mb-3 animate-spin" />
+                }
+                description="Loading text editor..."
+              />
+            }
+          >
+            <RichTextEditor
+              content={note.content as JSONContent[]}
+              noteId={noteId}
+            />
+          </Suspense>
+        </section>
+      </>
+    );
+  }
 
   return (
     <>
@@ -24,13 +96,7 @@ export default async function NotePage({ params }: { params: Params }) {
         ]}
       />
 
-      <div className="flex items-center justify-between">
-        <h1>{note?.title}</h1>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        <pre>{JSON.stringify(note, null, 2)}</pre>
-      </div>
+      {content}
     </>
   );
 }

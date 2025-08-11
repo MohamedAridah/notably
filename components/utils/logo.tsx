@@ -14,7 +14,6 @@ export const Logo = ({
       xmlns="http://www.w3.org/2000/svg"
       className={cn("text-foreground h-8 w-auto", className)}
     >
-      {/* Brand mark: circle with gradient stripes */}
       <g>
         <circle cx="20" cy="16" r="12" fill="transparent" stroke="none" />
         {/* Stripes: 5 vertical gradient lines inside the circle */}

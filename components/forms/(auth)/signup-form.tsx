@@ -46,7 +46,7 @@ export default function SignUpForm() {
     const { success, message } = await SignUpUser(data);
     if (success) {
       form.reset();
-      toast.success("Sign up successfully", {
+      toast.success("Signed up successfully", {
         description: message,
       });
       replace("/verify?process=email-verification&value=" + data.email);
@@ -136,11 +136,7 @@ export default function SignUpForm() {
               )}
             />
             <div className="flex flex-col gap-3">
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isLoading}
-              >
+              <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? <Loader2 className="animate-spin" /> : "Sign up"}
               </Button>
               <Button variant="outline" className="w-full" type="button">

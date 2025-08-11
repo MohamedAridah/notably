@@ -4,6 +4,8 @@ import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import DeleteNotebookDialog from "@/components/(notebooks)/delete-notebook-button";
+import { ExternalLinkIcon } from "lucide-react";
+import EditNotebookDialog from "./edit-notebook-button";
 
 type NotebookWithCount = Notebook & { _count: { notes: number } };
 
@@ -16,7 +18,15 @@ export default function Notebook({
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          {notebook.name}
+          <div className="flex items-center gap-2">
+            {notebook.name}
+            <EditNotebookDialog
+              notebookId={notebook.id}
+              notebook={notebook}
+              asIcon
+              iconHidden
+            />
+          </div>
           <Badge className="tabular-nums">{notebook._count.notes}</Badge>
         </CardTitle>
       </CardHeader>
@@ -25,7 +35,7 @@ export default function Notebook({
           href={"/dashboard/notebook/" + notebook.id}
           className={buttonVariants({ variant: "outline", size: "sm" })}
         >
-          View
+          <ExternalLinkIcon /> View
         </Link>
         <DeleteNotebookDialog notebookId={notebook.id} />
       </CardFooter>

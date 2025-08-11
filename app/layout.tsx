@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/providers/theme-provider";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Toaster } from "sonner";
 import "./globals.css";
 
@@ -18,8 +19,9 @@ export const metadata: Metadata = {
   title: "Notabky . Think Better",
   description:
     "Supercharge your workflow with Notably — the smartest way to capture, organize, and link dev notes, code snippets, and technical insights",
-    authors:[{name:"Mohamed Aridah",url:"https://github.com/MohamedAridah"}],
-    
+  authors: [
+    { name: "Mohamed Aridah", url: "https://github.com/MohamedAridah" },
+  ],
 };
 
 export default function RootLayout({
@@ -38,7 +40,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <NuqsAdapter>{children}</NuqsAdapter>
           <Toaster />
         </ThemeProvider>
       </body>

@@ -3,26 +3,23 @@
 import * as React from "react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
-import { Moon, Sun } from "lucide-react";
+import { MoonStarIcon, SunIcon } from "lucide-react";
 
 export default function ThemeToggler() {
   const { setTheme, resolvedTheme } = useTheme();
-  const [mounted, setMounted] = React.useState(false);
-
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null;
+  const toggleTheme = React.useCallback(() => {
+    setTheme(resolvedTheme === "dark" ? "light" : "dark");
+  }, [resolvedTheme, setTheme]);
 
   return (
     <Button
       variant="ghost"
       size="icon"
       className="hover: cursor-pointer"
-      onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+      onClick={toggleTheme}
     >
-      {resolvedTheme === "dark" ? <Sun /> : <Moon />}
+      <SunIcon className="hidden [html.dark_&]:block" />
+      <MoonStarIcon className="hidden [html.light_&]:block" />
       <span className="sr-only">Toggle theme</span>
     </Button>
   );

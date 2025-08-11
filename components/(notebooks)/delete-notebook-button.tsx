@@ -2,81 +2,83 @@
 
 import { useState } from "react";
 import { deleteNotebook } from "@/server/notebooks";
-import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Loader2, Trash2Icon } from "lucide-react";
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { buttonVariants } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import DialogTriggerButton, {
+  DialogTriggerButtonType,
+} from "@/components/utils/dialog-trigger-button";
 
 export default function DeleteNotebookDialog({
   notebookId,
+  asIcon,
+  iconHidden,
+  withIcon,
 }: {
   notebookId: string;
-}) {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+} & DialogTriggerButtonType) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDeleteNotebook = async () => {
     try {
       setIsDeleting(true);
       const { success, message } = await deleteNotebook(notebookId);
-      if (success) {
-        toast.success(message);
-      } else {
-        toast.error(message);
-      }
+      success ? toast.success(message) : toast.error(message);
     } catch (error) {
       toast.error((error as Error).message);
     } finally {
       setIsDeleting(false);
+      setIsOpen(false);
     }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button variant="destructive" size="sm">
-          <Trash2Icon /> Delete
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Delete Notebook</DialogTitle>
-          <DialogDescription>
-            Are you sure you want to delete notebook. all related notes also
-            &apos;ll be deleted.
-          </DialogDescription>
-        </DialogHeader>
-
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={handleDeleteNotebook}
-              disabled={isDeleting}
-            >
-              {isDeleting ? (
-                <>
-                  <Loader2 className="animate-spin" /> Deleting...
-                </>
-              ) : (
-                <>
-                  <Trash2Icon /> Delete
-                </>
-              )}
-            </Button>
-          </DialogClose>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+      <AlertDialogTrigger asChild>
+        <DialogTriggerButton
+          asIcon={asIcon}
+          iconHidden={iconHidden}
+          withIcon={withIcon}
+          variant="destructive"
+          size="sm"
+          state={isDeleting}
+          idleText="Delete"
+          processText="Deleting"
+          icon={Trash2}
+          className="group-hover/notebook-buttons:opacity-100"
+          classNameAsIocn="hover:text-red-500"
+        />
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This will permanently delete this notebook and all its notes. This
+            action cannot be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            className={buttonVariants({ variant: "destructive" })}
+            onClick={handleDeleteNotebook}
+          >
+            Continue
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

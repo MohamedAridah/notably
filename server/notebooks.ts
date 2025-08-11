@@ -53,7 +53,10 @@ export const getNotebooks = async () => {
 
     return { success: true, notebooks };
   } catch (error) {
-    return { success: false, message: "Failed to get notebooks" };
+    return {
+      success: false,
+      message: (error as Error).message || "Failed to get notebooks",
+    };
   }
 };
 
@@ -79,7 +82,7 @@ export const getNotebookById = async (id: string) => {
   }
 };
 
-export const updateNotebook = async (id: string, values: Notebook) => {
+export const updateNotebook = async (id: string, values: Partial<Notebook>) => {
   try {
     const notebook = await prisma.notebook.update({
       where: {
