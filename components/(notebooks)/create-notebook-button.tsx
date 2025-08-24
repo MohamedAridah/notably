@@ -16,8 +16,9 @@ import {
 } from "@/components/ui/dialog";
 import NotebookForm from "@/components/forms/(notebooks)/notebook-form";
 import { toast } from "sonner";
+import { PlusIcon } from "lucide-react";
 
-export default function CreateNotebookDialog() {
+export default function CreateNotebookDialog({buttonStyles}:{buttonStyles?:any}) {
   const [isOpen, setIsOpen] = useState(false);
 
   const onSubmit = async (data: z.infer<typeof NotebookSchema>) => {
@@ -45,7 +46,10 @@ export default function CreateNotebookDialog() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>Create Notebook</Button>
+        <Button {...buttonStyles}>
+          <PlusIcon />
+          Create Notebook
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

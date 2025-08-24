@@ -15,7 +15,7 @@ import { MARK_SHORTCUT_KEYS, useMark } from "@/components/tiptap-ui/mark-button"
 // --- UI Primitives ---
 import type { ButtonProps } from "@/components/tiptap-ui-primitive/button"
 import { Button } from "@/components/tiptap-ui-primitive/button"
-import { Badge } from "@/components/tiptap-ui-primitive/badge"
+import { Badge } from "@/components/ui/badge"
 
 export interface MarkButtonProps
   extends Omit<ButtonProps, "type">,

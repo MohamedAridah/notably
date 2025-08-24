@@ -6,6 +6,7 @@ import { headers } from "next/headers";
 import { Notebook } from "@prisma/client";
 import errorMessage from "@/helpers/errorMessage";
 import { revalidatePath } from "next/cache";
+import { APIError } from "better-auth";
 
 export const createNotebook = async (name: string, userId: string) => {
   try {
@@ -32,7 +33,6 @@ export const getNotebooks = async () => {
     });
 
     const userId = session?.user.id;
-
     if (!userId) {
       return { success: false, message: "User not found" };
     }
@@ -53,6 +53,14 @@ export const getNotebooks = async () => {
 
     return { success: true, notebooks };
   } catch (error) {
+    if ((error as APIError).statusCode === 500) {
+      return {
+        success: false,
+        message: "Internal Server Error",
+        description: (error as APIError).message,
+      };
+    }
+
     return {
       success: false,
       message: (error as Error).message || "Failed to get notebooks",

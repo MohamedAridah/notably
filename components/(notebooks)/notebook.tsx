@@ -1,6 +1,12 @@
 import Link from "next/link";
 import { type Notebook } from "@prisma/client";
-import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import DeleteNotebookDialog from "@/components/(notebooks)/delete-notebook-button";
@@ -24,12 +30,16 @@ export default function Notebook({
               notebookId={notebook.id}
               notebook={notebook}
               asIcon
-              iconHidden
+              asIconHidden
             />
           </div>
           <Badge className="tabular-nums">{notebook._count.notes}</Badge>
         </CardTitle>
+        <CardDescription>
+          <p>{notebook._count.notes ?? 0} notes</p>
+        </CardDescription>
       </CardHeader>
+
       <CardFooter className="ml-auto gap-2">
         <Link
           href={"/dashboard/notebook/" + notebook.id}
@@ -37,7 +47,7 @@ export default function Notebook({
         >
           <ExternalLinkIcon /> View
         </Link>
-        <DeleteNotebookDialog notebookId={notebook.id} />
+        <DeleteNotebookDialog notebookId={notebook.id} callbackURL="/dashboard" />
       </CardFooter>
     </Card>
   );

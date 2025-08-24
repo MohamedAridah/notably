@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Fragment, Suspense } from "react";
 import { getNoteById } from "@/server/notes";
 import BreadCrumbUI from "@/components/utils/breadcrumb";
 import Message from "@/components/utils/message";
@@ -8,6 +8,7 @@ import { type JSONContent } from "@tiptap/react";
 import DeleteNoteDialog from "@/components/(notes)/delete-note-button";
 import EditNoteDialog from "@/components/(notes)/edit-note-button";
 import { Metadata } from "next";
+import NoteDetails from "./note-details";
 
 export async function generateMetadata({
   params,
@@ -48,11 +49,16 @@ export default async function NotePage({ params }: { params: Params }) {
           <div className="flex items-center gap-2 group/note-buttons">
             <h1 className="text-xl font-semibold">{note?.title}</h1>
             <div className="flex items-center gap-1">
-              <EditNoteDialog note={note} noteId={note.id} asIcon iconHidden />
+              <EditNoteDialog
+                note={note}
+                noteId={note.id}
+                asIcon
+                asIconHidden
+              />
               <DeleteNoteDialog
                 noteId={note.id}
                 asIcon
-                iconHidden
+                asIconHidden
                 callbackURL={`/dashboard/notebook/${note.notebookId}`}
               />
             </div>
@@ -66,14 +72,16 @@ export default async function NotePage({ params }: { params: Params }) {
         </div>
 
         <div className="flex flex-col gap-2">
-          <p className="text-sm">
-            Created at:{" "}
-            <span>{new Date(note?.createdAt as Date).toDateString()}</span>
-          </p>
-          <p className="text-sm">
-            Last updated at:{" "}
-            <span>{new Date(note?.updatedAt as Date).toDateString()}</span>
-          </p>
+          <Suspense
+            fallback={
+              <div className="flex items-center gap-2">
+                <Loader2 className="text-center size-5 mb-2 animate-spin" />
+                <p>Loading note details...</p>
+              </div>
+            }
+          >
+            <NoteDetails note={note} />
+          </Suspense>
         </div>
 
         <section className="my-10">

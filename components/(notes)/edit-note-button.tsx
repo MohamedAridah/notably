@@ -26,8 +26,8 @@ export default function EditNoteDialog({
   noteId,
   note,
   asIcon,
-  iconHidden,
-  withIcon,
+  asIconHidden,
+  asLabel,
 }: {
   noteId: string;
   note: Partial<Note>;
@@ -63,11 +63,11 @@ export default function EditNoteDialog({
       <DialogTrigger asChild>
         <DialogTriggerButton
           asIcon={asIcon}
-          iconHidden={iconHidden}
-          withIcon={withIcon}
-          icon={PenSquareIcon}
+          asIconHidden={asIconHidden}
+          asLabel={asLabel}
           idleText="Update"
           processText="Updating"
+          icon={PenSquareIcon}
           size="sm"
           className="group-hover/note-buttons:opacity-100"
           classNameAsIocn="hover:text-green-500"

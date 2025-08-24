@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { buttonVariants } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
-import clsx from "clsx";
 
 import DialogTriggerButton, {
   DialogTriggerButtonType,
@@ -27,8 +26,8 @@ export default function DeleteNoteDialog({
   noteId,
   callbackURL,
   asIcon,
-  iconHidden,
-  withIcon,
+  asIconHidden,
+  asLabel,
 }: {
   noteId: string;
   callbackURL?: string;
@@ -41,7 +40,11 @@ export default function DeleteNoteDialog({
     try {
       setIsDeleting(true);
       const { success, message } = await deleteNote(noteId);
-      success ? toast.success(message) : toast.error(message);
+      if (success) {
+        toast.success(message);
+      } else {
+        toast.error(message);
+      }
     } catch (error) {
       toast.error((error as Error).message);
     } finally {
@@ -56,16 +59,16 @@ export default function DeleteNoteDialog({
       <AlertDialogTrigger asChild>
         <DialogTriggerButton
           asIcon={asIcon as boolean}
-          iconHidden={iconHidden}
-          withIcon={withIcon}
+          asIconHidden={asIconHidden}
+          asLabel={asLabel}
           state={isDeleting}
           processText="Deleting"
           idleText="Delete"
           icon={Trash2}
           variant="destructive"
           size="sm"
-          className={clsx("group-hover/note-buttons:opacity-100")}
-          classNameAsIocn={clsx("hover:text-red-500 transition-colors")}
+          className="group-hover/note-buttons:opacity-100"
+          classNameAsIocn="hover:text-red-500 transition-colors"
         />
       </AlertDialogTrigger>
 

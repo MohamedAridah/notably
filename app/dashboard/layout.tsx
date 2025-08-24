@@ -1,12 +1,13 @@
-import { AppSidebar } from "@/components/app-sidebar";
+import { AppSidebar } from "@/components/(sidebar)/app-sidebar";
 import PageWrapper from "@/components/page-wrapper";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Metadata } from "next";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: {
     default: "Dashboard | Notabky . Think Better",
-    template:"%s | Notably"
+    template: "%s | Notably",
   },
 };
 

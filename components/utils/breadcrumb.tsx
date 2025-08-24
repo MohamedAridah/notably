@@ -21,12 +21,14 @@ export default function BreadCrumbUI({ breadCrumbs }: BreadCrumbUIProps) {
       <BreadcrumbList>
         {breadCrumbs.map((breadCrumb, index, array) => (
           <React.Fragment key={index}>
-            <BreadcrumbItem key={index}>
-              <BreadcrumbLink asChild>
-                <Link href={breadCrumb.href}>{breadCrumb.label}</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            {array.length === ++index ? null : <BreadcrumbSeparator />}
+            <>
+              <BreadcrumbItem key={index}>
+                <BreadcrumbLink asChild>
+                  <Link href={breadCrumb.href}>{breadCrumb.label}</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              {array.length === ++index ? null : <BreadcrumbSeparator />}
+            </>
           </React.Fragment>
         ))}
       </BreadcrumbList>

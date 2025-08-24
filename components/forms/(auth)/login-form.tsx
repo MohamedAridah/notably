@@ -37,13 +37,13 @@ export default function SignInForm() {
       password: "",
     },
   });
-  const { replace } = useRouter();
+  const router = useRouter();
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (data: z.infer<typeof SignInSchema>) => {
     const { success, message } = await SignInUser(data);
     if (success) {
-      replace("/dashboard");
+      router.push("/dashboard");
       toast.success(message);
       form.reset();
       return;

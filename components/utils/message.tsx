@@ -7,7 +7,7 @@ import {
 
 type MessageProps = {
   Icon: React.ReactNode;
-  description: string;
+  description: string | React.ReactNode;
   children?: React.ReactNode;
 };
 

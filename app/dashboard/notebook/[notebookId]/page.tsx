@@ -64,10 +64,15 @@ export default async function NotebookPage({ params }: { params: Params }) {
               notebookId={notebookId}
               notebook={notebook}
               asIcon
-              iconHidden
+              asIconHidden
             />
             <div className="flex -items-center gap-2">
-              <DeleteNotebookDialog notebookId={notebookId} asIcon iconHidden />
+              <DeleteNotebookDialog
+                notebookId={notebookId}
+                asIcon
+                asIconHidden
+                callbackURL={"/dashboard"}
+              />
             </div>
           </div>
         </div>

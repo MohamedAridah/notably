@@ -23,7 +23,7 @@ export default function Footer() {
         </div>
         <div className="my-8 flex flex-wrap justify-center gap-6 text-sm">
           <Link
-            href="#"
+            href="/"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="X/Twitter"
@@ -43,7 +43,7 @@ export default function Footer() {
             </svg>
           </Link>
           <Link
-            href="#"
+            href="/"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn"
@@ -63,7 +63,7 @@ export default function Footer() {
             </svg>
           </Link>
           <Link
-            href="#"
+            href="/"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Facebook"
@@ -83,7 +83,7 @@ export default function Footer() {
             </svg>
           </Link>
           <Link
-            href="#"
+            href="/"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Threads"
@@ -108,7 +108,7 @@ export default function Footer() {
             </svg>
           </Link>
           <Link
-            href="#"
+            href="/"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Instagram"
@@ -128,7 +128,7 @@ export default function Footer() {
             </svg>
           </Link>
           <Link
-            href="#"
+            href="/"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="TikTok"
@@ -149,8 +149,7 @@ export default function Footer() {
           </Link>
         </div>
         <span className="text-muted-foreground block text-center text-sm">
-          {" "}
-          © 2025 Tailark, All rights reserved
+          © 2025 Notably, All rights reserved
         </span>
       </div>
     </footer>

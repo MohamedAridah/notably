@@ -1,28 +1,37 @@
 import React from "react";
+import clsx from "clsx";
+import { cn } from "@/lib/utils";
 import { Loader2, LucideIcon } from "lucide-react";
 import { Button, ButtonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import clsx from "clsx";
 
 export type DialogTriggerButtonType = {
+  asLabel?: boolean;
   asIcon?: boolean;
-  withIcon?: boolean;
-  iconHidden?: boolean;
+  asIconHidden?: boolean;
 };
 
-type DialogTriggerButtonProps = {
-  asIcon?: boolean; // Show Descriptive Icon
-  iconHidden?: boolean; // Make Icon opacity-0
-  withIcon?: boolean; // Show Icon with the text
+interface ButtonStylesProps {
   variant?: ButtonVariants["variant"];
   size?: ButtonVariants["size"];
-  icon: LucideIcon;
+}
+
+interface Context {
   state?: boolean;
   idleText: string;
-  processText: string;
-  className?: string;
+  processText?: string;
+}
+
+interface ButtonAsIconProps {
+  icon: LucideIcon;
   classNameAsIocn?: string;
-};
+}
+
+type DialogTriggerButtonProps = DialogTriggerButtonType &
+  ButtonStylesProps &
+  Context &
+  ButtonAsIconProps & {
+    className?: string;
+  };
 
 const DialogTriggerButton = React.forwardRef<
   HTMLButtonElement,
@@ -31,9 +40,9 @@ const DialogTriggerButton = React.forwardRef<
   (
     {
       asIcon = false,
-      iconHidden = false,
-      withIcon = true,
-      state,
+      asIconHidden = false,
+      asLabel = false,
+      state = false,
       idleText,
       processText,
       size = "default",
@@ -45,22 +54,22 @@ const DialogTriggerButton = React.forwardRef<
     },
     ref
   ) => {
-    if (asIcon)
+    if (asIcon) {
       return (
         <Button
+          type="button"
           variant="ghost"
           size="icon"
-          type="button"
           disabled={state}
+          aria-label={state ? processText : idleText}
           className={clsx(
             className,
             {
               "opacity-0 transition-opacity duration-200 hover:opacity-100 data-[state=open]:opacity-100":
-                iconHidden,
+                asIconHidden,
             },
             classNameAsIocn
           )}
-          aria-label={state ? processText : idleText}
           {...rest}
         >
           {state ? (
@@ -70,12 +79,37 @@ const DialogTriggerButton = React.forwardRef<
           )}
         </Button>
       );
+    }
+
+    if (asLabel) {
+      return (
+        <Button
+          type="button"
+          variant="ghost"
+          aria-label={idleText}
+          className={clsx(
+            "flex items-center justify-between gap-2 w-full",
+            className
+          )}
+          {...rest}
+        >
+          <>
+            {idleText}
+            {state ? (
+              <Loader2 className="animate-spin size-4" />
+            ) : (
+              <Icon className="size-4" />
+            )}
+          </>
+        </Button>
+      );
+    }
 
     return (
       <Button
+        type="button"
         variant={variant}
         size={size}
-        type="button"
         disabled={state}
         className={cn(className)}
         aria-label={state ? processText : idleText}
@@ -83,12 +117,12 @@ const DialogTriggerButton = React.forwardRef<
       >
         {state ? (
           <>
-            {withIcon && <Loader2 className="size-4 animate-spin" />}
+            {<Loader2 className="size-4 animate-spin" />}
             {processText}
           </>
         ) : (
           <>
-            {withIcon && <Icon className="size-4" />}
+            {<Icon className="size-4" />}
             {idleText}
           </>
         )}
@@ -96,5 +130,7 @@ const DialogTriggerButton = React.forwardRef<
     );
   }
 );
+
+DialogTriggerButton.displayName = "DialogTriggerButton";
 
 export default DialogTriggerButton;

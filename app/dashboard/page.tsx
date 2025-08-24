@@ -7,7 +7,7 @@ import Message from "@/components/utils/message";
 export default async function Dashboard() {
   const notebooksResponse = await getNotebooks();
 
-  const { success, notebooks, message } = notebooksResponse;
+  const { success, notebooks, message, description } = notebooksResponse;
 
   if (!success) {
     return (
@@ -15,7 +15,12 @@ export default async function Dashboard() {
         Icon={
           <ShieldAlert className="text-center size-10 mx-auto mb-3 text-orange-400" />
         }
-        description={message as string}
+        description={
+          <>
+            <p className="text-lg font-semibold">{message as string}</p>
+            <p>{description}</p>
+          </>
+        }
       />
     );
   }
@@ -32,7 +37,12 @@ export default async function Dashboard() {
       {isEmpty ? (
         <Message
           Icon={<NotebookIcon className="text-center size-10 mx-auto mb-3" />}
-          description="No notebooks found. Go and create one!"
+          description={
+            <>
+              <p className="mb-2">No notebooks found. Go and create one!</p>
+              <CreateNotebookDialog buttonStyles={{ variant: "outline" }} />
+            </>
+          }
         />
       ) : (
         <div className="grid md:grid-cols-[repeat(auto-fill,_minmax(21rem,_1fr))] gap-4">

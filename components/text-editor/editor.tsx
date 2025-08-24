@@ -60,11 +60,6 @@ import { MarkButton } from "@/components/tiptap-ui/mark-button";
 import { TextAlignButton } from "@/components/tiptap-ui/text-align-button";
 import { UndoRedoButton } from "@/components/tiptap-ui/undo-redo-button";
 
-// --- Icons ---
-import { ArrowLeftIcon } from "@/components/tiptap-icons/arrow-left-icon";
-import { HighlighterIcon } from "@/components/tiptap-icons/highlighter-icon";
-import { LinkIcon } from "@/components/tiptap-icons/link-icon";
-
 // --- Hooks ---
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useWindowSize } from "@/hooks/use-window-size";
@@ -73,12 +68,14 @@ import { useCursorVisibility } from "@/hooks/use-cursor-visibility";
 // --- Lib ---
 import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils";
 
-// --- Styles ---
-import "@/components/text-editor/editor.scss";
-
-import defaultContent from "@/components/text-editor/data/defaultContent";
 import { updateNote } from "@/server/notes";
-import { Loader } from "lucide-react";
+import {
+  ArrowLeftIcon,
+  HighlighterIcon,
+  LinkIcon,
+  Loader,
+  Plus,
+} from "lucide-react";
 import { toast } from "sonner";
 
 const MainToolbarContent = ({
@@ -207,7 +204,7 @@ const SaveNoteUpdatesButton = ({
 
   return (
     <Button
-      className="min-w-fit px-4 ml-2 hover:cursor-pointer"
+      className="min-w-fit px-4 ml-2 hover:cursor-pointer rounded-none"
       onClick={handleSaveNoteUpdates}
       disabled={isSaving}
     >
@@ -216,7 +213,9 @@ const SaveNoteUpdatesButton = ({
           <Loader className="animate-spin size-4" /> Saving...
         </>
       ) : (
-        "Save"
+        <>
+          <Plus className="size-4" /> Save
+        </>
       )}
     </Button>
   );
@@ -273,7 +272,7 @@ export function RichTextEditor({ content, noteId }: SimpleEditorProps) {
         onError: (error) => console.error("Upload failed:", error),
       }),
     ],
-    content: Object.keys(content).length !== 0 ? content : defaultContent,
+    content,
   });
 
   const rect = useCursorVisibility({
@@ -319,7 +318,7 @@ export function RichTextEditor({ content, noteId }: SimpleEditorProps) {
         <EditorContent
           editor={editor}
           role="presentation"
-          className="simple-editor-content"
+          className="max-w-[900px] mx-auto flex flex-col flex-1 pt-[1rem] px-[1.5rem] pb-[8vh] sm:pt-[4rem] sm:px-[3rem] sm:pb-[16vh]"
         />
       </EditorContext.Provider>
     </>

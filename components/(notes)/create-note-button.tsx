@@ -10,7 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import NoteForm from "@/components/forms/(notes)/note-form";
-import { PlusIcon } from "lucide-react";
+import { Plus, PlusIcon } from "lucide-react";
 
 import DialogTriggerButton, {
   DialogTriggerButtonType,
@@ -24,8 +24,8 @@ import { createNote } from "@/server/notes";
 export default function CreateNoteDialog({
   notebookId,
   asIcon,
-  iconHidden,
-  withIcon,
+  asIconHidden,
+  asLabel,
 }: {
   notebookId: string;
 } & DialogTriggerButtonType) {
@@ -58,13 +58,13 @@ export default function CreateNoteDialog({
       <DialogTrigger asChild>
         <DialogTriggerButton
           asIcon={asIcon}
-          iconHidden={iconHidden}
-          withIcon={withIcon}
+          asIconHidden={asIconHidden}
+          asLabel={asLabel}
           icon={PlusIcon}
           idleText="Create Note"
           processText="Creating..."
           className="group-hover/note-buttons:opacity-100 group-hover/notebook-buttons:opacity-100"
-          classNameAsIocn="hover:text-cyan-500"
+          classNameAsIocn="hover:text-cyan-500 h-full"
         />
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

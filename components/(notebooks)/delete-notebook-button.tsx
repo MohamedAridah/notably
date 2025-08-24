@@ -19,15 +19,19 @@ import { toast } from "sonner";
 import DialogTriggerButton, {
   DialogTriggerButtonType,
 } from "@/components/utils/dialog-trigger-button";
+import { useRouter } from "next/navigation";
 
 export default function DeleteNotebookDialog({
   notebookId,
+  callbackURL,
   asIcon,
-  iconHidden,
-  withIcon,
+  asIconHidden,
+  asLabel,
 }: {
   notebookId: string;
+  callbackURL?: string;
 } & DialogTriggerButtonType) {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -35,12 +39,17 @@ export default function DeleteNotebookDialog({
     try {
       setIsDeleting(true);
       const { success, message } = await deleteNotebook(notebookId);
-      success ? toast.success(message) : toast.error(message);
+      if (success) {
+        toast.success(message);
+      } else {
+        toast.error(message);
+      }
     } catch (error) {
       toast.error((error as Error).message);
     } finally {
       setIsDeleting(false);
       setIsOpen(false);
+      if (callbackURL) router.push(callbackURL);
     }
   };
 
@@ -49,8 +58,8 @@ export default function DeleteNotebookDialog({
       <AlertDialogTrigger asChild>
         <DialogTriggerButton
           asIcon={asIcon}
-          iconHidden={iconHidden}
-          withIcon={withIcon}
+          asIconHidden={asIconHidden}
+          asLabel={asLabel}
           variant="destructive"
           size="sm"
           state={isDeleting}

@@ -38,9 +38,10 @@ export const HeroHeader = () => {
             <div className="flex w-full items-center justify-between gap-12 lg:w-auto">
               <Link
                 href="/"
-                aria-label="home"
+                aria-label="notably logo. click to go to homepage."
                 className="flex items-center space-x-2"
               >
+                <span className="sr-only">Go to homepage</span>
                 <Logo />
               </Link>
 

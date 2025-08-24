@@ -1,8 +1,8 @@
-import * as React from "react";
+import { Suspense } from "react";
 import { getNotebooks } from "@/server/notebooks";
 import { Logo } from "@/components/utils/logo";
-import { SearchForm } from "@/components/search-form";
-import SidebarData from "@/components/sidebar-data";
+import { SearchForm } from "@/components/(sidebar)/search-form";
+import SidebarData from "@/components/(sidebar)/sidebar-data";
 import {
   Sidebar,
   SidebarContent,
@@ -10,6 +10,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import SidebarSkeleton from "./sidebar-skeleton";
 
 export async function AppSidebar({
   ...props
@@ -24,6 +25,7 @@ export async function AppSidebar({
         items: notebook.notes.map((note) => ({
           id: note.id,
           title: note.title,
+          notebook_url: `/dashboard/notebook/${notebook.id}`,
           url: `/dashboard/notebook/${notebook.id}/note/${note.id}`,
         })),
       })) ?? [],
@@ -31,13 +33,17 @@ export async function AppSidebar({
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <Link href="/dashboard" className="justify-sel">
+        <Link href="/" className="justify-sel">
           <Logo />
         </Link>
-        <SearchForm />
+        <Suspense fallback={<SidebarSkeleton length={1} />}>
+          <SearchForm />
+        </Suspense>
       </SidebarHeader>
       <SidebarContent className="gap-0">
-        <SidebarData data={data} />
+        <Suspense fallback={<SidebarSkeleton length={3} showIcon />}>
+          <SidebarData data={data} />
+        </Suspense>
       </SidebarContent>
       <SidebarRail />
     </Sidebar>

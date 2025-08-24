@@ -18,7 +18,7 @@ import {
 // --- UI Primitives ---
 import type { ButtonProps } from "@/components/tiptap-ui-primitive/button"
 import { Button } from "@/components/tiptap-ui-primitive/button"
-import { Badge } from "@/components/tiptap-ui-primitive/badge"
+import { Badge } from "@/components/ui/badge"
 
 export interface ImageUploadButtonProps
   extends Omit<ButtonProps, "type">,

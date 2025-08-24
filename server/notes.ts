@@ -42,6 +42,8 @@ export const getNoteById = async (id: string) => {
 
     return { success: true, note };
   } catch (error) {
+    console.log({error});
+    
     return {
       success: false,
       message: errorMessage(error) || "Failed to get note",
