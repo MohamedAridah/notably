@@ -43,12 +43,11 @@ export default function SignInForm() {
   const onSubmit = async (data: z.infer<typeof SignInSchema>) => {
     const { success, message } = await SignInUser(data);
     if (success) {
-      router.push("/dashboard");
+      router.replace("/dashboard");
       toast.success(message);
-      form.reset();
-      return;
+    } else {
+      toast.error(message);
     }
-    toast.error(message);
   };
 
   return (
@@ -109,7 +108,12 @@ export default function SignInForm() {
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? <Loader2 className="animate-spin" /> : "Login"}
               </Button>
-              <Button variant="outline" className="w-full" type="button">
+              <Button
+                variant="outline"
+                className="w-full"
+                type="button"
+                disabled={isLoading}
+              >
                 Login with Google
                 <Badge variant="outline" className="flex items-center">
                   <StarsIcon /> soon

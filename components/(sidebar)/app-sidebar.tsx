@@ -6,11 +6,13 @@ import SidebarData from "@/components/(sidebar)/sidebar-data";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import SidebarSkeleton from "./sidebar-skeleton";
+import { UserForNav } from "@/components/user";
 
 export async function AppSidebar({
   ...props
@@ -33,7 +35,8 @@ export async function AppSidebar({
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <Link href="/" className="justify-sel">
+        <Link href="/" aria-label="notably logo. click to go to homepage.">
+          <span className="sr-only">Go to homepage</span>
           <Logo />
         </Link>
         <Suspense fallback={<SidebarSkeleton length={1} />}>
@@ -46,6 +49,9 @@ export async function AppSidebar({
         </Suspense>
       </SidebarContent>
       <SidebarRail />
+      <SidebarFooter>
+        <UserForNav />
+      </SidebarFooter>
     </Sidebar>
   );
 }

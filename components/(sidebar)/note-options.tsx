@@ -26,7 +26,7 @@ export default function NoteOptions({ note }: { note: NoteOptionsProps }) {
   return (
     <DropdownMenu>
       <Dialog>
-        <DropdownMenuTrigger asChild className="hover:pointer-cursor">
+        <DropdownMenuTrigger asChild className="hover:cursor-pointer">
           <DialogTrigger aria-label="Open note options menu">
             <Ellipsis className="size-4" />
             <span className="sr-only">Open note options menu</span>

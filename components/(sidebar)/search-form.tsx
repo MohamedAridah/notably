@@ -21,7 +21,7 @@ export function SearchForm({ ...props }: React.ComponentProps<"form">) {
           </Label>
           <SidebarInput
             id="search"
-            placeholder="Search the docs..."
+            placeholder="Search your notes..."
             className="pl-8"
             value={search}
             onChange={(e) => setSearch(e.target.value)}

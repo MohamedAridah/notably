@@ -77,7 +77,9 @@ export default function SidebarData({ data }: SidebarDataProps) {
                 className="flex items-center gap-2 hover:underline"
               >
                 <FolderClosed className="size-4" />
-                {notebook.title}
+                <p className="overflow-hidden text-ellipsis whitespace-nowrap w-[110px]">
+                  {notebook.title}
+                </p>
               </Link>
 
               <div
@@ -117,7 +119,9 @@ export default function SidebarData({ data }: SidebarDataProps) {
                         className="flex items-center gap-2 flex-1"
                       >
                         <NotebookText className="size-4" />
-                        {note.title}
+                        <p className="overflow-hidden text-ellipsis whitespace-nowrap w-[150px]">
+                          {note.title}
+                        </p>
                       </Link>
 
                       <NoteOptions
