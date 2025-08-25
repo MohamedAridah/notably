@@ -48,13 +48,6 @@ export default function NoteOptions({ note }: { note: NoteOptionsProps }) {
             onSelect={(e) => e.preventDefault()}
             className="p-0"
           >
-            <CreateNoteDialog notebookId={note.notebookId} asLabel />
-          </DropdownMenuItem>
-
-          <DropdownMenuItem
-            onSelect={(e) => e.preventDefault()}
-            className="p-0"
-          >
             <EditNoteDialog
               noteId={note.noteId}
               note={{ title: note.noteTitle }}

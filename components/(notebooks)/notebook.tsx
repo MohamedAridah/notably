@@ -21,7 +21,7 @@ export default function Notebook({
   notebook: Notebook & NotebookWithCount;
 }) {
   return (
-    <Card>
+    <Card className="shadow-xs hover:shadow-sm transition-shadow ease-in-out duration-150">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-2 group/notebook-buttons">
@@ -47,7 +47,10 @@ export default function Notebook({
         >
           <ExternalLinkIcon /> View
         </Link>
-        <DeleteNotebookDialog notebookId={notebook.id} callbackURL="/dashboard" />
+        <DeleteNotebookDialog
+          notebookId={notebook.id}
+          callbackURL="/dashboard"
+        />
       </CardFooter>
     </Card>
   );

@@ -21,10 +21,6 @@ export default function PageWrapper({ children }: PageWrapperProps) {
             <ThemeToggler />
             <UserAsIcon />
 
-            <div className="hidden lg:block">
-              <Logout />
-            </div>
-
             <MobileSheet>
               <Logout />
             </MobileSheet>

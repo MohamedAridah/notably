@@ -14,7 +14,7 @@ import EditNoteDialog from "./edit-note-button";
 
 export default function NoteCard({ note }: { note: Note }) {
   return (
-    <Card>
+    <Card className="shadow-xs hover:shadow-sm transition-shadow ease-in-out duration-150">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 group/note-buttons">
           {note.title}

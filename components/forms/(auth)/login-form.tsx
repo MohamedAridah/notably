@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import z from "zod";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { SignInUser } from "@/server/auth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -43,8 +43,8 @@ export default function SignInForm() {
   const onSubmit = async (data: z.infer<typeof SignInSchema>) => {
     const { success, message } = await SignInUser(data);
     if (success) {
-      router.replace("/dashboard");
       toast.success(message);
+      router.replace("/dashboard");
     } else {
       toast.error(message);
     }

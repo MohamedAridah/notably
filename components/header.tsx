@@ -10,8 +10,13 @@ import MobileSheet from "@/components/utils/mobile-sheet";
 import NavLinks from "@/components/utils/nav-links";
 import AuthButtons from "@/components/utils/auth-buttons";
 import { SheetFooter } from "@/components/ui/sheet";
+import { UserAsIcon } from "@/components/user";
+import { authClient } from "@/lib/auth-client";
+import { Loader2 } from "lucide-react";
 
 export const HeroHeader = () => {
+  const { data: session, isPending } = authClient.useSession();
+  const authenticated = !!session?.session.userId;
   const [menuState, setMenuState] = React.useState<boolean>(false);
   const [scrolled, setScrolled] = React.useState<boolean>(false);
 
@@ -53,14 +58,20 @@ export const HeroHeader = () => {
             <div className="flex items-center gap-2 sm:gap-3">
               <ThemeToggler />
 
-              <div className="hidden lg:block">
-                <AuthButtons />
-              </div>
+              {isPending ? (
+                <Loader2 className="animate-spin size-4 text-foreground" />
+              ) : authenticated ? (
+                <UserAsIcon />
+              ) : (
+                <div className="hidden lg:block">
+                  <AuthButtons />
+                </div>
+              )}
 
               <MobileSheet state={menuState}>
                 <NavLinks className="flex flex-col gap-4 p-4 pt-0 font-medium" />
                 <SheetFooter>
-                  <AuthButtons />
+                  {authenticated ? <UserAsIcon /> : <AuthButtons />}
                 </SheetFooter>
               </MobileSheet>
             </div>
