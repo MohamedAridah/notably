@@ -1,8 +1,22 @@
-import { Fragment, Suspense } from "react";
+import { Suspense } from "react";
 import { getNoteById } from "@/server/notes";
 import BreadCrumbUI from "@/components/utils/breadcrumb";
 import Message from "@/components/utils/message";
-import { RichTextEditor } from "@/components/text-editor/editor";
+import dynamic from "next/dynamic";
+const RichTextEditor = dynamic(
+  () => import("@/components/text-editor/editor").then((m) => m.RichTextEditor),
+  {
+    ssr: false,
+    loading: () => (
+      <Message
+        Icon={
+          <Loader2 className="text-center size-7 mx-auto mb-3 animate-spin" />
+        }
+        description="Loading text editor..."
+      />
+    ),
+  }
+);
 import { Loader2, ShieldAlert } from "lucide-react";
 import { type JSONContent } from "@tiptap/react";
 import DeleteNoteDialog from "@/components/(notes)/delete-note-button";
@@ -85,21 +99,10 @@ export default async function NotePage({ params }: { params: Params }) {
         </div>
 
         <section className="my-10">
-          <Suspense
-            fallback={
-              <Message
-                Icon={
-                  <Loader2 className="text-center size-7 mx-auto mb-3 animate-spin" />
-                }
-                description="Loading text editor..."
-              />
-            }
-          >
-            <RichTextEditor
-              content={note.content as JSONContent[]}
-              noteId={noteId}
-            />
-          </Suspense>
+          <RichTextEditor
+            content={note.content as JSONContent[]}
+            noteId={noteId}
+          />
         </section>
       </>
     );
