@@ -44,7 +44,8 @@ export default function SignInForm() {
     const { success, message } = await SignInUser(data);
     if (success) {
       toast.success(message);
-      router.replace("/dashboard");
+      router.refresh();
+      router.push("/dashboard");
     } else {
       toast.error(message);
     }

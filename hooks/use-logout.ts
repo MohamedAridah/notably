@@ -17,6 +17,7 @@ export default function useLogout() {
           onSuccess: () => {
             router.push("/");
             toast.success("Signed out successfully");
+            router.refresh();
           },
           onError: (ctx) => {
             toast.error(ctx.error.message || "Failed to sign out");
