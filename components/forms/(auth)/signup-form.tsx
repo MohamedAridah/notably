@@ -55,7 +55,7 @@ export default function SignUpForm() {
     toast.error(message);
   };
   return (
-    <Card>
+    <Card className="shadow-xs">
       <CardHeader>
         <CardTitle>Create an account</CardTitle>
         <CardDescription>

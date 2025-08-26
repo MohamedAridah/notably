@@ -51,7 +51,7 @@ export default function SignInForm() {
   };
 
   return (
-    <Card>
+    <Card className="shadow-xs">
       <CardHeader>
         <CardTitle>Login to your account</CardTitle>
         <CardDescription>
