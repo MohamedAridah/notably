@@ -5,12 +5,12 @@ export default function AuthButtons() {
   return (
     <div className="flex items-center gap-3">
       <Button asChild variant="outline" size="sm">
-        <Link href="/sign-in">
+        <Link href="/auth/sign-in">
           <span>Login</span>
         </Link>
       </Button>
       <Button asChild size="sm">
-        <Link href="/sign-up">
+        <Link href="/auth/sign-up">
           <span>Sign Up</span>
         </Link>
       </Button>

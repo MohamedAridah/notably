@@ -84,11 +84,7 @@ export default function ForgotPasswordForm() {
                 </FormItem>
               )}
             />
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading}
-            >
+            <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (
                 <Loader2 className="animate-spin" />
               ) : (
@@ -101,7 +97,7 @@ export default function ForgotPasswordForm() {
       <CardFooter>
         <p className="w-full text-center text-[15px]">
           Don&apos;t have an account?{" "}
-          <Link href="/sign-up" className="underline">
+          <Link href="/auth/sign-up" className="underline">
             Sign up
           </Link>
         </p>

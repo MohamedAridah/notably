@@ -44,8 +44,8 @@ export default function SignInForm() {
     const { success, message } = await SignInUser(data);
     if (success) {
       toast.success(message);
+      router.replace("/dashboard");
       router.refresh();
-      router.push("/dashboard");
     } else {
       toast.error(message);
     }
@@ -127,7 +127,7 @@ export default function SignInForm() {
       <CardFooter>
         <p className="w-full text-center text-[15px]">
           Don&apos;t have an account?{" "}
-          <Link href="/sign-up" className="underline">
+          <Link href="/auth/sign-up" className="underline">
             Sign up
           </Link>
         </p>

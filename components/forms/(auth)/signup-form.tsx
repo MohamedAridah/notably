@@ -152,7 +152,7 @@ export default function SignUpForm() {
       <CardFooter>
         <p className="w-full text-center text-[15px]">
           Already have an account?{" "}
-          <Link href="/sign-in" className="underline">
+          <Link href="/auth/sign-in" className="underline">
             Login
           </Link>
         </p>

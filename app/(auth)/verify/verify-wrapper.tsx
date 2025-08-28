@@ -59,7 +59,7 @@ const VerifyEmailSent = ({ email }: { email: string }) => {
       </CardContent>
       <CardFooter>
         <Button size="sm" variant="ghost" className="mx-auto underline ">
-          <ChevronLeft /> <Link href="/sign-in">Back to Login</Link>
+          <ChevronLeft /> <Link href="/auth/sign-in">Back to Login</Link>
         </Button>
       </CardFooter>
     </Card>
@@ -82,7 +82,7 @@ const ForgotPasswordSent = ({ email }: { email: string }) => {
       </CardContent>
       <CardFooter>
         <Button size="sm" variant="ghost" className="mx-auto underline ">
-          <ChevronLeft /> <Link href="/sign-in">Back to Login</Link>
+          <ChevronLeft /> <Link href="/auth/sign-in">Back to Login</Link>
         </Button>
       </CardFooter>
     </Card>

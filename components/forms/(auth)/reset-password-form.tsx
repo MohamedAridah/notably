@@ -63,7 +63,7 @@ export default function ResetPasswordForm() {
     if (success) {
       form.reset();
       toast.success(message);
-      replace("/sign-in");
+      replace("/auth/sign-in");
       return;
     }
     toast.error(message || "Failed to send reset password link.");
@@ -107,11 +107,7 @@ export default function ResetPasswordForm() {
                 </FormItem>
               )}
             />
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading}
-            >
+            <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (
                 <Loader2 className="animate-spin" />
               ) : (
@@ -124,7 +120,7 @@ export default function ResetPasswordForm() {
       <CardFooter>
         <p className="w-full text-center text-[15px]">
           Already have an account?{" "}
-          <Link href="/sign-in" className="underline">
+          <Link href="/auth/sign-in" className="underline">
             Login
           </Link>
         </p>

@@ -4,7 +4,7 @@ import { Suspense } from "react";
 export default function RestePassword() {
   return (
     <Suspense>
-      <ResetPasswordForm />;
+      <ResetPasswordForm />
     </Suspense>
   );
 }

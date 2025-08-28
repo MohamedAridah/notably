@@ -16,7 +16,7 @@ interface SignInUserParams {
 
 export const SignUpUser = async (data: SignUpUserParams) => {
   try {
-    await auth.api.signUpEmail({ body: { callbackURL: "/sign-in", ...data } });
+    await auth.api.signUpEmail({ body: { callbackURL: "/auth/sign-in", ...data } });
     return {
       success: true,
       message: "Please check your email for verification.",
