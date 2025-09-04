@@ -2,6 +2,7 @@
 
 import { auth } from "@/lib/auth";
 import errorMessage from "@/helpers/errorMessage";
+import { headers } from "next/headers";
 
 interface SignUpUserParams {
   email: string;
@@ -16,7 +17,9 @@ interface SignInUserParams {
 
 export const SignUpUser = async (data: SignUpUserParams) => {
   try {
-    await auth.api.signUpEmail({ body: { callbackURL: "/auth/sign-in", ...data } });
+    await auth.api.signUpEmail({
+      body: { callbackURL: "/auth/sign-in", ...data },
+    });
     return {
       success: true,
       message: "Please check your email for verification.",
@@ -89,4 +92,16 @@ export const ResetUserPassword = async (data: ResetUserPasswordParams) => {
       message: errorMessage(error),
     };
   }
+};
+
+export const isUserAuthed = async () => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  const userId = session?.user.id;
+  if (!userId) {
+    return { success: false, message: "User not authenticated" };
+  }
+  return { success: true, userId };
 };

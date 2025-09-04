@@ -1,12 +1,11 @@
 "use server";
 
-import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { headers } from "next/headers";
 import { Notebook } from "@prisma/client";
 import errorMessage from "@/helpers/errorMessage";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, unstable_cache } from "next/cache";
 import { APIError } from "better-auth";
+import { isUserAuthed } from "./auth";
 
 export const createNotebook = async (name: string, userId: string) => {
   try {
@@ -26,17 +25,9 @@ export const createNotebook = async (name: string, userId: string) => {
   }
 };
 
-export const getNotebooks = async () => {
+export const getNotebooks = async (userId: string) => {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    const userId = session?.user.id;
-    if (!userId) {
-      return { success: false, message: "User not found" };
-    }
-
+    console.log("getNotebooks called");
     const notebooks = await prisma.notebook.findMany({
       where: {
         userId,
@@ -68,8 +59,25 @@ export const getNotebooks = async () => {
   }
 };
 
+export const getCachedNotebooks = async () => {
+  const session = await isUserAuthed();
+  const userId = session.userId as string;
+
+  return unstable_cache(
+    async () => {
+      console.log("getCachedNotebooks called");
+      return getNotebooks(userId);
+    },
+    [`notebooks-${userId}`],
+    {
+      tags: [`notebooks-${userId}`],
+    }
+  )();
+};
+
 export const getNotebookById = async (id: string) => {
   try {
+    console.log("getNotebook called with id:", id);
     const notebook = await prisma.notebook.findUnique({
       where: {
         id,
@@ -88,6 +96,12 @@ export const getNotebookById = async (id: string) => {
   } catch (error) {
     return { success: false, message: "Failed to get notebook" };
   }
+};
+
+export const getCachedNotebook = async (id: string) => {
+  return unstable_cache(async () => getNotebookById(id), [`notebook-${id}`], {
+    tags: [`notebook-${id}`],
+  })();
 };
 
 export const updateNotebook = async (id: string, values: Partial<Notebook>) => {
