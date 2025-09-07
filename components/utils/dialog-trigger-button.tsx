@@ -3,16 +3,23 @@ import clsx from "clsx";
 import { cn } from "@/lib/utils";
 import { Loader2, LucideIcon } from "lucide-react";
 import { Button, ButtonVariants } from "@/components/ui/button";
+import IconMenu from "@/components/utils/icon-menu";
 
-export type DialogTriggerButtonType = {
+type Appearance = {
   asLabel?: boolean;
   asIcon?: boolean;
   asIconHidden?: boolean;
 };
 
-interface ButtonStylesProps {
+export type TriggerAppearance = {
+  trigger?: Partial<Appearance>;
+  withTrigger?: boolean;
+};
+
+interface TriggerStyles {
   variant?: ButtonVariants["variant"];
   size?: ButtonVariants["size"];
+  className?: string;
 }
 
 interface Context {
@@ -21,35 +28,31 @@ interface Context {
   processText?: string;
 }
 
-interface ButtonAsIconProps {
+interface TriggerAsIcon {
   icon: LucideIcon;
   classNameAsIocn?: string;
 }
 
-type DialogTriggerButtonProps = DialogTriggerButtonType &
-  ButtonStylesProps &
-  Context &
-  ButtonAsIconProps & {
-    className?: string;
-  };
+type TriggerProps = Appearance & TriggerStyles & Context & TriggerAsIcon;
 
-const DialogTriggerButton = React.forwardRef<
-  HTMLButtonElement,
-  DialogTriggerButtonProps
->(
+const DialogTriggerButton = React.forwardRef<HTMLButtonElement, TriggerProps>(
   (
     {
       asIcon = false,
       asIconHidden = false,
       asLabel = false,
+
       state = false,
       idleText,
       processText,
+
       size = "default",
       variant = "default",
-      icon: Icon,
       className,
+
+      icon: Icon,
       classNameAsIocn,
+
       ...rest
     },
     ref
@@ -57,6 +60,7 @@ const DialogTriggerButton = React.forwardRef<
     if (asIcon) {
       return (
         <Button
+          ref={ref}
           type="button"
           variant="ghost"
           size="icon"
@@ -82,27 +86,7 @@ const DialogTriggerButton = React.forwardRef<
     }
 
     if (asLabel) {
-      return (
-        <Button
-          type="button"
-          variant="ghost"
-          aria-label={idleText}
-          className={clsx(
-            "flex items-center justify-between gap-2 w-full",
-            className
-          )}
-          {...rest}
-        >
-          <>
-            {idleText}
-            {state ? (
-              <Loader2 className="animate-spin size-4" />
-            ) : (
-              <Icon className="size-4" />
-            )}
-          </>
-        </Button>
-      );
+      return <IconMenu text={idleText} icon={<Icon className="size-4" />} />;
     }
 
     return (

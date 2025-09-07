@@ -1,6 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { type Note } from "@prisma/client";
+import z from "zod";
+import { authClient } from "@/lib/auth-client";
+import { NoteSchema } from "@/validations/zod/note-schemas";
+import { updateNote } from "@/server/notes";
+import NoteForm from "@/components/forms/(notes)/note-form";
 import {
   Dialog,
   DialogContent,
@@ -9,30 +15,28 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import NotebookForm from "@/components/forms/(notebooks)/notebook-form";
-import z from "zod";
-import { authClient } from "@/lib/auth-client";
-import { toast } from "sonner";
-import { type Note } from "@prisma/client";
 import DialogTriggerButton, {
-  DialogTriggerButtonType,
-} from "../utils/dialog-trigger-button";
+  TriggerAppearance,
+} from "@/components/utils/dialog-trigger-button";
 import { PenSquareIcon } from "lucide-react";
-import { updateNote } from "@/server/notes";
-import { NoteSchema } from "@/validations/zod/note-schemas";
-import NoteForm from "../forms/(notes)/note-form";
+import { toast } from "sonner";
+
+interface DialogProps {
+  noteId: string;
+  note: Partial<Note>;
+  isOpen?: boolean;
+  setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
 export default function EditNoteDialog({
   noteId,
   note,
-  asIcon,
-  asIconHidden,
-  asLabel,
-}: {
-  noteId: string;
-  note: Partial<Note>;
-} & DialogTriggerButtonType) {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  isOpen,
+  setIsOpen,
+  trigger,
+  withTrigger = true,
+}: DialogProps & TriggerAppearance) {
+  const [dialogState, setDialogState] = useState(false);
 
   const onSubmit = async (data: z.infer<typeof NoteSchema>) => {
     const { data: session } = await authClient.getSession();
@@ -49,7 +53,7 @@ export default function EditNoteDialog({
       });
       if (success) {
         toast.success(message);
-        setIsOpen(false);
+        setIsOpen ? setIsOpen(false) : setDialogState(false);
       } else {
         toast.error(message);
       }
@@ -59,20 +63,25 @@ export default function EditNoteDialog({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <DialogTriggerButton
-          asIcon={asIcon}
-          asIconHidden={asIconHidden}
-          asLabel={asLabel}
-          idleText="Update"
-          processText="Updating"
-          icon={PenSquareIcon}
-          size="sm"
-          className="group-hover/note-buttons:opacity-100"
-          classNameAsIocn="hover:text-green-500"
-        />
-      </DialogTrigger>
+    <Dialog
+      open={isOpen ?? dialogState}
+      onOpenChange={setIsOpen ?? setDialogState}
+    >
+      {withTrigger && (
+        <DialogTrigger asChild>
+          <DialogTriggerButton
+            asIcon={trigger?.asIcon}
+            asIconHidden={trigger?.asIconHidden}
+            asLabel={trigger?.asLabel}
+            idleText="Update"
+            processText="Updating"
+            icon={PenSquareIcon}
+            size="sm"
+            className="group-hover/note-buttons:opacity-100"
+            classNameAsIocn="hover:text-green-500"
+          />
+        </DialogTrigger>
+      )}
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Update Note</DialogTitle>

@@ -3,7 +3,7 @@
 import prisma from "@/lib/prisma";
 import { Notebook } from "@prisma/client";
 import errorMessage from "@/helpers/errorMessage";
-import { revalidatePath, unstable_cache } from "next/cache";
+import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 import { APIError } from "better-auth";
 import { isUserAuthed } from "./auth";
 
@@ -16,6 +16,7 @@ export const createNotebook = async (name: string, userId: string) => {
       },
     });
     revalidatePath("/dashboard");
+    revalidateTag("notebooks");
     return { success: true, message: "Notebook created successfully" };
   } catch (error) {
     return {
@@ -68,9 +69,9 @@ export const getCachedNotebooks = async () => {
       console.log("getCachedNotebooks called");
       return getNotebooks(userId);
     },
-    [`notebooks-${userId}`],
+    [`notebooks`],
     {
-      tags: [`notebooks-${userId}`],
+      tags: [`notebooks`],
     }
   )();
 };
@@ -114,6 +115,7 @@ export const updateNotebook = async (id: string, values: Partial<Notebook>) => {
     });
 
     revalidatePath("/dashboard");
+    revalidateTag(`notebooks`);
     return {
       success: true,
       notebook,
@@ -133,6 +135,7 @@ export const deleteNotebook = async (id: string) => {
     });
 
     revalidatePath("/dashboard");
+    revalidateTag("notebooks");
     return {
       success: true,
       message: "Notebook deleted successfully",

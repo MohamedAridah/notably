@@ -1,7 +1,6 @@
 import BreadCrumbSkeleton from "@/components/(skeletons)/breadcrumb";
 import CardSkeleton from "@/components/(skeletons)/card";
 import DetailsSkeleton from "@/components/(skeletons)/details";
-import EditorSkeleton from "@/components/(skeletons)/exitor";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Loading() {

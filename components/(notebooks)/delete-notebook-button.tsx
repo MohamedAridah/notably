@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { deleteNotebook } from "@/server/notebooks";
 import {
   AlertDialog,
@@ -17,22 +18,26 @@ import { buttonVariants } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import DialogTriggerButton, {
-  DialogTriggerButtonType,
+  TriggerAppearance,
 } from "@/components/utils/dialog-trigger-button";
-import { useRouter } from "next/navigation";
+
+interface DialogProps {
+  notebookId: string;
+  callbackURL?: string;
+  isOpen?: boolean;
+  setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
 export default function DeleteNotebookDialog({
   notebookId,
   callbackURL,
-  asIcon,
-  asIconHidden,
-  asLabel,
-}: {
-  notebookId: string;
-  callbackURL?: string;
-} & DialogTriggerButtonType) {
+  isOpen,
+  setIsOpen,
+  trigger,
+  withTrigger = true,
+}: DialogProps & TriggerAppearance) {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
+  const [dialogState, setDialogState] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDeleteNotebook = async () => {
@@ -48,28 +53,33 @@ export default function DeleteNotebookDialog({
       toast.error((error as Error).message);
     } finally {
       setIsDeleting(false);
-      setIsOpen(false);
+      setIsOpen ? setIsOpen(false) : setDialogState(false);
       if (callbackURL) router.push(callbackURL);
     }
   };
 
   return (
-    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-      <AlertDialogTrigger asChild>
-        <DialogTriggerButton
-          asIcon={asIcon}
-          asIconHidden={asIconHidden}
-          asLabel={asLabel}
-          variant="destructive"
-          size="sm"
-          state={isDeleting}
-          idleText="Delete"
-          processText="Deleting"
-          icon={Trash2}
-          className="group-hover/notebook-buttons:opacity-100"
-          classNameAsIocn="hover:text-red-500"
-        />
-      </AlertDialogTrigger>
+    <AlertDialog
+      open={isOpen ?? dialogState}
+      onOpenChange={setIsOpen ?? setDialogState}
+    >
+      {withTrigger && (
+        <AlertDialogTrigger asChild>
+          <DialogTriggerButton
+            asIcon={trigger?.asIcon}
+            asIconHidden={trigger?.asIconHidden}
+            asLabel={trigger?.asLabel}
+            variant="destructive"
+            size="sm"
+            state={isDeleting}
+            idleText="Delete"
+            processText="Deleting"
+            icon={Trash2}
+            className="group-hover/notebook-buttons:opacity-100"
+            classNameAsIocn="hover:text-red-500"
+          />
+        </AlertDialogTrigger>
+      )}
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>

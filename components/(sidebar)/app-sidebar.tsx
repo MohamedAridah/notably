@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { getNotebooks } from "@/server/notebooks";
+import { getCachedNotebooks } from "@/server/notebooks";
 import { Logo } from "@/components/utils/logo";
 import { SearchForm } from "@/components/(sidebar)/search-form";
 import SidebarData from "@/components/(sidebar)/sidebar-data";
@@ -17,7 +17,7 @@ import { UserForNav } from "@/components/user";
 export async function AppSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
-  const notebooks = await getNotebooks();
+  const notebooks = await getCachedNotebooks();
   const data = {
     navMain:
       notebooks.notebooks?.map((notebook) => ({

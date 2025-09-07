@@ -18,7 +18,11 @@ export default function NoteCard({ note }: { note: Note }) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 group/note-buttons">
           {note.title}
-          <EditNoteDialog note={note} noteId={note.id} asIcon asIconHidden />
+          <EditNoteDialog
+            note={note}
+            noteId={note.id}
+            trigger={{ asIcon: true, asIconHidden: true }}
+          />
         </CardTitle>
         <CardDescription>Click view to see note content.</CardDescription>
       </CardHeader>

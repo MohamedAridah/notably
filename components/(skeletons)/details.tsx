@@ -9,8 +9,8 @@ export default function DetailsSkeleton() {
       </div>
 
       <div className="flex flex-col gap-2">
-        <Skeleton className="h-3 w-[190px]" />
-        <Skeleton className="h-3 w-[220px]" />
+        <Skeleton className="h-4 w-[190px]" />
+        <Skeleton className="h-4 w-[220px]" />
       </div>
     </>
   );

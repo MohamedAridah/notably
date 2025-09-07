@@ -1,11 +1,13 @@
-import { getNotebooks } from "@/server/notebooks";
+import { getCachedNotebooks } from "@/server/notebooks";
 import CreateNotebookDialog from "@/components/(notebooks)/create-notebook-button";
-import Notebook from "@/components/(notebooks)/notebook";
-import { NotebookIcon, ShieldAlert } from "lucide-react";
 import Message from "@/components/utils/message";
+import BreadCrumbUI from "@/components/utils/breadcrumb";
+import { NotebookWithCount } from "./_components/notebooks-details-view";
+import Notebooks from "./_components/notebooks";
+import { NotebookIcon, ShieldAlert } from "lucide-react";
 
 export default async function Dashboard() {
-  const notebooksResponse = await getNotebooks();
+  const notebooksResponse = await getCachedNotebooks();
 
   const { success, notebooks, message, description } = notebooksResponse;
 
@@ -29,6 +31,10 @@ export default async function Dashboard() {
 
   return (
     <>
+      <BreadCrumbUI
+        breadCrumbs={[{ label: "Dashboard", href: "/dashboard" }]}
+      />
+
       <div className="flex items-center justify-between mb-5">
         <h1 className="font-semibold">Notebooks</h1>
         <CreateNotebookDialog />
@@ -45,11 +51,7 @@ export default async function Dashboard() {
           }
         />
       ) : (
-        <div className="grid md:grid-cols-[repeat(auto-fill,_minmax(21rem,_1fr))] gap-4">
-          {notebooks?.map((notebook) => (
-            <Notebook key={notebook.id} notebook={notebook} />
-          ))}
-        </div>
+        <Notebooks notebooks={notebooks as NotebookWithCount[]} />
       )}
     </>
   );

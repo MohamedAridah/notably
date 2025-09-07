@@ -1,0 +1,60 @@
+import React from "react";
+import Link from "next/link";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Notebook } from "@prisma/client";
+import dynamic from "next/dynamic";
+const NotebookOptions = dynamic(
+  () => import("@/components/(notebooks)/notebook-options"),
+  { ssr: false }
+);
+
+export interface NotebookWithCount extends Notebook {
+  _count: {
+    notes: number;
+  };
+}
+
+type Props = { notebooks: NotebookWithCount[] };
+
+const DetailsView = ({ notebooks }: Props) => {
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Notebook Name</TableHead>
+          <TableHead>Sub Notes</TableHead>
+          <TableHead>Date</TableHead>
+          <TableHead className="text-right"></TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {notebooks.map((notebook) => (
+          <TableRow key={notebook.name}>
+            <TableCell className="font-medium">
+              <Link
+                href={`/dashboard/notebook/${notebook.id}`}
+                className="hover:underline"
+              >
+                {notebook.name}
+              </Link>
+            </TableCell>
+            <TableCell>{notebook._count.notes} notes</TableCell>
+            <TableCell>{new Date(notebook.createdAt).toDateString()}</TableCell>
+            <TableCell className="text-right">
+              <NotebookOptions notebook={notebook} />
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+};
+
+export default DetailsView;

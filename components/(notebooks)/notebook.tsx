@@ -13,7 +13,7 @@ import DeleteNotebookDialog from "@/components/(notebooks)/delete-notebook-butto
 import { ExternalLinkIcon } from "lucide-react";
 import EditNotebookDialog from "./edit-notebook-button";
 
-type NotebookWithCount = Notebook & { _count: { notes: number } };
+export type NotebookWithCount = Notebook & { _count: { notes: number } };
 
 export default function Notebook({
   notebook,
@@ -29,8 +29,7 @@ export default function Notebook({
             <EditNotebookDialog
               notebookId={notebook.id}
               notebook={notebook}
-              asIcon
-              asIconHidden
+              trigger={{ asIcon: true, asIconHidden: true }}
             />
           </div>
           <Badge className="tabular-nums">{notebook._count.notes}</Badge>

@@ -1,13 +1,13 @@
+import { Metadata } from "next";
 import { getNotebookById } from "@/server/notebooks";
 import CreateNoteDialog from "@/components/(notes)/create-note-button";
-import NoteCard from "@/components/(notes)/note";
 import BreadCrumbUI from "@/components/utils/breadcrumb";
 import { NotebookText, ShieldAlert } from "lucide-react";
 import Message from "@/components/utils/message";
 import { Badge } from "@/components/ui/badge";
 import EditNotebookDialog from "@/components/(notebooks)/edit-notebook-button";
 import DeleteNotebookDialog from "@/components/(notebooks)/delete-notebook-button";
-import { Metadata } from "next";
+import NotebookNotes from "./_components/notebook-notes";
 
 export async function generateMetadata({
   params,
@@ -63,15 +63,13 @@ export default async function NotebookPage({ params }: { params: Params }) {
             <EditNotebookDialog
               notebookId={notebookId}
               notebook={notebook}
-              asIcon
-              asIconHidden
+              trigger={{ asIcon: true, asIconHidden: true }}
             />
             <div className="flex -items-center gap-2">
               <DeleteNotebookDialog
                 notebookId={notebookId}
-                asIcon
-                asIconHidden
                 callbackURL={"/dashboard"}
+                trigger={{ asIcon: true, asIconHidden: true }}
               />
             </div>
           </div>
@@ -101,11 +99,8 @@ export default async function NotebookPage({ params }: { params: Params }) {
             <h2 className="text-xl font-semibold flex items-center gap-2">
               {notebook.name} Notes: <Badge>{notebook._count.notes}</Badge>
             </h2>
-            <div className="grid md:grid-cols-[repeat(auto-fill,_minmax(21rem,_1fr))] gap-4 mt-4">
-              {notebook.notes.map((note) => (
-                <NoteCard key={note.id} note={note} />
-              ))}
-            </div>
+
+            <NotebookNotes notes={notebook.notes} />
           </>
         )}
       </section>

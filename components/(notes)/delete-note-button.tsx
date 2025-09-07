@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { deleteNote } from "@/server/notes";
-import { toast } from "sonner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,24 +15,30 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { buttonVariants } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
+import { Loader2, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 import DialogTriggerButton, {
-  DialogTriggerButtonType,
+  TriggerAppearance,
 } from "@/components/utils/dialog-trigger-button";
+
+interface DialogProps {
+  noteId: string;
+  callbackURL?: string;
+  isOpen?: boolean;
+  setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
 export default function DeleteNoteDialog({
   noteId,
   callbackURL,
-  asIcon,
-  asIconHidden,
-  asLabel,
-}: {
-  noteId: string;
-  callbackURL?: string;
-} & DialogTriggerButtonType) {
+  isOpen,
+  setIsOpen,
+  trigger,
+  withTrigger = true,
+}: DialogProps & TriggerAppearance) {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
+  const [dialogState, setDialogState] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDeleteNote = async () => {
@@ -49,28 +54,33 @@ export default function DeleteNoteDialog({
       toast.error((error as Error).message);
     } finally {
       setIsDeleting(false);
-      setIsOpen(false);
+      setIsOpen ? setIsOpen(false) : setDialogState(false);
       if (callbackURL) router.push(callbackURL);
     }
   };
 
   return (
-    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-      <AlertDialogTrigger asChild>
-        <DialogTriggerButton
-          asIcon={asIcon as boolean}
-          asIconHidden={asIconHidden}
-          asLabel={asLabel}
-          state={isDeleting}
-          processText="Deleting"
-          idleText="Delete"
-          icon={Trash2}
-          variant="destructive"
-          size="sm"
-          className="group-hover/note-buttons:opacity-100"
-          classNameAsIocn="hover:text-red-500 transition-colors"
-        />
-      </AlertDialogTrigger>
+    <AlertDialog
+      open={isOpen ?? dialogState}
+      onOpenChange={setIsOpen ?? setDialogState}
+    >
+      {withTrigger && (
+        <AlertDialogTrigger asChild>
+          <DialogTriggerButton
+            asIcon={trigger?.asIcon}
+            asIconHidden={trigger?.asIconHidden}
+            asLabel={trigger?.asLabel}
+            state={isDeleting}
+            processText="Deleting"
+            idleText="Delete"
+            icon={Trash2}
+            variant="destructive"
+            size="sm"
+            className="group-hover/note-buttons:opacity-100"
+            classNameAsIocn="hover:text-red-500 transition-colors"
+          />
+        </AlertDialogTrigger>
+      )}
 
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -86,7 +96,11 @@ export default function DeleteNoteDialog({
             className={buttonVariants({ variant: "destructive" })}
             onClick={handleDeleteNote}
           >
-            Continue
+            {isDeleting ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              "Continue"
+            )}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

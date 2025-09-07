@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma";
 import { Note } from "@prisma/client";
 import { InputJsonValue } from "@prisma/client/runtime/library";
 import errorMessage from "@/helpers/errorMessage";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export const createNote = async (
   title: string,
@@ -20,6 +20,7 @@ export const createNote = async (
       },
     });
     revalidatePath("/dashboard");
+    revalidateTag("notebooks");
     return { success: true, message: "Note created successfully" };
   } catch (error) {
     return {
@@ -42,8 +43,8 @@ export const getNoteById = async (id: string) => {
 
     return { success: true, note };
   } catch (error) {
-    console.log({error});
-    
+    console.log({ error });
+
     return {
       success: false,
       message: errorMessage(error) || "Failed to get note",
@@ -64,6 +65,7 @@ export const updateNote = async (id: string, values: Partial<Note>) => {
     });
 
     revalidatePath("/dashboard");
+    revalidateTag("notebooks");
     return {
       success: true,
       note,
@@ -86,6 +88,7 @@ export const deleteNote = async (id: string) => {
     });
 
     revalidatePath("/dashboard");
+    revalidateTag("notebooks");
     return {
       success: true,
       message: "Note deleted successfully",

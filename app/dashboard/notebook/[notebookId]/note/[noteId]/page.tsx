@@ -52,13 +52,11 @@ export default async function NotePage({ params }: { params: Params }) {
               <EditNoteDialog
                 note={note}
                 noteId={note.id}
-                asIcon
-                asIconHidden
+                trigger={{ asIcon: true, asIconHidden: true }}
               />
               <DeleteNoteDialog
                 noteId={note.id}
-                asIcon
-                asIconHidden
+                trigger={{ asIcon: true, asIconHidden: true }}
                 callbackURL={`/dashboard/notebook/${note.notebookId}`}
               />
             </div>

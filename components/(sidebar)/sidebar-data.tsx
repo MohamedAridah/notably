@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useQueryState } from "nuqs";
 import {
   Collapsible,
@@ -22,8 +23,10 @@ import {
   NotebookText,
 } from "lucide-react";
 import EditNotebookDialog from "@/components/(notebooks)/edit-notebook-button";
-import NoteOptions from "./note-options";
-import CreateNoteDialog from "../(notes)/create-note-button";
+import CreateNoteDialog from "@/components/(notes)/create-note-button";
+const NoteOptions = dynamic(() => import("@/components/(notes)/note-options"), {
+  ssr: false,
+});
 
 type SidebarDataProps = {
   data: {
@@ -88,16 +91,14 @@ export default function SidebarData({ data }: SidebarDataProps) {
               >
                 <CreateNoteDialog
                   notebookId={notebook.id}
-                  asIcon
-                  asIconHidden
+                  trigger={{ asIcon: true, asIconHidden: true }}
                 />
                 <EditNotebookDialog
                   notebook={{
                     name: notebook.title,
                   }}
                   notebookId={notebook.id}
-                  asIcon
-                  asIconHidden
+                  trigger={{ asIcon: true, asIconHidden: true }}
                 />
               </div>
 
