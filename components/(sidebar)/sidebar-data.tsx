@@ -22,11 +22,13 @@ import {
   InfoIcon,
   NotebookText,
 } from "lucide-react";
-import EditNotebookDialog from "@/components/(notebooks)/edit-notebook-button";
-import CreateNoteDialog from "@/components/(notes)/create-note-button";
 const NoteOptions = dynamic(() => import("@/components/(notes)/note-options"), {
   ssr: false,
 });
+const NotebookOptions = dynamic(
+  () => import("@/components/(notebooks)/notebook-options"),
+  { ssr: false }
+);
 
 type SidebarDataProps = {
   data: {
@@ -74,31 +76,24 @@ export default function SidebarData({ data }: SidebarDataProps) {
           className="group/label text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground text-sm"
         >
           <CollapsibleTrigger asChild className="group/notebook-buttons">
-            <div className="flex">
+            <div className="flex gap-2">
               <Link
                 href={`/dashboard/notebook/${notebook.id}`}
-                className="flex items-center gap-2 hover:underline"
+                className="flex items-center gap-2 hover:underline flex-1"
               >
                 <FolderClosed className="size-4" />
-                <p className="overflow-hidden text-ellipsis whitespace-nowrap w-[110px]">
+                <p className="overflow-hidden text-ellipsis whitespace-nowrap w-[135px]">
                   {notebook.title}
                 </p>
               </Link>
 
-              <div
-                className="ml-auto flex items-center gap-0"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <CreateNoteDialog
-                  notebookId={notebook.id}
-                  trigger={{ asIcon: true, asIconHidden: true }}
-                />
-                <EditNotebookDialog
+              <div onClick={(e) => e.preventDefault()}>
+                <NotebookOptions
                   notebook={{
+                    id: notebook.id,
                     name: notebook.title,
                   }}
-                  notebookId={notebook.id}
-                  trigger={{ asIcon: true, asIconHidden: true }}
+                  className="flex items-center sm:opacity-0 group-hover/notebook-buttons:opacity-100"
                 />
               </div>
 

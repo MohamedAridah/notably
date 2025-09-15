@@ -72,7 +72,7 @@ export default function CreateNoteDialog({
             idleText="Create Note"
             processText="Creating..."
             className="group-hover/note-buttons:opacity-100 group-hover/notebook-buttons:opacity-100"
-            classNameAsIocn="hover:text-cyan-500 h-full"
+            classNameAsIocn="hover:text-cyan-500"
           />
         </DialogTrigger>
       )}

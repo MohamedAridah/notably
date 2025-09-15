@@ -5,32 +5,11 @@ import { Note } from "@prisma/client";
 import { InputJsonValue } from "@prisma/client/runtime/library";
 import errorMessage from "@/helpers/errorMessage";
 import { revalidatePath, revalidateTag } from "next/cache";
-
-export const createNote = async (
-  title: string,
-  content: InputJsonValue,
-  notebookId: string
-) => {
-  try {
-    await prisma.note.create({
-      data: {
-        title,
-        content,
-        notebookId,
-      },
-    });
-    revalidatePath("/dashboard");
-    revalidateTag("notebooks");
-    return { success: true, message: "Note created successfully" };
-  } catch (error) {
-    return {
-      success: false,
-      message: errorMessage(error) || "Failed to create note",
-    };
-  }
-};
+import { isUserAuthed } from "./auth";
 
 export const getNoteById = async (id: string) => {
+  const session = await isUserAuthed();
+
   try {
     const note = await prisma.note.findUnique({
       where: {
@@ -52,7 +31,37 @@ export const getNoteById = async (id: string) => {
   }
 };
 
+export const createNote = async (
+  title: string,
+  content: InputJsonValue,
+  notebookId: string
+) => {
+  const session = await isUserAuthed();
+  const userId = session.userId as string;
+
+  try {
+    const note = await prisma.note.create({
+      data: {
+        title,
+        content,
+        notebookId,
+      },
+    });
+    console.log(note);
+    revalidatePath("/dashboard");
+    revalidateTag(`notebooks-user-${userId}`);
+    return { success: true, message: "Note created successfully" };
+  } catch (error) {
+    return {
+      success: false,
+      message: errorMessage(error) || "Failed to create note",
+    };
+  }
+};
+
 export const updateNote = async (id: string, values: Partial<Note>) => {
+  const session = await isUserAuthed();
+  const userId = session.userId as string;
   try {
     const note = await prisma.note.update({
       where: {
@@ -63,9 +72,9 @@ export const updateNote = async (id: string, values: Partial<Note>) => {
         title: values.title,
       },
     });
-
+    console.log(note);
     revalidatePath("/dashboard");
-    revalidateTag("notebooks");
+    revalidateTag(`notebooks-user-${userId}`);
     return {
       success: true,
       note,
@@ -80,15 +89,17 @@ export const updateNote = async (id: string, values: Partial<Note>) => {
 };
 
 export const deleteNote = async (id: string) => {
+  const session = await isUserAuthed();
+  const userId = session.userId as string;
   try {
     const note = await prisma.note.delete({
       where: {
         id,
       },
     });
-
+    console.log(note);
     revalidatePath("/dashboard");
-    revalidateTag("notebooks");
+    revalidateTag(`notebooks-user-${userId}`);
     return {
       success: true,
       message: "Note deleted successfully",

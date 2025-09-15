@@ -20,19 +20,22 @@ import {
   PenSquare,
   Trash2,
 } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
 
-interface NotebookOptionsProps {
-  notebook: Notebook;
+interface NotebookOptionsProps extends React.ComponentProps<"div"> {
+  notebook: Pick<Notebook, "id" | "name">;
 }
 
-export default function NotebookOptions({ notebook }: NotebookOptionsProps) {
+export default function NotebookOptions({
+  notebook,
+  ...props
+}: NotebookOptionsProps) {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   return (
-    <>
+    <div {...props}>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger className="hover:cursor-pointer">
           <MoreHorizontal className="size-4" />
@@ -88,6 +91,6 @@ export default function NotebookOptions({ notebook }: NotebookOptionsProps) {
         isOpen={isDeleteDialogOpen}
         setIsOpen={setIsDeleteDialogOpen}
       />
-    </>
+    </div>
   );
 }
