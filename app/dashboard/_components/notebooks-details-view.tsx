@@ -48,7 +48,7 @@ const DetailsView = ({ notebooks }: Props) => {
             <TableCell>{notebook._count.notes} notes</TableCell>
             <TableCell>{new Date(notebook.createdAt).toDateString()}</TableCell>
             <TableCell className="text-right">
-              <NotebookOptions notebook={notebook} />
+              <NotebookOptions notebook={notebook} alignStart />
             </TableCell>
           </TableRow>
         ))}

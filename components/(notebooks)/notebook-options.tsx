@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState } from "react";
 import Link from "next/link";
 import { type Notebook } from "@prisma/client";
 import {
@@ -20,14 +21,15 @@ import {
   PenSquare,
   Trash2,
 } from "lucide-react";
-import React, { useState } from "react";
 
 interface NotebookOptionsProps extends React.ComponentProps<"div"> {
   notebook: Pick<Notebook, "id" | "name">;
+  alignStart?: boolean;
 }
 
 export default function NotebookOptions({
   notebook,
+  alignStart = false,
   ...props
 }: NotebookOptionsProps) {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -41,7 +43,7 @@ export default function NotebookOptions({
           <MoreHorizontal className="size-4" />
           <span className="sr-only">Open note options menu</span>
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
+        <DropdownMenuContent className={alignStart ? "mr-3" : ""}>
           <DropdownMenuItem>
             <Link href={`/dashboard/notebook/${notebook.id}`}>
               <IconMenu

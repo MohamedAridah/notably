@@ -8,6 +8,7 @@ export default function EditorSkeleton() {
         {skeletones.map((_, index) => (
           <Skeleton className="h-7 w-7" key={index} />
         ))}
+        <Skeleton className="h-7 w-12 ml-auto" />
       </div>
       <div className="flex flex-col gap-2 h-[300px] w-full">
         <Skeleton className="h-5 w-[220px]" />

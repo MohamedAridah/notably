@@ -18,6 +18,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
   Notebook      Notebook[]
+  Note          Note[]
 
   @@unique([email])
   @@map("user")
@@ -82,13 +83,15 @@ model Notebook {
 }
 
 model Note {
-  id        String   @id @default(uuid())
+  id         String    @id @default(uuid())
   title      String
   content    Json
   notebookId String?
   notebook   Notebook? @relation(fields: [notebookId], references: [id], onDelete: Cascade)
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @default(now())
+  user       User?     @relation(fields: [userId], references: [id])
+  userId     String?
 
   @@map("note")
 }

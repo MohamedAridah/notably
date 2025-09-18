@@ -27,9 +27,16 @@ interface NoteOptionsProps {
   note_url: string;
 }
 
-export default function NoteOptions({ note }: { note: NoteOptionsProps }) {
+export default function NoteOptions({
+  note,
+  alignStart = false,
+}: {
+  note: NoteOptionsProps;
+  alignStart?: boolean;
+}) {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
   return (
     <>
       <DropdownMenu modal={false}>
@@ -37,7 +44,7 @@ export default function NoteOptions({ note }: { note: NoteOptionsProps }) {
           <MoreHorizontalIcon className="size-4" />
           <span className="sr-only">Open note options menu</span>
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
+        <DropdownMenuContent className={alignStart ? "mr-3" : ""}>
           <DropdownMenuItem>
             <Link href={note.note_url}>
               <IconMenu

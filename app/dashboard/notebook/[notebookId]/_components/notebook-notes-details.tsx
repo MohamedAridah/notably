@@ -44,6 +44,7 @@ const DetailsView = ({ notes }: { notes: Note[] }) => {
                   noteId: note.id,
                   noteTitle: note.title,
                 }}
+                alignStart
               />
             </TableCell>
           </TableRow>

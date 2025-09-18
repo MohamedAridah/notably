@@ -9,11 +9,13 @@ import { isUserAuthed } from "./auth";
 
 export const getNoteById = async (id: string) => {
   const session = await isUserAuthed();
+  const userId = session.userId;
 
   try {
     const note = await prisma.note.findUnique({
       where: {
         id,
+        userId,
       },
       include: {
         notebook: true,
@@ -40,14 +42,15 @@ export const createNote = async (
   const userId = session.userId as string;
 
   try {
-    const note = await prisma.note.create({
+    await prisma.note.create({
       data: {
         title,
         content,
         notebookId,
+        userId,
       },
     });
-    console.log(note);
+
     revalidatePath("/dashboard");
     revalidateTag(`notebooks-user-${userId}`);
     return { success: true, message: "Note created successfully" };
@@ -66,13 +69,13 @@ export const updateNote = async (id: string, values: Partial<Note>) => {
     const note = await prisma.note.update({
       where: {
         id,
+        userId,
       },
       data: {
         content: values.content as InputJsonValue,
         title: values.title,
       },
     });
-    console.log(note);
     revalidatePath("/dashboard");
     revalidateTag(`notebooks-user-${userId}`);
     return {
@@ -95,9 +98,9 @@ export const deleteNote = async (id: string) => {
     const note = await prisma.note.delete({
       where: {
         id,
+        userId,
       },
     });
-    console.log(note);
     revalidatePath("/dashboard");
     revalidateTag(`notebooks-user-${userId}`);
     return {

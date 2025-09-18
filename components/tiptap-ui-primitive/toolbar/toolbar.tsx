@@ -1,11 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { Separator } from "@/components/tiptap-ui-primitive/separator";
 import "@/components/tiptap-ui-primitive/toolbar/toolbar.scss";
 import { cn } from "@/lib/tiptap-utils";
-import { useMenuNavigation } from "@/hooks/use-menu-navigation";
-import { useComposedRef } from "@/hooks/use-composed-ref";
+import { useMenuNavigation } from "@/hooks/tiptap-editor-hooks/use-menu-navigation";
+import { useComposedRef } from "@/hooks/tiptap-editor-hooks/use-composed-ref";
 
 type BaseProps = React.HTMLAttributes<HTMLDivElement>;
 
@@ -115,10 +114,3 @@ export const ToolbarGroup = React.forwardRef<HTMLDivElement, BaseProps>(
   )
 );
 ToolbarGroup.displayName = "ToolbarGroup";
-
-export const ToolbarSeparator = React.forwardRef<HTMLDivElement, BaseProps>(
-  ({ ...props }, ref) => (
-    <Separator ref={ref} orientation="vertical" decorative {...props} />
-  )
-);
-ToolbarSeparator.displayName = "ToolbarSeparator";

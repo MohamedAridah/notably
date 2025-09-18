@@ -44,7 +44,7 @@ export const getNotebooks = async (userId: string) => {
 export const getCachedNotebooks = async () => {
   const session = await isUserAuthed();
   const userId = session.userId as string;
-
+  
   return unstable_cache(
     async () => {
       console.log("getCachedNotebooks called");
@@ -57,12 +57,13 @@ export const getCachedNotebooks = async () => {
   )();
 };
 
-export const getNotebookById = async (id: string) => {
+export const getNotebookById = async (id: string, userId: string) => {
   try {
     console.log("getNotebook called with id:", id);
     const notebook = await prisma.notebook.findUnique({
       where: {
         id,
+        userId,
       },
       include: {
         _count: {
@@ -84,14 +85,16 @@ export const getCachedNotebook = async (id: string) => {
   const session = await isUserAuthed();
   const userId = session.userId as string;
 
-  return unstable_cache(async () => getNotebookById(id), [`notebook-${id}`], {
-    tags: [`notebook-${id}-user-${userId}`],
-  })();
+  return unstable_cache(
+    async () => getNotebookById(id, userId),
+    [`notebook-${id}-${userId}`],
+    {
+      tags: [`notebook-${id}`, `notebooks-user-${userId}`],
+    }
+  )();
 };
 
 export const createNotebook = async (name: string, userId: string) => {
-  const session = await isUserAuthed();
-
   try {
     await prisma.notebook.create({
       data: {
@@ -100,8 +103,8 @@ export const createNotebook = async (name: string, userId: string) => {
       },
     });
 
-    revalidatePath("/dashboard");
     revalidateTag(`notebooks-user-${userId}`);
+    revalidatePath("/dashboard");
     return { success: true, message: "Notebook created successfully" };
   } catch (error) {
     return {
@@ -113,17 +116,20 @@ export const createNotebook = async (name: string, userId: string) => {
 
 export const updateNotebook = async (id: string, values: Partial<Notebook>) => {
   const session = await isUserAuthed();
+  const userId = session.userId as string;
 
   try {
     const notebook = await prisma.notebook.update({
       where: {
         id,
+        userId,
       },
       data: values,
     });
 
-    revalidatePath("/dashboard");
+    revalidateTag(`notebook-${id}`);
     revalidateTag(`notebooks-user-${notebook.userId}`);
+    revalidatePath("/dashboard");
 
     return {
       success: true,
@@ -137,16 +143,19 @@ export const updateNotebook = async (id: string, values: Partial<Notebook>) => {
 
 export const deleteNotebook = async (id: string) => {
   const session = await isUserAuthed();
+  const userId = session.userId as string;
 
   try {
     const notebook = await prisma.notebook.delete({
       where: {
         id,
+        userId,
       },
     });
 
-    revalidatePath("/dashboard");
+    revalidateTag(`notebook-${id}`);
     revalidateTag(`notebooks-user-${notebook.userId}`);
+    revalidatePath("/dashboard");
     return {
       success: true,
       message: "Notebook deleted successfully",

@@ -87,7 +87,7 @@ export default function SidebarData({ data }: SidebarDataProps) {
                 </p>
               </Link>
 
-              <div onClick={(e) => e.preventDefault()}>
+              <div onClick={(e) => e.stopPropagation()}>
                 <NotebookOptions
                   notebook={{
                     id: notebook.id,

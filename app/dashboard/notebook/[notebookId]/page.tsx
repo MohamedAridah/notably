@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { getNotebookById } from "@/server/notebooks";
+import { getCachedNotebook } from "@/server/notebooks";
 import CreateNoteDialog from "@/components/(notes)/create-note-button";
 import BreadCrumbUI from "@/components/utils/breadcrumb";
 import { NotebookText, ShieldAlert } from "lucide-react";
@@ -15,7 +15,7 @@ export async function generateMetadata({
   params: Params;
 }): Promise<Metadata> {
   const notebookId = (await params).notebookId;
-  const { notebook } = await getNotebookById(notebookId);
+  const { notebook } = await getCachedNotebook(notebookId);
 
   return {
     title: notebook?.name,
@@ -28,7 +28,7 @@ type Params = Promise<{
 
 export default async function NotebookPage({ params }: { params: Params }) {
   const notebookId = (await params).notebookId;
-  const { notebook } = await getNotebookById(notebookId);
+  const { notebook } = await getCachedNotebook(notebookId);
 
   const breadCrumbs = [
     { label: "Dashboard", href: "/dashboard" },

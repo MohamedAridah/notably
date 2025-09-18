@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { getNoteById } from "@/server/notes";
 import BreadCrumbUI from "@/components/utils/breadcrumb";
 import Message from "@/components/utils/message";
-import RichTextEditorClient from "@/components/text-editor/editor.client";
+import RichTextEditorClient from "@/components/editor/editor.client";
 import { Loader2, ShieldAlert } from "lucide-react";
 import { type JSONContent } from "@tiptap/react";
 import DeleteNoteDialog from "@/components/(notes)/delete-note-button";

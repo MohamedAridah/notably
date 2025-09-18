@@ -172,3 +172,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .responsive-toolbar {
+    @media (max-width: 500px) {
+      flex-wrap: nowrap;
+    }
+  }
+}

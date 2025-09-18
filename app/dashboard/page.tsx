@@ -8,7 +8,6 @@ import { NotebookIcon, ShieldAlert } from "lucide-react";
 
 export default async function Dashboard() {
   const notebooksResponse = await getCachedNotebooks();
-
   const { success, notebooks, message, description } = notebooksResponse;
 
   if (!success) {
