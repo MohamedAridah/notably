@@ -24,11 +24,13 @@ export async function AppSidebar({
         id: notebook.id,
         title: notebook.name,
         url: `/dashboard/notebook/${notebook.id}`,
+        isFavorite: notebook.isFavorite,
         items: notebook.notes.map((note) => ({
           id: note.id,
           title: note.title,
           notebook_url: `/dashboard/notebook/${notebook.id}`,
           url: `/dashboard/notebook/${notebook.id}/note/${note.id}`,
+          isFavorite: note.isFavorite,
         })),
       })) ?? [],
   };

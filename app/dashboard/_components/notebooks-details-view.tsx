@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/table";
 import { Notebook } from "@prisma/client";
 import dynamic from "next/dynamic";
+import FavoriteButton from "@/components/utils/favorite-button";
+import { handleToggleFavorite_Notebook } from "@/lib/utils";
 const NotebookOptions = dynamic(
   () => import("@/components/(notebooks)/notebook-options"),
   { ssr: false }
@@ -37,7 +39,13 @@ const DetailsView = ({ notebooks }: Props) => {
       <TableBody>
         {notebooks.map((notebook) => (
           <TableRow key={notebook.name}>
-            <TableCell className="font-medium">
+            <TableCell className="font-medium flex items-center gap-1.5">
+              <FavoriteButton
+                isFavorite={notebook.isFavorite}
+                id={notebook.id}
+                onToggle={handleToggleFavorite_Notebook}
+                iconStyles="size-3.5"
+              />
               <Link
                 href={`/dashboard/notebook/${notebook.id}`}
                 className="hover:underline"

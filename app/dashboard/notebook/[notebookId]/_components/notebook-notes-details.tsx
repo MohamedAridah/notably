@@ -9,6 +9,8 @@ import {
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { Note } from "@prisma/client";
+import FavoriteButton from "@/components/utils/favorite-button";
+import { handleToggleFavorite_Note } from "@/lib/utils";
 const NoteOptions = dynamic(() => import("@/components/(notes)/note-options"), {
   ssr: false,
 });
@@ -26,7 +28,13 @@ const DetailsView = ({ notes }: { notes: Note[] }) => {
       <TableBody>
         {notes.map((note) => (
           <TableRow key={note.id}>
-            <TableCell className="font-medium">
+            <TableCell className="font-medium flex items-center gap-1.5">
+              <FavoriteButton
+                isFavorite={note.isFavorite}
+                id={note.id}
+                onToggle={handleToggleFavorite_Note}
+                iconStyles="size-3.5"
+              />
               <Link
                 href={`/dashboard/notebook/${note.notebookId}/note/${note.id}`}
                 className="hover:underline"

@@ -22,6 +22,11 @@ import {
   InfoIcon,
   NotebookText,
 } from "lucide-react";
+import FavoriteButton from "../utils/favorite-button";
+import {
+  handleToggleFavorite_Note,
+  handleToggleFavorite_Notebook,
+} from "@/lib/utils";
 const NoteOptions = dynamic(() => import("@/components/(notes)/note-options"), {
   ssr: false,
 });
@@ -36,7 +41,14 @@ type SidebarDataProps = {
       id: string;
       title: string;
       url: string;
-      items: { id: string; title: string; notebook_url: string; url: string }[];
+      isFavorite: boolean;
+      items: {
+        id: string;
+        title: string;
+        notebook_url: string;
+        url: string;
+        isFavorite: boolean;
+      }[];
     }[];
   };
 };
@@ -82,18 +94,30 @@ export default function SidebarData({ data }: SidebarDataProps) {
                 className="flex items-center gap-2 hover:underline flex-1"
               >
                 <FolderClosed className="size-4" />
-                <p className="overflow-hidden text-ellipsis whitespace-nowrap w-[135px]">
+                <p className="overflow-hidden text-ellipsis whitespace-nowrap w-[131px]">
                   {notebook.title}
                 </p>
               </Link>
 
-              <div onClick={(e) => e.stopPropagation()}>
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className="flex items-center gap-2"
+              >
+                <FavoriteButton
+                  isFavorite={notebook.isFavorite}
+                  id={notebook.id}
+                  onToggle={handleToggleFavorite_Notebook}
+                  iconStyles="size-3.5"
+                />
+
                 <NotebookOptions
                   notebook={{
                     id: notebook.id,
                     name: notebook.title,
+                    isFavorite: notebook.isFavorite,
                   }}
-                  className="flex items-center sm:opacity-0 group-hover/notebook-buttons:opacity-100"
+                  // className="flex items-center sm:opacity-0 group-hover/notebook-buttons:opacity-100"
+                  className="flex items-center"
                 />
               </div>
 
@@ -115,10 +139,17 @@ export default function SidebarData({ data }: SidebarDataProps) {
                         className="flex items-center gap-2 flex-1"
                       >
                         <NotebookText className="size-4" />
-                        <p className="overflow-hidden text-ellipsis whitespace-nowrap w-[150px]">
+                        <p className="overflow-hidden text-ellipsis whitespace-nowrap w-[145px]">
                           {note.title}
                         </p>
                       </Link>
+
+                      <FavoriteButton
+                        isFavorite={note.isFavorite}
+                        id={note.id}
+                        onToggle={handleToggleFavorite_Note}
+                        iconStyles="size-3.5"
+                      />
 
                       <NoteOptions
                         note={{
@@ -127,6 +158,7 @@ export default function SidebarData({ data }: SidebarDataProps) {
                           noteTitle: note.title,
                           note_url: note.url,
                           notebook_url: note.notebook_url,
+                          isFavorite: note.isFavorite,
                         }}
                       />
                     </div>

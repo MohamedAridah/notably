@@ -12,6 +12,8 @@ import { buttonVariants } from "@/components/ui/button";
 import DeleteNotebookDialog from "@/components/(notebooks)/delete-notebook-button";
 import { ExternalLinkIcon } from "lucide-react";
 import EditNotebookDialog from "./edit-notebook-button";
+import FavoriteButton from "../utils/favorite-button";
+import { handleToggleFavorite_Notebook } from "@/lib/utils";
 
 export type NotebookWithCount = Notebook & { _count: { notes: number } };
 
@@ -25,7 +27,14 @@ export default function Notebook({
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-2 group/notebook-buttons">
-            {notebook.name}
+            <div className="flex items-center gap-1">
+              <FavoriteButton
+                isFavorite={notebook.isFavorite}
+                id={notebook.id}
+                onToggle={handleToggleFavorite_Notebook}
+              />
+              {notebook.name}
+            </div>
             <EditNotebookDialog
               notebookId={notebook.id}
               notebook={notebook}

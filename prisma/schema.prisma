@@ -70,13 +70,14 @@ model Verification {
 }
 
 model Notebook {
-  id        String   @id @default(uuid())
-  name      String
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  notes     Note[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  id         String   @id @default(uuid())
+  name       String
+  isFavorite Boolean  @default(false)
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notes      Note[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
 
   @@unique([name, userId])
   @@map("notebook")
@@ -86,6 +87,7 @@ model Note {
   id         String    @id @default(uuid())
   title      String
   content    Json
+  isFavorite Boolean   @default(false)
   notebookId String?
   notebook   Notebook? @relation(fields: [notebookId], references: [id], onDelete: Cascade)
   createdAt  DateTime  @default(now())

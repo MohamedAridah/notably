@@ -18,6 +18,8 @@ import {
   PenSquareIcon,
   Trash2,
 } from "lucide-react";
+import FavoriteButton from "../utils/favorite-button";
+import { handleToggleFavorite_Note } from "@/lib/utils";
 
 interface NoteOptionsProps {
   noteId: string;
@@ -25,6 +27,7 @@ interface NoteOptionsProps {
   noteTitle?: string;
   notebook_url: string;
   note_url: string;
+  isFavorite?: boolean;
 }
 
 export default function NoteOptions({
@@ -55,6 +58,16 @@ export default function NoteOptions({
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />
+
+          <DropdownMenuItem>
+            <FavoriteButton
+              isFavorite={note.isFavorite as boolean}
+              id={note.noteId}
+              onToggle={handleToggleFavorite_Note}
+              iconStyles="size-3.5"
+              withText
+            />
+          </DropdownMenuItem>
 
           <DropdownMenuItem onSelect={() => setIsEditDialogOpen(true)}>
             <IconMenu

@@ -44,7 +44,7 @@ export const getNotebooks = async (userId: string) => {
 export const getCachedNotebooks = async () => {
   const session = await isUserAuthed();
   const userId = session.userId as string;
-  
+
   return unstable_cache(
     async () => {
       console.log("getCachedNotebooks called");
@@ -164,6 +164,36 @@ export const deleteNotebook = async (id: string) => {
     return {
       success: false,
       message: errorMessage(error) || "Failed to delete notebook",
+    };
+  }
+};
+
+export const setNotebookFavorite = async (id: string, isFavorite: boolean) => {
+  const session = await isUserAuthed();
+  const userId = session.userId as string;
+
+  try {
+    const notebook = await prisma.notebook.update({
+      where: { id, userId },
+      data: { isFavorite },
+    });
+
+    revalidateTag(`notebook-${id}`);
+    revalidateTag(`notebooks-user-${notebook.userId}`);
+    revalidatePath("/dashboard");
+
+    return {
+      success: true,
+      message: isFavorite
+        ? "Notebook added to your favorites."
+        : "Notebook removed from your favorites.",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        errorMessage(error) ||
+        `Failed to ${isFavorite ? "add" : "remove"} notebook from favorites`,
     };
   }
 };

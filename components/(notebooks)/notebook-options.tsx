@@ -21,9 +21,11 @@ import {
   PenSquare,
   Trash2,
 } from "lucide-react";
+import FavoriteButton from "../utils/favorite-button";
+import { handleToggleFavorite_Notebook } from "@/lib/utils";
 
 interface NotebookOptionsProps extends React.ComponentProps<"div"> {
-  notebook: Pick<Notebook, "id" | "name">;
+  notebook: Pick<Notebook, "id" | "name" | "isFavorite">;
   alignStart?: boolean;
 }
 
@@ -61,6 +63,16 @@ export default function NotebookOptions({
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />
+
+          <DropdownMenuItem>
+            <FavoriteButton
+              isFavorite={notebook.isFavorite}
+              id={notebook.id}
+              onToggle={handleToggleFavorite_Notebook}
+              iconStyles="size-3.5"
+              withText
+            />
+          </DropdownMenuItem>
 
           <DropdownMenuItem onSelect={() => setIsEditDialogOpen(true)}>
             <IconMenu text="Update" icon={<PenSquare className="size-4" />} />

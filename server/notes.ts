@@ -114,3 +114,33 @@ export const deleteNote = async (id: string) => {
     };
   }
 };
+
+export const setNoteFavorite = async (id: string, isFavorite: boolean) => {
+  const session = await isUserAuthed();
+  const userId = session.userId as string;
+
+  try {
+    const note = await prisma.note.update({
+      where: { id, userId },
+      data: { isFavorite },
+    });
+
+    revalidateTag(`notebook-${note.notebookId}`);
+    revalidateTag(`notebooks-user-${note.userId}`);
+    revalidatePath("/dashboard");
+
+    return {
+      success: true,
+      message: isFavorite
+        ? "Note added to your favorites."
+        : "Note removed from your favorites.",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        errorMessage(error) ||
+        `Failed to ${isFavorite ? "add" : "remove"} note from favorites`,
+    };
+  }
+};
