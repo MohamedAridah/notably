@@ -45,7 +45,9 @@ export default function NotebookOptions({
           <MoreHorizontal className="size-4" />
           <span className="sr-only">Open note options menu</span>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className={alignStart ? "mr-3" : ""}>
+        <DropdownMenuContent
+          className={`pointer-events-auto ${alignStart ? "mr-3" : ""}`}
+        >
           <DropdownMenuItem>
             <Link href={`/dashboard/notebook/${notebook.id}`}>
               <IconMenu

@@ -47,7 +47,9 @@ export default function NoteOptions({
           <MoreHorizontalIcon className="size-4" />
           <span className="sr-only">Open note options menu</span>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className={alignStart ? "mr-3" : ""}>
+        <DropdownMenuContent
+          className={`pointer-events-auto ${alignStart ? "mr-3" : ""}`}
+        >
           <DropdownMenuItem>
             <Link href={note.note_url}>
               <IconMenu
@@ -56,9 +58,7 @@ export default function NoteOptions({
               />
             </Link>
           </DropdownMenuItem>
-
           <DropdownMenuSeparator />
-
           <DropdownMenuItem>
             <FavoriteButton
               isFavorite={note.isFavorite as boolean}
@@ -68,14 +68,12 @@ export default function NoteOptions({
               withText
             />
           </DropdownMenuItem>
-
           <DropdownMenuItem onSelect={() => setIsEditDialogOpen(true)}>
             <IconMenu
               text="Update"
               icon={<PenSquareIcon className="size-4" />}
             />
           </DropdownMenuItem>
-
           <DropdownMenuItem onSelect={() => setIsDeleteDialogOpen(true)}>
             <IconMenu text="Delete" icon={<Trash2 className="size-4" />} />
           </DropdownMenuItem>
