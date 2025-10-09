@@ -113,7 +113,8 @@ export default function SignInForm() {
                 variant="outline"
                 className="w-full"
                 type="button"
-                disabled={isLoading}
+                // disabled={isLoading}
+                disabled={true}
               >
                 Login with Google
                 <Badge variant="outline" className="flex items-center">

@@ -64,8 +64,6 @@ export default function NotebookOptions({
             />
           </DropdownMenuItem>
 
-          <DropdownMenuSeparator />
-
           <DropdownMenuItem>
             <FavoriteButton
               isFavorite={notebook.isFavorite}
@@ -80,8 +78,14 @@ export default function NotebookOptions({
             <IconMenu text="Update" icon={<PenSquare className="size-4" />} />
           </DropdownMenuItem>
 
+          <DropdownMenuSeparator />
+
           <DropdownMenuItem onSelect={() => setIsDeleteDialogOpen(true)}>
-            <IconMenu text="Delete" icon={<Trash2 className="size-4" />} />
+            <IconMenu
+              className="text-red-500"
+              text="Delete"
+              icon={<Trash2 className="size-4 text-red-500" />}
+            />
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

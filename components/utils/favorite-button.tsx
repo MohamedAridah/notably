@@ -1,103 +1,116 @@
 "use client";
 
-import React from "react";
+import React, { useCallback, useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { StarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import IconMenu from "./icon-menu";
 
 type FavoriteButtonProps = {
-  isFavorite: boolean;
   id: string;
-  withText?: boolean;
+  isFavorite: boolean;
   onToggle: (
     id: string,
     newValue: boolean
   ) => Promise<{ message: string; success: boolean }>;
+  withText?: boolean;
   iconStyles?: string;
   className?: string;
 };
 
-const FavoriteButton = React.memo(
-  ({
-    isFavorite,
-    id,
-    withText,
-    onToggle,
-    iconStyles,
-    className,
-  }: FavoriteButtonProps) => {
-    const [isLoading, setIsLoading] = React.useState(false);
-    const [localFavorite, setLocalFavorite] = React.useState(isFavorite); // Optimistic toggle
-    const label = localFavorite ? "Remove from favorites" : "Add to favorites";
+const FavoriteButton: React.FC<FavoriteButtonProps> = ({
+  id,
+  isFavorite,
+  onToggle,
+  withText = false,
+  iconStyles = "",
+  className = "",
+}) => {
+  const [isPending, startTransition] = useTransition();
+  const [localFavorite, setLocalFavorite] = useState(isFavorite);
 
-    React.useEffect(() => {
-      setLocalFavorite(isFavorite);
-    }, [isFavorite]);
+  // Sync with prop in case parent updates it
+  useEffect(() => {
+    setLocalFavorite(isFavorite);
+  }, [isFavorite]);
 
-    const handleToggle = React.useCallback(async () => {
-      if (isLoading) return;
+  const handleToggle = useCallback(() => {
+    const optimisticValue = !localFavorite;
+    setLocalFavorite(optimisticValue);
 
-      setLocalFavorite((prev) => !prev);
-      setIsLoading(true);
-
+    startTransition(async () => {
       try {
-        const { success, message } = await onToggle(id, !localFavorite);
+        const { success, message } = await onToggle(id, optimisticValue);
+
         if (success) {
           toast.success(message);
         } else {
-          setLocalFavorite((prev) => !prev);
+          setLocalFavorite(!optimisticValue); // Rollback
           toast.error(message);
         }
-      } catch (err) {
-        setLocalFavorite((prev) => !prev);
+      } catch (error) {
+        setLocalFavorite(!optimisticValue); // Rollback
         toast.error("Something went wrong.");
-      } finally {
-        setIsLoading(false);
+        console.error("Favorite toggle error:", error);
       }
-    }, [id, onToggle, localFavorite, isLoading]);
+    });
+  }, [id, localFavorite, onToggle]);
 
-    if (withText) {
-      return (
-        <IconMenu
-          onClick={handleToggle}
-          aria-label={label}
-          icon={
-            <FavoriteButtonIcon
-              isFavorite={localFavorite}
-              className={iconStyles}
-            />
-          }
-          text={label}
-        />
-      );
-    }
+  const labelText = localFavorite
+    ? "Remove from favorites"
+    : "Add to favorites";
 
+  const icon = (
+    <FavoriteButtonIcon isFavorite={localFavorite} className={iconStyles} />
+  );
+
+  if (withText) {
     return (
-      <button
+      <IconMenu
         onClick={handleToggle}
-        disabled={isLoading}
-        aria-pressed={localFavorite}
-        aria-label={label}
-        className={cn(
-          "hover:cursor-pointer disabled:opacity-70 transition-transform duration-100 hover:scale-105 active:scale-90",
-          className
-        )}
-      >
-        <FavoriteButtonIcon isFavorite={localFavorite} className={iconStyles} />
-      </button>
+        aria-label={labelText}
+        icon={icon}
+        text={labelText}
+      />
     );
   }
-);
 
-FavoriteButton.displayName = "FavoriteButton";
+  return (
+    <button
+      onClick={handleToggle}
+      disabled={isPending}
+      aria-pressed={localFavorite}
+      aria-label={labelText}
+      className={cn(
+        "hover:cursor-pointer disabled:opacity-70 transition-transform duration-100 hover:scale-105 active:scale-90",
+        className
+      )}
+    >
+      {icon}
+    </button>
+  );
+};
+
 export default FavoriteButton;
 
-export const FavoriteButtonIcon = React.memo(
-  ({ isFavorite, className }: { isFavorite: boolean; className?: string }) => {
-    const styles = isFavorite ? "fill-yellow-500 text-yellow-500" : "";
-    return <StarIcon className={cn("size-4", styles, className)} />;
-  }
-);
+type FavoriteIconProps = {
+  isFavorite: boolean;
+  className?: string;
+};
 
-FavoriteButtonIcon.displayName = "FavoriteButtonIcon";
+export const FavoriteButtonIcon: React.FC<FavoriteIconProps> = ({
+  isFavorite,
+  className = "",
+}) => {
+  return (
+    <StarIcon
+      className={cn(
+        "size-4",
+        {
+          "fill-yellow-500 text-yellow-500": isFavorite,
+        },
+        className
+      )}
+    />
+  );
+};

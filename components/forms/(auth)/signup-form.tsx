@@ -139,7 +139,12 @@ export default function SignUpForm() {
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? <Loader2 className="animate-spin" /> : "Sign up"}
               </Button>
-              <Button variant="outline" className="w-full" type="button">
+              <Button
+                variant="outline"
+                className="w-full"
+                type="button"
+                disabled={true}
+              >
                 Login with Google
                 <Badge variant="outline" className="flex items-center">
                   <StarsIcon /> soon

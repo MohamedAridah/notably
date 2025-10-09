@@ -103,12 +103,12 @@ export default function SidebarData({ data }: SidebarDataProps) {
                 onClick={(e) => e.stopPropagation()}
                 className="flex items-center gap-2"
               >
-                <FavoriteButton
+                {/* <FavoriteButton
                   isFavorite={notebook.isFavorite}
                   id={notebook.id}
                   onToggle={handleToggleFavorite_Notebook}
                   iconStyles="size-3.5"
-                />
+                /> */}
 
                 <NotebookOptions
                   notebook={{
@@ -144,12 +144,12 @@ export default function SidebarData({ data }: SidebarDataProps) {
                         </p>
                       </Link>
 
-                      <FavoriteButton
+                      {/* <FavoriteButton
                         isFavorite={note.isFavorite}
                         id={note.id}
                         onToggle={handleToggleFavorite_Note}
                         iconStyles="size-3.5"
-                      />
+                      /> */}
 
                       <NoteOptions
                         note={{

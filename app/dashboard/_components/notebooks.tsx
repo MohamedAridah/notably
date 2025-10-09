@@ -13,8 +13,20 @@ const DetailsView = dynamic(() => import("./notebooks-details-view"), {
 });
 import { Grid2X2Icon, Rows3Icon } from "lucide-react";
 import TableSkeketon from "@/components/(skeletons)/table";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
-const Notebooks = ({ notebooks }: { notebooks: NotebookWithCount[] }) => {
+type NotebooksProps = {
+  notebooks: {
+    notebook__favorites: NotebookWithCount[];
+    notebook__others: NotebookWithCount[];
+  };
+};
+
+const Notebooks = ({ notebooks }: NotebooksProps) => {
   const [view, setView] = useQueryState("view", { defaultValue: "grid" });
 
   const isActive = useCallback(
@@ -26,28 +38,85 @@ const Notebooks = ({ notebooks }: { notebooks: NotebookWithCount[] }) => {
   return (
     <>
       <div className="flex justify-end items-center gap-0.5">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setView("grid")}
-          className={isActive("grid")}
-        >
-          <Grid2X2Icon className="size-5" />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setView("rows")}
-          className={isActive("rows")}
-        >
-          <Rows3Icon className="size-5" />
-        </Button>
+        <Tooltip>
+          <TooltipTrigger>
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Show as Grid view"
+              onClick={() => setView("grid")}
+              className={isActive("grid")}
+            >
+              <Grid2X2Icon className="size-5" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">
+            <p>Grid view</p>
+          </TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger>
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Show as Table view"
+              title="Show as Table view"
+              onClick={() => setView("rows")}
+              className={isActive("rows")}
+            >
+              <Rows3Icon className="size-5" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">
+            <p>Table view</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
       {view == "grid" && (
-        <GridView notebooks={notebooks as NotebookWithCount[]} />
+        <>
+          {notebooks.notebook__favorites.length > 0 ? (
+            <div className="mb-5">
+              <h2 className="font-thin uppercase mb-3 tracking-wider ">
+                Favorites
+              </h2>
+              <GridView notebooks={notebooks.notebook__favorites} />
+            </div>
+          ) : null}
+
+          {notebooks.notebook__others.length > 0 ? (
+            <div className="mb-5">
+              <h2 className="font-thin uppercase mb-3 tracking-wider">
+                Others
+              </h2>
+              <GridView notebooks={notebooks.notebook__others} />
+            </div>
+          ) : null}
+        </>
       )}
       {view == "rows" && (
-        <DetailsView notebooks={notebooks as NotebookWithCount[]} />
+        <>
+          {notebooks.notebook__favorites ? (
+            <div className="mb-5">
+              <h2 className="font-thin uppercase mb-3 tracking-wider">
+                Favorites
+              </h2>
+              <DetailsView
+                notebooks={notebooks.notebook__favorites as NotebookWithCount[]}
+              />
+            </div>
+          ) : null}
+
+          {notebooks.notebook__others ? (
+            <div className="mb-5">
+              <h2 className="font-thin uppercase mb-3 tracking-wider">
+                Others
+              </h2>
+              <DetailsView
+                notebooks={notebooks.notebook__others as NotebookWithCount[]}
+              />
+            </div>
+          ) : null}
+        </>
       )}
     </>
   );

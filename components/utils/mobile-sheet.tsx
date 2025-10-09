@@ -6,6 +6,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
+import SocialLinks from "./social-links";
 
 interface MobileSheetProps {
   children: React.ReactNode;
@@ -31,6 +32,7 @@ export default function MobileSheet({
           <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
         </SheetHeader>
         {children}
+        <SocialLinks className="p-4 pt-0 flex justify-center items-center flex-wrap gap-6" />
       </SheetContent>
     </Sheet>
   );

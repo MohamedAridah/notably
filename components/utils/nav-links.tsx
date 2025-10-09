@@ -1,10 +1,10 @@
 import Link from "next/link";
 
-export const menuItems = [
-  { name: "Features", path: "#link" },
-  { name: "Solution", path: "#link" },
-  { name: "Pricing", path: "#link" },
-  { name: "About", path: "#link" },
+export const menuItems: Array<{ name: string; path: string }> = [
+  { name: "Features", path: "#features" },
+  // { name: "Solution", path: "#link" },
+  // { name: "Pricing", path: "#link" },
+  // { name: "About", path: "#link" },
 ];
 
 type NavLinksProps = {
@@ -12,6 +12,10 @@ type NavLinksProps = {
 };
 
 export default function NavLinks({ className }: NavLinksProps) {
+  if (menuItems.length === 0) {
+    return null;
+  }
+
   return (
     <ul className={className}>
       {menuItems.map((item, index) => (

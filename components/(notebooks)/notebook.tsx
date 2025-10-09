@@ -20,7 +20,7 @@ export type NotebookWithCount = Notebook & { _count: { notes: number } };
 export default function Notebook({
   notebook,
 }: {
-  notebook: Notebook & NotebookWithCount;
+  notebook: NotebookWithCount;
 }) {
   return (
     <Card className="shadow-xs hover:shadow-sm transition-shadow ease-in-out duration-150">

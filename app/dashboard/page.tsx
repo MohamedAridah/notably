@@ -2,9 +2,10 @@ import { getCachedNotebooks } from "@/server/notebooks";
 import CreateNotebookDialog from "@/components/(notebooks)/create-notebook-button";
 import Message from "@/components/utils/message";
 import BreadCrumbUI from "@/components/utils/breadcrumb";
-import { NotebookWithCount } from "./_components/notebooks-details-view";
 import Notebooks from "./_components/notebooks";
 import { NotebookIcon, ShieldAlert } from "lucide-react";
+import { filterNotebooks } from "@/helpers/filter-notebooks";
+import { NotebookWithCount } from "@/components/(notebooks)/notebook";
 
 export default async function Dashboard() {
   const notebooksResponse = await getCachedNotebooks();
@@ -19,7 +20,7 @@ export default async function Dashboard() {
         description={
           <>
             <p className="text-lg font-semibold">{message as string}</p>
-            <p>{description}</p>
+            <p>{description || "Sorry, something went wrong."}</p>
           </>
         }
       />
@@ -27,6 +28,8 @@ export default async function Dashboard() {
   }
 
   const isEmpty = (notebooks?.length ?? 0) === 0;
+  const { favorites: notebooks__favorites, others: notebooks__others } =
+    filterNotebooks(notebooks ?? []);
 
   return (
     <>
@@ -50,7 +53,12 @@ export default async function Dashboard() {
           }
         />
       ) : (
-        <Notebooks notebooks={notebooks as NotebookWithCount[]} />
+        <Notebooks
+          notebooks={{
+            notebook__favorites: notebooks__favorites as NotebookWithCount[],
+            notebook__others: notebooks__others as NotebookWithCount[],
+          }}
+        />
       )}
     </>
   );
