@@ -36,7 +36,7 @@ export const SignUpUser = async (data: SignUpUserParams) => {
 
 export const SignInUser = async (data: SignInUserParams) => {
   try {
-    await auth.api.signInEmail({ body: data });
+    await auth.api.signInEmail({ body: data, headers: await headers() });
     return { success: true, message: "Signed in successfully" };
   } catch (error) {
     return {
