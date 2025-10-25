@@ -11,7 +11,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -33,8 +32,9 @@ import Link from "next/link";
 type UserType = {
   user: Pick<User, "name" | "email" | "image">;
 };
+type UserLinkType = { href: string; label: string; icon: React.ReactNode };
 
-export function UserForNav() {
+export function UserForNav({ links }: { links?: UserLinkType[] }) {
   const { isMobile } = useSidebar();
   const { data: session, isPending } = authClient.useSession();
 
@@ -84,7 +84,7 @@ export function UserForNav() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
 
-            <UserMenu />
+            <UserMenu links={links} />
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
@@ -92,7 +92,7 @@ export function UserForNav() {
   );
 }
 
-export function UserAsIcon() {
+export function UserAsIcon({ links }: { links?: UserLinkType[] }) {
   const { data: session, isPending } = authClient.useSession();
 
   if (isPending) {
@@ -115,7 +115,7 @@ export function UserAsIcon() {
         align="end"
         sideOffset={4}
       >
-        <UserMenu />
+        <UserMenu links={links} />
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -141,20 +141,32 @@ const UserInfo = ({ user }: UserType) => {
   );
 };
 
-const UserMenu = () => {
+const UserMenu = ({ links }: { links?: UserLinkType[] }) => {
   const { handleLogout, isLoading: isLoggingout } = useLogout();
 
   return (
     <>
+      {links &&
+        links.length > 0 &&
+        links.map((link) => (
+          <DropdownMenuItem asChild key={link.href}>
+            <Link href={link.href}>
+              {link.icon}
+              {link.label}
+            </Link>
+          </DropdownMenuItem>
+        ))}
       <DropdownMenuItem asChild>
         <Link href="/dashboard">
           <LayoutDashboard />
           Dashboard
         </Link>
       </DropdownMenuItem>
-      <DropdownMenuItem disabled>
-        <BadgeCheck />
-        Account
+      <DropdownMenuItem asChild>
+        <Link href="/settings/profile">
+          <BadgeCheck />
+          Account
+        </Link>
       </DropdownMenuItem>
 
       <DropdownMenuSeparator />

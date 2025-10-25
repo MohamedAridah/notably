@@ -3,6 +3,8 @@
 import { auth } from "@/lib/auth";
 import errorMessage from "@/helpers/errorMessage";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import prisma from "@/lib/prisma";
 
 interface SignUpUserParams {
   email: string;
@@ -99,9 +101,17 @@ export const isUserAuthed = async () => {
     headers: await headers(),
   });
 
-  const userId = session?.user.id;
-  if (!userId) {
+  if (!session) {
+    redirect("/auth/sign-in");
+  }
+
+  const currentUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+  });
+
+  if (!currentUser) {
     return { success: false, message: "User not authenticated" };
   }
-  return { success: true, userId };
+
+  return { success: true, session: session.session };
 };

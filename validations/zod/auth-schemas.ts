@@ -1,6 +1,6 @@
 import z from "zod";
 
-const authSchema = z.object({
+export const authSchema = z.object({
   email: z.email("Invalid email address"),
   name: z.string().min(1, "Too small: expected string to have >=1 characters"),
   password: z

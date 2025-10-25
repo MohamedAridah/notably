@@ -13,11 +13,13 @@ import {
 import Link from "next/link";
 import SidebarSkeleton from "./sidebar-skeleton";
 import { UserForNav } from "@/components/user";
+import { HomeIcon } from "lucide-react";
 
 export async function AppSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   const notebooks = await getCachedNotebooks();
+
   const data = {
     navMain:
       notebooks.notebooks?.map((notebook) => ({
@@ -25,6 +27,7 @@ export async function AppSidebar({
         title: notebook.name,
         url: `/dashboard/notebook/${notebook.id}`,
         isFavorite: notebook.isFavorite,
+        isDefault: notebook.isDefault,
         items: notebook.notes.map((note) => ({
           id: note.id,
           title: note.title,
@@ -35,7 +38,7 @@ export async function AppSidebar({
       })) ?? [],
   };
   return (
-    <Sidebar {...props}>
+    <Sidebar {...props} collapsible="icon">
       <SidebarHeader>
         <Link href="/" aria-label="notably logo. click to go to homepage.">
           <span className="sr-only">Go to homepage</span>
@@ -52,7 +55,9 @@ export async function AppSidebar({
       </SidebarContent>
       <SidebarRail />
       <SidebarFooter>
-        <UserForNav />
+        <UserForNav
+          links={[{ href: "/", label: "Home", icon: <HomeIcon /> }]}
+        />
       </SidebarFooter>
     </Sidebar>
   );

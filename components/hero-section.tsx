@@ -1,10 +1,8 @@
-import React from "react";
-import Link from "next/link";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
 import { TextEffect } from "@/components/ui/text-effect";
 import { AnimatedGroup } from "@/components/ui/animated-group";
 import { AnimationGeneratorType } from "motion";
+import CtaButton from "@/app/_components/cta-button";
 
 const transitionVariants = {
   item: {
@@ -82,15 +80,7 @@ export default function HeroSection() {
                   key={1}
                   className="bg-foreground/10 rounded-[calc(var(--radius-xl)+0.125rem)] border p-0.5"
                 >
-                  <Button
-                    asChild
-                    size="lg"
-                    className="rounded-xl px-5 text-base"
-                  >
-                    <Link href="/dashboard">
-                      <span className="text-nowrap">Start Notably</span>
-                    </Link>
-                  </Button>
+                  <CtaButton className="rounded-xl px-5 text-base" />
                 </div>
               </AnimatedGroup>
             </div>

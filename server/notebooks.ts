@@ -42,8 +42,8 @@ export const getNotebooks = async (userId: string) => {
 };
 
 export const getCachedNotebooks = async () => {
-  const session = await isUserAuthed();
-  const userId = session.userId as string;
+  const { session } = await isUserAuthed();
+  const userId = session?.userId!;
 
   return unstable_cache(
     async () => {
@@ -82,8 +82,8 @@ export const getNotebookById = async (id: string, userId: string) => {
 };
 
 export const getCachedNotebook = async (id: string) => {
-  const session = await isUserAuthed();
-  const userId = session.userId as string;
+  const { session } = await isUserAuthed();
+  const userId = session?.userId!;
 
   return unstable_cache(
     async () => getNotebookById(id, userId),
@@ -115,8 +115,8 @@ export const createNotebook = async (name: string, userId: string) => {
 };
 
 export const updateNotebook = async (id: string, values: Partial<Notebook>) => {
-  const session = await isUserAuthed();
-  const userId = session.userId as string;
+  const { session } = await isUserAuthed();
+  const userId = session?.userId!;
 
   try {
     const notebook = await prisma.notebook.update({
@@ -142,8 +142,8 @@ export const updateNotebook = async (id: string, values: Partial<Notebook>) => {
 };
 
 export const deleteNotebook = async (id: string) => {
-  const session = await isUserAuthed();
-  const userId = session.userId as string;
+  const { session } = await isUserAuthed();
+  const userId = session?.userId!;
 
   try {
     const notebook = await prisma.notebook.delete({
@@ -169,8 +169,8 @@ export const deleteNotebook = async (id: string) => {
 };
 
 export const setNotebookFavorite = async (id: string, isFavorite: boolean) => {
-  const session = await isUserAuthed();
-  const userId = session.userId as string;
+  const { session } = await isUserAuthed();
+  const userId = session?.userId!;
 
   try {
     const notebook = await prisma.notebook.update({
@@ -197,3 +197,17 @@ export const setNotebookFavorite = async (id: string, isFavorite: boolean) => {
     };
   }
 };
+
+export async function createQuickNotesNotebook(userId: string) {
+  try {
+    await prisma.notebook.create({
+      data: {
+        name: "Quick Notes",
+        userId,
+        isDefault: true,
+      },
+    });
+  } catch (err) {
+    console.log("Error creating Quick Notes notebook:", err);
+  }
+}

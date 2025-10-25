@@ -35,11 +35,13 @@ export default function Notebook({
               />
               {notebook.name}
             </div>
-            <EditNotebookDialog
-              notebookId={notebook.id}
-              notebook={notebook}
-              trigger={{ asIcon: true, asIconHidden: true }}
-            />
+            {!notebook.isDefault && (
+              <EditNotebookDialog
+                notebookId={notebook.id}
+                notebook={notebook}
+                trigger={{ asIcon: true, asIconHidden: true }}
+              />
+            )}
           </div>
           <Badge className="tabular-nums">{notebook._count.notes}</Badge>
         </CardTitle>

@@ -1,5 +1,4 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import CtaButton from "@/app/_components/cta-button";
 
 export default function CallToAction() {
   return (
@@ -15,11 +14,7 @@ export default function CallToAction() {
           </p>
 
           <div className="mt-12 flex flex-wrap justify-center gap-4">
-            <Button asChild size="lg">
-              <Link href="/dashboard">
-                <span>Get Started</span>
-              </Link>
-            </Button>
+            <CtaButton size="lg" text="Get Started" />
           </div>
         </div>
       </div>

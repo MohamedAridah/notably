@@ -59,20 +59,22 @@ export default async function NotebookPage({ params }: { params: Params }) {
       <div className="flex items-center justify-between group-hover/notebook-buttons:opacity-100">
         <div className="flex items-center gap-2 group/notebook-buttons">
           <h1 className="text-xl font-semibold">{notebook.name}</h1>
-          <div className="flex items-center gap-1">
-            <EditNotebookDialog
-              notebookId={notebookId}
-              notebook={notebook}
-              trigger={{ asIcon: true, asIconHidden: true }}
-            />
-            <div className="flex -items-center gap-2">
-              <DeleteNotebookDialog
+          {!notebook.isDefault && (
+            <div className="flex items-center gap-1">
+              <EditNotebookDialog
                 notebookId={notebookId}
-                callbackURL={"/dashboard"}
+                notebook={notebook}
                 trigger={{ asIcon: true, asIconHidden: true }}
               />
+              <div className="flex -items-center gap-2">
+                <DeleteNotebookDialog
+                  notebookId={notebookId}
+                  callbackURL={"/dashboard"}
+                  trigger={{ asIcon: true, asIconHidden: true }}
+                />
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <CreateNoteDialog notebookId={notebookId} />

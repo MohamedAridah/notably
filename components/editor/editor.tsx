@@ -28,6 +28,7 @@ import { useCursorVisibility } from "@/hooks/tiptap-editor-hooks/use-cursor-visi
 import "@/components/editor/node-styles/paragraph-node.scss";
 import { MainToolbarContent } from "./buttons-ui/editor-toolbar";
 import dynamic from "next/dynamic";
+import { toast } from "sonner";
 const MobileToolbarContent = dynamic(
   () =>
     import("./buttons-ui/editor-toolbar").then(
@@ -103,6 +104,20 @@ export default function RichTextEditor({
       setMobileView("main");
     }
   }, [isMobile, mobileView]);
+
+  const hanldleBrowserClose = (e: BeforeUnloadEvent) => {
+    if (JSON.stringify(content) === JSON.stringify(editor?.getHTML())) {
+      return;
+    }
+    toast.warning("Save your work or it will be gone!");
+    e.preventDefault();
+  };
+
+  React.useEffect(() => {
+    window.addEventListener("beforeunload", hanldleBrowserClose);
+
+    () => window.removeEventListener("beforeunload", hanldleBrowserClose);
+  }, [content, editor?.getHTML()]);
 
   return (
     <>

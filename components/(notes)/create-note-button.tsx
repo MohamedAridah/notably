@@ -21,7 +21,7 @@ import { PlusIcon } from "lucide-react";
 import { toast } from "sonner";
 
 interface DialogProps {
-  notebookId: string;
+  notebookId?: string;
   isOpen?: boolean;
   setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }

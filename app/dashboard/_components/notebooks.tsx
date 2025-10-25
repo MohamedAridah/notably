@@ -39,7 +39,7 @@ const Notebooks = ({ notebooks }: NotebooksProps) => {
     <>
       <div className="flex justify-end items-center gap-0.5">
         <Tooltip>
-          <TooltipTrigger>
+          <TooltipTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
@@ -55,7 +55,7 @@ const Notebooks = ({ notebooks }: NotebooksProps) => {
           </TooltipContent>
         </Tooltip>
         <Tooltip>
-          <TooltipTrigger>
+          <TooltipTrigger asChild>
             <Button
               variant="ghost"
               size="icon"

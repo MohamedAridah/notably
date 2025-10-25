@@ -3,6 +3,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import ThemeToggler from "@/components/utils/theme-toggler";
 import MobileSheet from "@/components/utils/mobile-sheet";
 import { UserAsIcon } from "./user";
+import { HomeIcon } from "lucide-react";
 
 interface PageWrapperProps {
   children: React.ReactNode;
@@ -19,7 +20,9 @@ export default function PageWrapper({ children }: PageWrapperProps) {
 
           <div className="flex items-center gap-2 sm:gap-3">
             <ThemeToggler />
-            <UserAsIcon />
+            <UserAsIcon
+              links={[{ href: "/", label: "Home", icon: <HomeIcon /> }]}
+            />
 
             <MobileSheet>
               <Logout />

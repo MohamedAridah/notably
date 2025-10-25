@@ -6,6 +6,7 @@ import Notebooks from "./_components/notebooks";
 import { NotebookIcon, ShieldAlert } from "lucide-react";
 import { filterNotebooks } from "@/helpers/filter-notebooks";
 import { NotebookWithCount } from "@/components/(notebooks)/notebook";
+import CreateNoteDialog from "@/components/(notes)/create-note-button";
 
 export default async function Dashboard() {
   const notebooksResponse = await getCachedNotebooks();
@@ -29,7 +30,7 @@ export default async function Dashboard() {
 
   const isEmpty = (notebooks?.length ?? 0) === 0;
   const { favorites: notebooks__favorites, others: notebooks__others } =
-    filterNotebooks(notebooks ?? []);
+    await filterNotebooks(notebooks ?? []);
 
   return (
     <>
@@ -39,7 +40,10 @@ export default async function Dashboard() {
 
       <div className="flex items-center justify-between mb-5">
         <h1 className="font-semibold">Notebooks</h1>
-        <CreateNotebookDialog />
+        <div className="flex items-center gap-2">
+          <CreateNoteDialog />
+          <CreateNotebookDialog />
+        </div>
       </div>
 
       {isEmpty ? (

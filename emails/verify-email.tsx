@@ -234,7 +234,7 @@ export default function VerifyEmail({
               fontSize: 14,
             }}
           >
-            © {new Date().getFullYear()} Tailark, All rights reserved
+            © {new Date().getFullYear()} Notably, All rights reserved
           </Text>
         </Section>
       </Container>

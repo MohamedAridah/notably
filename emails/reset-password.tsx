@@ -61,7 +61,6 @@ export default function ResetPassword({
             <br />
             We received a request to reset your Notably account password. For
             your security, please click the button below to set a new password.
-            
           </Text>
           <Button
             href={resetPasswordUrl}
@@ -235,7 +234,7 @@ export default function ResetPassword({
               fontSize: 14,
             }}
           >
-            © {new Date().getFullYear()} Tailark, All rights reserved
+            © {new Date().getFullYear()} Notably, All rights reserved
           </Text>
         </Section>
       </Container>

@@ -1,3 +1,5 @@
+"use server";
+
 import { Notebook } from "@prisma/client";
 
 export type NotebookWithFavorite = Notebook;
@@ -7,9 +9,9 @@ export type FilteredNotebooks = {
   others: NotebookWithFavorite[];
 };
 
-export const filterNotebooks = (
+export const filterNotebooks = async (
   notebooks: NotebookWithFavorite[]
-): FilteredNotebooks => {
+): Promise<FilteredNotebooks> => {
   if (!Array.isArray(notebooks)) return { favorites: [], others: [] };
 
   const favorites: NotebookWithFavorite[] = [];

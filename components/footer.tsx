@@ -2,10 +2,11 @@ import Link from "next/link";
 import { Logo } from "@/components/utils/logo";
 import NavLinks, { menuItems } from "@/components/utils/nav-links";
 import SocialLinks from "./utils/social-links";
+import { cn } from "@/lib/utils";
 
-export default function Footer() {
+export default function Footer({ ...props }: React.ComponentProps<"footer">) {
   return (
-    <footer className="py-16 md:py-32">
+    <footer className={cn("py-10 md:py-15", props.className)} {...props}>
       <div className="mx-auto max-w-5xl px-6">
         <Link href="/" aria-label="go home" className="mx-auto block size-fit">
           <Logo />

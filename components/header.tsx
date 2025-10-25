@@ -14,7 +14,7 @@ import { UserAsIcon } from "@/components/user";
 import { authClient } from "@/lib/auth-client";
 import { Loader2 } from "lucide-react";
 
-export const HeroHeader = () => {
+export const HeroHeader = ({ ...props }: React.ComponentProps<"nav">) => {
   const { data: session, isPending } = authClient.useSession();
   const authenticated = !!session?.session.userId;
   const [menuState, setMenuState] = React.useState<boolean>(false);
@@ -35,7 +35,8 @@ export const HeroHeader = () => {
         data-state={menuState && "active"}
         className={cn(
           "fixed z-20 w-full border-b transition-colors duration-150",
-          scrolled && "bg-background/50 backdrop-blur-3xl"
+          scrolled && "bg-background/50 backdrop-blur-3xl",
+          props.className
         )}
       >
         <div className="mx-auto max-w-5xl px-6 transition-all duration-300">
