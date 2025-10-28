@@ -22,6 +22,9 @@ export const getNotebooks = async (userId: string) => {
         },
         notes: true,
       },
+      orderBy:{
+        isDefault:"desc"
+      }
     });
 
     return { success: true, notebooks };

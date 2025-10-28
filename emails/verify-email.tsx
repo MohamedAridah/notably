@@ -30,10 +30,9 @@ export default function VerifyEmail({
       >
         <Section style={{ textAlign: "center" }}>
           <Img
-            src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg"
+            src="https://notablyapp.vercel.app/logo.png"
             alt="Notably Logo"
-            width={48}
-            height={48}
+            width={120}
             style={{ marginBottom: 16, marginInline: "auto" }}
           />
           <Heading

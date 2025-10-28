@@ -1,23 +1,23 @@
-import { Suspense } from "react";
-import { getCachedNotebooks } from "@/server/notebooks";
-import { Logo } from "@/components/utils/logo";
-import { SearchForm } from "@/components/(sidebar)/search-form";
-import SidebarData from "@/components/(sidebar)/sidebar-data";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarRail,
+  SidebarMenu,
+  SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { getCachedNotebooks } from "@/server/notebooks";
+import { UserForNav } from "../user";
 import Link from "next/link";
+import { Logo } from "../utils/logo";
+import { Suspense } from "react";
+import { SearchForm } from "./search-form";
 import SidebarSkeleton from "./sidebar-skeleton";
-import { UserForNav } from "@/components/user";
+import SidebarData from "./sidebar-data";
+import SearchIcon from "./search-icon";
 import { HomeIcon } from "lucide-react";
 
-export async function AppSidebar({
-  ...props
-}: React.ComponentProps<typeof Sidebar>) {
+export async function AppSidebar() {
   const notebooks = await getCachedNotebooks();
 
   const data = {
@@ -37,23 +37,36 @@ export async function AppSidebar({
         })),
       })) ?? [],
   };
+
   return (
-    <Sidebar {...props} collapsible="icon">
+    <Sidebar collapsible="icon">
       <SidebarHeader>
-        <Link href="/" aria-label="notably logo. click to go to homepage.">
-          <span className="sr-only">Go to homepage</span>
-          <Logo />
-        </Link>
-        <Suspense fallback={<SidebarSkeleton length={1} />}>
-          <SearchForm />
-        </Suspense>
+        <SidebarMenu className="gap-1.5">
+          <SidebarMenuItem className="overflow-x-hidden group-data-[collapsible=icon]:-ml-1">
+            <Link href="/" aria-label="notably logo. click to go to homepage.">
+              <span className="sr-only">Go to Home Page</span>
+              <Logo />
+            </Link>
+          </SidebarMenuItem>
+
+          <SidebarMenuItem>
+            <SearchIcon />
+          </SidebarMenuItem>
+
+          <div className="group-data-[collapsible=icon]:hidden block">
+            <Suspense fallback={<SidebarSkeleton length={1} />}>
+              <SearchForm />
+            </Suspense>
+          </div>
+        </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent className="gap-0">
-        <Suspense fallback={<SidebarSkeleton length={3} showIcon />}>
+
+      <SidebarContent>
+        <Suspense fallback={<SidebarSkeleton length={5} showIcon />}>
           <SidebarData data={data} />
         </Suspense>
       </SidebarContent>
-      <SidebarRail />
+
       <SidebarFooter>
         <UserForNav
           links={[{ href: "/", label: "Home", icon: <HomeIcon /> }]}

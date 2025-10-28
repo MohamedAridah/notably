@@ -21,7 +21,7 @@ const LINKS = [
 
 export default function SettingsSidebar() {
   return (
-    <nav className="sm:flex-2/12 w-full">
+    <nav className="sm:flex-2/12 w-full max-sm:mb-5">
       <ul className="space-y-2">
         {LINKS.map((link) => (
           <li

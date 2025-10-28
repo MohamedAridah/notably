@@ -16,7 +16,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <SidebarProvider>
+    <SidebarProvider className="flex">
       <AppSidebar />
       <main className="flex-1">
         <PageWrapper>{children}</PageWrapper>

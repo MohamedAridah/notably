@@ -13,7 +13,13 @@ export default function SessionsPage() {
     <>
       <PageHeader title="Sessions" />
 
-      <Suspense fallback={<UserBioSkeleton />}>
+      <Suspense
+        fallback={Array(3)
+          .fill(null)
+          .map((_, index) => (
+            <UserBioSkeleton key={index} />
+          ))}
+      >
         <SessionsPanel />
       </Suspense>
     </>
