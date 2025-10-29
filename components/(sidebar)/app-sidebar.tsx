@@ -16,6 +16,7 @@ import SidebarSkeleton from "./sidebar-skeleton";
 import SidebarData from "./sidebar-data";
 import SearchIcon from "./search-icon";
 import { HomeIcon } from "lucide-react";
+import CreateNoteDialog from "../(notes)/create-note-button";
 
 export async function AppSidebar() {
   const notebooks = await getCachedNotebooks();
@@ -58,6 +59,10 @@ export async function AppSidebar() {
               <SearchForm />
             </Suspense>
           </div>
+
+          <SidebarMenuItem>
+            <CreateNoteDialog variant="secondary" size="sm"  className="w-full mt-1"/>
+          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
 

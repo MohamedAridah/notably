@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import sendEmail from "@/lib/sendEmail";
 import { betterAuth } from "better-auth";
+import { createAuthMiddleware } from "better-auth/api";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
 import VerifyEmail from "@/emails/verify-email";
@@ -8,6 +9,7 @@ import ResetPassword from "@/emails/reset-password";
 import { createQuickNotesNotebook } from "@/server/notebooks";
 import VerifyUpdatedEmail from "@/emails/verify-updated-email";
 import DeleteAccount from "@/emails/delete-account";
+import WelcomeEmail from "@/emails/welcome-email";
 
 export const auth = betterAuth({
   user: {
@@ -37,8 +39,29 @@ export const auth = betterAuth({
           }),
         });
       },
-
     },
+  },
+
+  hooks: {
+    after: createAuthMiddleware(async (ctx) => {
+      if (ctx.path.startsWith("/auth/sign-up")) {
+        const user = ctx.context.newSession?.user ?? {
+          name: ctx.body.name,
+          email: ctx.body.email,
+        };
+
+        if (user != null) {
+          await sendEmail({
+            to: user.email,
+            subject: "Welcome to Notably!",
+            template: WelcomeEmail({
+              username: user.name,
+              homeUrl: `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}`,
+            }),
+          });
+        }
+      }
+    }),
   },
 
   databaseHooks: {
@@ -55,7 +78,7 @@ export const auth = betterAuth({
   session: {
     cookieCache: {
       enabled: true,
-      maxAge: 60, // 1 minute cache
+      maxAge: 60 * 5, // 5 minute cache
     },
   },
 

@@ -15,6 +15,7 @@ import {
 import NoteForm from "@/components/forms/(notes)/note-form";
 import DialogTriggerButton, {
   TriggerAppearance,
+  TriggerProps,
 } from "@/components/utils/dialog-trigger-button";
 import { createNote } from "@/server/notes";
 import { PlusIcon } from "lucide-react";
@@ -30,9 +31,9 @@ export default function CreateNoteDialog({
   notebookId,
   isOpen,
   setIsOpen,
-  trigger,
   withTrigger = true,
-}: DialogProps & TriggerAppearance) {
+  ...trigger
+}: DialogProps & Partial<TriggerProps> & { withTrigger?: boolean }) {
   const [dialogState, setDialogState] = useState<boolean>(false);
 
   const onSubmit = async (data: z.infer<typeof NoteSchema>) => {
@@ -73,6 +74,7 @@ export default function CreateNoteDialog({
             processText="Creating..."
             className="group-hover/note-buttons:opacity-100 group-hover/notebook-buttons:opacity-100"
             classNameAsIocn="hover:text-cyan-500"
+            {...trigger}
           />
         </DialogTrigger>
       )}

@@ -95,17 +95,14 @@ export default function SidebarData({ data }: SidebarDataProps) {
             >
               <SidebarMenuItem key={notebook.id}>
                 <CollapsibleTrigger asChild>
-                  <SidebarMenuButton
-                    tooltip={notebook.title}
-                    onClick={() => {
-                      if (!isMobile) return;
-                      setOpenMobile(false);
-                    }}
-                    asChild
-                  >
+                  <SidebarMenuButton tooltip={notebook.title} asChild>
                     <div className="flex">
                       <Link
                         href={notebook.url}
+                        onClick={(e) => {
+                          if (!isMobile) return;
+                          setOpenMobile(false);
+                        }}
                         className="flex items-center gap-2 flex-1"
                       >
                         <FolderClosedIcon className="size-4" />

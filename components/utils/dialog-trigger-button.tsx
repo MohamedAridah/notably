@@ -33,7 +33,11 @@ interface TriggerAsIcon {
   classNameAsIocn?: string;
 }
 
-type TriggerProps = Appearance & TriggerStyles & Context & TriggerAsIcon;
+export type TriggerProps = Appearance &
+  TriggerStyles &
+  Context &
+  TriggerAsIcon &
+  React.ComponentProps<typeof Button>;
 
 const DialogTriggerButton = React.forwardRef<HTMLButtonElement, TriggerProps>(
   (
