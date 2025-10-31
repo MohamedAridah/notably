@@ -1,9 +1,10 @@
 import React from "react";
 import clsx from "clsx";
 import { cn } from "@/lib/utils";
-import { Loader2, LucideIcon } from "lucide-react";
+import { LucideIcon } from "lucide-react";
 import { Button, ButtonVariants } from "@/components/ui/button";
 import IconMenu from "@/components/utils/icon-menu";
+import LoadingSwap from "./loading-swap";
 
 type Appearance = {
   asLabel?: boolean;
@@ -80,11 +81,9 @@ const DialogTriggerButton = React.forwardRef<HTMLButtonElement, TriggerProps>(
           )}
           {...rest}
         >
-          {state ? (
-            <Loader2 className="size-4 animate-spin" />
-          ) : (
+          <LoadingSwap isLoading={state}>
             <Icon className="size-4" />
-          )}
+          </LoadingSwap>
         </Button>
       );
     }
@@ -103,17 +102,12 @@ const DialogTriggerButton = React.forwardRef<HTMLButtonElement, TriggerProps>(
         aria-label={state ? processText : idleText}
         {...rest}
       >
-        {state ? (
-          <>
-            {<Loader2 className="size-4 animate-spin" />}
-            {processText}
-          </>
-        ) : (
+        <LoadingSwap isLoading={state} loadingText={processText}>
           <>
             {<Icon className="size-4" />}
             {idleText}
           </>
-        )}
+        </LoadingSwap>
       </Button>
     );
   }

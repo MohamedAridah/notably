@@ -87,7 +87,7 @@ export default function SidebarData({ data }: SidebarDataProps) {
     <SidebarGroup>
       <SidebarGroupContent>
         <SidebarMenu>
-          {data.navMain.map((notebook) => (
+          {filteredData.map((notebook) => (
             <Collapsible
               className="group/collapsible"
               defaultOpen
@@ -103,7 +103,7 @@ export default function SidebarData({ data }: SidebarDataProps) {
                           if (!isMobile) return;
                           setOpenMobile(false);
                         }}
-                        className="flex items-center gap-2 flex-1"
+                        className="flex items-center gap-2 flex-1 hover:underline underline-offset-3"
                       >
                         <FolderClosedIcon className="size-4" />
                         <span className="inline-flex overflow-hidden text-ellipsis whitespace-nowrap w-[131px]">
@@ -144,7 +144,7 @@ export default function SidebarData({ data }: SidebarDataProps) {
                             <div className="flex items-center">
                               <Link
                                 href={note.url}
-                                className="flex gap-2 flex-1"
+                                className="flex gap-2 flex-1 hover:underline underline-offset-3"
                                 onClick={() => {
                                   if (!isMobile) return;
                                   setOpenMobile(false);

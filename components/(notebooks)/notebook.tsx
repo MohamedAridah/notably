@@ -22,18 +22,24 @@ export default function Notebook({
 }: {
   notebook: NotebookWithCount;
 }) {
+  const notebookURL = `/dashboard/notebook/${notebook.id}`;
   return (
     <Card className="shadow-xs hover:shadow-sm transition-shadow ease-in-out duration-150">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-2 group/notebook-buttons">
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1.5">
               <FavoriteButton
                 isFavorite={notebook.isFavorite}
                 id={notebook.id}
                 onToggle={handleToggleFavorite_Notebook}
               />
-              {notebook.name}
+              <Link
+                href={notebookURL}
+                className="hover:underline underline-offset-3"
+              >
+                {notebook.name}
+              </Link>
             </div>
             {!notebook.isDefault && (
               <EditNotebookDialog
@@ -52,7 +58,7 @@ export default function Notebook({
 
       <CardFooter className="ml-auto gap-2">
         <Link
-          href={"/dashboard/notebook/" + notebook.id}
+          href={notebookURL}
           className={buttonVariants({ variant: "outline", size: "sm" })}
         >
           <ExternalLinkIcon /> View

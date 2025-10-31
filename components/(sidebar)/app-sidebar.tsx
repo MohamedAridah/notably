@@ -17,6 +17,7 @@ import SidebarData from "./sidebar-data";
 import SearchIcon from "./search-icon";
 import { HomeIcon } from "lucide-react";
 import CreateNoteDialog from "../(notes)/create-note-button";
+import AddNoteIcon from "./add-note-icon";
 
 export async function AppSidebar() {
   const notebooks = await getCachedNotebooks();
@@ -54,14 +55,17 @@ export async function AppSidebar() {
             <SearchIcon />
           </SidebarMenuItem>
 
-          <div className="group-data-[collapsible=icon]:hidden block">
-            <Suspense fallback={<SidebarSkeleton length={1} />}>
-              <SearchForm />
-            </Suspense>
-          </div>
+          <Suspense fallback={<SidebarSkeleton length={1} />}>
+            <SearchForm className="group-data-[collapsible=icon]:hidden block" />
+          </Suspense>
 
           <SidebarMenuItem>
-            <CreateNoteDialog variant="secondary" size="sm"  className="w-full mt-1"/>
+            <CreateNoteDialog
+              variant="secondary"
+              size="sm"
+              className="w-full mt-1 group-data-[collapsible=icon]:hidden"
+            />
+            <AddNoteIcon />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
