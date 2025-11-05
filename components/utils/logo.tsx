@@ -12,7 +12,7 @@ export const Logo = ({
       viewBox="0 0 160 32"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={cn("text-foreground h-8 w-auto", className)}
+      className={cn("text-foreground h-8 w-auto select-none", className)}
     >
       <g>
         <circle cx="20" cy="16" r="12" fill="transparent" stroke="none" />

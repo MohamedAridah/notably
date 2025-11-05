@@ -5,30 +5,38 @@ import { type Editor } from "@tiptap/react";
 import { updateNote } from "@/server/notes";
 import { toast } from "sonner";
 import { Button } from "@/components/tiptap-ui-primitive/button";
-import { Loader, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
+import LoadingSwap from "@/components/utils/loading-swap";
 
 export interface SaveNoteButtonProps {
   noteId: string;
   editor: Editor;
+  isThereNewContent: boolean;
+  setIsThereNewContent: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const SaveNoteButton = ({ editor, noteId }: SaveNoteButtonProps) => {
+const SaveNoteButton = ({
+  editor,
+  noteId,
+  isThereNewContent,
+  setIsThereNewContent,
+  ...props
+}: SaveNoteButtonProps & React.ComponentProps<typeof Button>) => {
   const [isSaving, setIsSaving] = React.useState(false);
 
   const handleSaveNoteUpdates = async () => {
     try {
       setIsSaving(true);
-      const content = editor.getHTML();
+      const content = editor.getJSON();
       const { success, message } = await updateNote(noteId, { content });
       if (success) {
         toast.success(message);
+        setIsThereNewContent(false);
       } else {
         toast.error("Unable to save new updates!", {
           description: message,
         });
       }
-    } catch (error) {
-      toast.error((error as Error).message || "Failed to save note updates.");
     } finally {
       setIsSaving(false);
     }
@@ -36,23 +44,18 @@ const SaveNoteButton = ({ editor, noteId }: SaveNoteButtonProps) => {
 
   return (
     <Button
-      disabled={isSaving}
+      disabled={isSaving || !isThereNewContent}
       data-style="ghost"
       tooltip="Save note"
       className="hover:cursor-pointer"
-      data-disabled={isSaving}
+      data-disabled={isSaving || !isThereNewContent}
       aria-label={"save note"}
       onClick={handleSaveNoteUpdates}
+      {...props}
     >
-      {isSaving ? (
-        <>
-          <Loader className="animate-spin size-4" /> Saving...
-        </>
-      ) : (
-        <>
-          <Plus className="size-4" /> Save
-        </>
-      )}
+      <LoadingSwap isLoading={isSaving} loadingText="Saving...">
+        <Plus className="size-4" /> Save
+      </LoadingSwap>
     </Button>
   );
 };

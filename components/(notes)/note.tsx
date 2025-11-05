@@ -15,18 +15,23 @@ import FavoriteButton from "../utils/favorite-button";
 import { handleToggleFavorite_Note } from "@/lib/utils";
 
 export default function NoteCard({ note }: { note: Note }) {
+  const noteURL = `/dashboard/notebook/${note.notebookId}/note/${note.id}`;
   return (
     <Card className="shadow-xs hover:shadow-sm transition-shadow ease-in-out duration-150">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 group/note-buttons">
-          <div className="div flex items-center gap-1">
+          <div className="flex items-center gap-1.5">
             <FavoriteButton
               isFavorite={note.isFavorite}
               id={note.id}
               onToggle={handleToggleFavorite_Note}
             />
+
+            <Link href={noteURL} className="hover:underline underline-offset-3">
+              {note.title}
+            </Link>
           </div>
-          {note.title}
+
           <EditNoteDialog
             note={note}
             noteId={note.id}
@@ -37,7 +42,7 @@ export default function NoteCard({ note }: { note: Note }) {
       </CardHeader>
       <CardFooter className="ml-auto gap-2">
         <Link
-          href={`/dashboard/notebook/${note.notebookId}/note/${note.id}`}
+          href={noteURL}
           className={buttonVariants({ variant: "outline", size: "sm" })}
         >
           <ExternalLinkIcon /> View

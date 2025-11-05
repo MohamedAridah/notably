@@ -62,32 +62,36 @@ export const getNoteById = async (id: string) => {
 //   }
 // };
 
-export const updateNote = async (id: string, values: Partial<Note>) => {
+export type UpdateNoteValuesType ={ title?: Note["title"]; content?: InputJsonValue }
+
+export const updateNote = async (
+  id: string,
+  values: UpdateNoteValuesType
+) => {
   const { session } = await isUserAuthed();
   const userId = session?.userId!;
 
   try {
-    const note = await prisma.note.update({
+    await prisma.note.update({
       where: {
         id,
         userId,
       },
-      data: {
-        content: values.content as InputJsonValue,
-        title: values.title,
+      data: { ...values },
+      select: {
+        id: true,
       },
     });
     revalidatePath("/dashboard");
     revalidateTag(`notebooks-user-${userId}`);
     return {
       success: true,
-      note,
-      message: "Note updated successfully",
+      message: "Note saved successfully",
     };
   } catch (error) {
     return {
       success: false,
-      message: errorMessage(error) || "Failed to get note",
+      message: errorMessage(error) || "Failed to save note",
     };
   }
 };

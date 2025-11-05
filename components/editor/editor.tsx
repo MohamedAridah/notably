@@ -28,7 +28,13 @@ import { useCursorVisibility } from "@/hooks/tiptap-editor-hooks/use-cursor-visi
 import "@/components/editor/node-styles/paragraph-node.scss";
 import { MainToolbarContent } from "./buttons-ui/editor-toolbar";
 import dynamic from "next/dynamic";
+import clsx from "clsx";
+import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
 import { toast } from "sonner";
+import LoadingSwap from "../utils/loading-swap";
+import { saveNote } from "@/helpers/save-note-client";
+import { useRouter } from "next/navigation";
+
 const MobileToolbarContent = dynamic(
   () =>
     import("./buttons-ui/editor-toolbar").then(
@@ -48,11 +54,25 @@ export default function RichTextEditor({
   content,
   noteId,
 }: RichTextEditorProps) {
+  const router = useRouter();
   const isMobile = useIsMobile();
   const { height } = useWindowSize();
   const [mobileView, setMobileView] = React.useState<MobileViewsType>("main");
   const toolbarRef = React.useRef<HTMLDivElement>(null);
   const editorRef = React.useRef<HTMLDivElement>(null);
+
+  const [isThereNewContent, setIsThereNewContent] = React.useState(false);
+
+  const debouncedSave = useDebouncedCallback(async (id, content) => {
+    const res = await saveNote(id, content);
+    if (res.success) {
+      toast.success(res.message);
+      router.refresh();
+    } else {
+      toast.error(res.message);
+    }
+    setIsThereNewContent(false);
+  }, 1000);
 
   const editor = useEditor({
     autofocus: true,
@@ -91,8 +111,25 @@ export default function RichTextEditor({
       //   onError: (error) => console.error("Upload failed:", error),
       // }),
     ],
+
+    onUpdate: async ({ editor }) => {
+      const content = editor.getJSON();
+      setIsThereNewContent(true);
+      debouncedSave(noteId, content);
+    },
     content,
   });
+
+  const handleBeforeClose = (e: BeforeUnloadEvent) => {
+    if (!isThereNewContent) return;
+    toast.warning("Be careful there is Unsaved content.");
+    e.preventDefault();
+  };
+
+  React.useEffect(() => {
+    window.addEventListener("beforeunload", handleBeforeClose);
+    return () => window.removeEventListener("beforeunload", handleBeforeClose);
+  }, [isThereNewContent]);
 
   const rect = useCursorVisibility({
     editor,
@@ -104,20 +141,6 @@ export default function RichTextEditor({
       setMobileView("main");
     }
   }, [isMobile, mobileView]);
-
-  const hanldleBrowserClose = (e: BeforeUnloadEvent) => {
-    if (JSON.stringify(content) === JSON.stringify(editor?.getHTML())) {
-      return;
-    }
-    toast.warning("Save your work or it will be gone!");
-    e.preventDefault();
-  };
-
-  React.useEffect(() => {
-    window.addEventListener("beforeunload", hanldleBrowserClose);
-
-    () => window.removeEventListener("beforeunload", hanldleBrowserClose);
-  }, [content, editor?.getHTML()]);
 
   return (
     <>
@@ -139,6 +162,8 @@ export default function RichTextEditor({
               isMobile={isMobile}
               noteId={noteId}
               editor={editor as Editor}
+              isThereNewContent={isThereNewContent}
+              setIsThereNewContent={setIsThereNewContent}
             />
           ) : (
             <MobileToolbarContent
@@ -147,6 +172,8 @@ export default function RichTextEditor({
             />
           )}
         </Toolbar>
+
+        <EditorState state={isThereNewContent} />
 
         <EditorContent
           ref={editorRef}
@@ -158,3 +185,14 @@ export default function RichTextEditor({
     </>
   );
 }
+
+const EditorState = ({ state }: { state: boolean }) => {
+  return (
+    <div className="flex items-center gap-1 text-xs font-medium text-muted-foreground mt-4">
+      <LoadingSwap isLoading={state} loadingText="Saving your changes...">
+        <span className="size-2.5 rounded-full animate-caret-blink bg-green-400" />
+        You are uptodate
+      </LoadingSwap>
+    </div>
+  );
+};

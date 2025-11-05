@@ -35,6 +35,8 @@ export const MainToolbarContent = ({
   isMobile,
   editor,
   noteId,
+  isThereNewContent,
+  setIsThereNewContent,
 }: MainToolbarContentProps) => {
   return (
     <section className="w-full px-1 flex items-center gap-4">
@@ -83,7 +85,15 @@ export const MainToolbarContent = ({
       </div>
       <div className="flex items-center gap-1 pe-3 sm:justify-self-end sm:ml-auto w-[90px]">
         <Separator />
-        <SaveNoteButton editor={editor} noteId={noteId} />
+
+        <SaveNoteButton
+          editor={editor}
+          noteId={noteId}
+          isThereNewContent={isThereNewContent}
+          setIsThereNewContent={setIsThereNewContent}
+          disabled={true}
+          tooltip="Autosave is enabled"
+        />
       </div>
     </section>
   );
