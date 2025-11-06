@@ -82,7 +82,7 @@ export default async function NotePage({ params }: { params: Params }) {
           </Suspense>
         </div>
 
-        <section className="my-10">
+        <section className="mt-10 mb-5">
           <RichTextEditorClient
             content={note.content as JSONContent[]}
             noteId={noteId}

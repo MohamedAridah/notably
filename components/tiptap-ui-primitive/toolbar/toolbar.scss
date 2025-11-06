@@ -3,6 +3,7 @@
   --tt-safe-area-bottom: env(safe-area-inset-bottom, 0px);
   --tt-toolbar-bg-color: var(--white);
   --tt-toolbar-border-color: var(--tt-gray-light-a-100);
+  --editor-status: 40px;
 }
 
 .dark {
@@ -36,7 +37,7 @@
 
   &[data-variant="fixed"] {
     position: sticky;
-    top: 0;
+    top: var(--editor-status);
     z-index: 10;
     width: 100%;
     min-height: var(--tt-toolbar-height);

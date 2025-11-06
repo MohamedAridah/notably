@@ -28,12 +28,11 @@ import { useCursorVisibility } from "@/hooks/tiptap-editor-hooks/use-cursor-visi
 import "@/components/editor/node-styles/paragraph-node.scss";
 import { MainToolbarContent } from "./buttons-ui/editor-toolbar";
 import dynamic from "next/dynamic";
-import clsx from "clsx";
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
 import { toast } from "sonner";
-import LoadingSwap from "../utils/loading-swap";
 import { saveNote } from "@/helpers/save-note-client";
 import { useRouter } from "next/navigation";
+import EditorState from "./editor-state";
 
 const MobileToolbarContent = dynamic(
   () =>
@@ -66,13 +65,14 @@ export default function RichTextEditor({
   const debouncedSave = useDebouncedCallback(async (id, content) => {
     const res = await saveNote(id, content);
     if (res.success) {
+      toast.dismiss();
       toast.success(res.message);
       router.refresh();
     } else {
       toast.error(res.message);
     }
     setIsThereNewContent(false);
-  }, 1000);
+  }, 3500);
 
   const editor = useEditor({
     autofocus: true,
@@ -143,56 +143,43 @@ export default function RichTextEditor({
   }, [isMobile, mobileView]);
 
   return (
-    <>
-      <EditorContext.Provider value={{ editor }}>
-        <Toolbar
-          ref={toolbarRef}
-          style={{
-            ...(isMobile
-              ? {
-                  bottom: `calc(100% - ${height - rect.y}px)`,
-                }
-              : {}),
-          }}
-        >
-          {mobileView === "main" ? (
-            <MainToolbarContent
-              onHighlighterClick={() => setMobileView("highlighter")}
-              onLinkClick={() => setMobileView("link")}
-              isMobile={isMobile}
-              noteId={noteId}
-              editor={editor as Editor}
-              isThereNewContent={isThereNewContent}
-              setIsThereNewContent={setIsThereNewContent}
-            />
-          ) : (
-            <MobileToolbarContent
-              type={mobileView === "highlighter" ? "highlighter" : "link"}
-              onBack={() => setMobileView("main")}
-            />
-          )}
-        </Toolbar>
+    <EditorContext.Provider value={{ editor }}>
+      <EditorState state={isThereNewContent} />
 
-        <EditorState state={isThereNewContent} />
+      <Toolbar
+        ref={toolbarRef}
+        style={{
+          ...(isMobile
+            ? {
+                bottom: `calc(100% - ${height - rect.y}px)`,
+              }
+            : {}),
+        }}
+      >
+        {mobileView === "main" ? (
+          <MainToolbarContent
+            onHighlighterClick={() => setMobileView("highlighter")}
+            onLinkClick={() => setMobileView("link")}
+            isMobile={isMobile}
+            noteId={noteId}
+            editor={editor as Editor}
+            isThereNewContent={isThereNewContent}
+            setIsThereNewContent={setIsThereNewContent}
+          />
+        ) : (
+          <MobileToolbarContent
+            type={mobileView === "highlighter" ? "highlighter" : "link"}
+            onBack={() => setMobileView("main")}
+          />
+        )}
+      </Toolbar>
 
-        <EditorContent
-          ref={editorRef}
-          editor={editor}
-          role="presentation"
-          className="max-w-[900px] mx-auto flex flex-col flex-1 pt-[1rem] px-[1.5rem] pb-[5vh] sm:pt-[4rem] sm:px-[3rem] sm:pb-[14vh]"
-        />
-      </EditorContext.Provider>
-    </>
+      <EditorContent
+        ref={editorRef}
+        editor={editor}
+        role="presentation"
+        className="max-w-[900px] mx-auto flex flex-col flex-1 pt-[1rem] sm:pt-[4rem] pb-[7vh] sm:pb-[12vh] sm:px-[3rem]"
+      />
+    </EditorContext.Provider>
   );
 }
-
-const EditorState = ({ state }: { state: boolean }) => {
-  return (
-    <div className="flex items-center gap-1 text-xs font-medium text-muted-foreground mt-4">
-      <LoadingSwap isLoading={state} loadingText="Saving your changes...">
-        <span className="size-2.5 rounded-full animate-caret-blink bg-green-400" />
-        You are uptodate
-      </LoadingSwap>
-    </div>
-  );
-};

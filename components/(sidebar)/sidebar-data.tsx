@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useQueryState } from "nuqs";
@@ -60,6 +61,12 @@ type SidebarDataProps = {
 
 export default function SidebarData({ data }: SidebarDataProps) {
   const { isMobile, setOpenMobile } = useSidebar();
+  const [active, setActive] = useState<{
+    [key: string]: number | boolean | string;
+  }>({
+    main: false,
+    sub: "",
+  });
 
   const [search] = useQueryState("search", { defaultValue: "" });
 
@@ -83,11 +90,17 @@ export default function SidebarData({ data }: SidebarDataProps) {
     );
   }
 
+  const handleActiveMenuButton = (cb: {
+    [key: string]: number | boolean | string;
+  }) => {
+    setActive((prev) => ({ ...prev, ...cb }));
+  };
+
   return (
     <SidebarGroup>
       <SidebarGroupContent>
         <SidebarMenu>
-          {filteredData.map((notebook) => (
+          {filteredData.map((notebook, notebookIndex) => (
             <Collapsible
               className="group/collapsible"
               defaultOpen
@@ -95,11 +108,16 @@ export default function SidebarData({ data }: SidebarDataProps) {
             >
               <SidebarMenuItem key={notebook.id}>
                 <CollapsibleTrigger asChild>
-                  <SidebarMenuButton tooltip={notebook.title} asChild>
+                  <SidebarMenuButton
+                    tooltip={notebook.title}
+                    isActive={active.main === notebookIndex || false}
+                    asChild
+                  >
                     <div className="flex">
                       <Link
                         href={notebook.url}
                         onClick={(e) => {
+                          handleActiveMenuButton({ main: notebookIndex });
                           if (!isMobile) return;
                           setOpenMobile(false);
                         }}
@@ -138,14 +156,24 @@ export default function SidebarData({ data }: SidebarDataProps) {
                 {notebook.items?.length ? (
                   <CollapsibleContent>
                     <SidebarMenuSub className="pr-0 mr-0">
-                      {notebook.items.map((note) => (
+                      {notebook.items.map((note, noteIndex) => (
                         <SidebarMenuSubItem key={note.id}>
-                          <SidebarMenuSubButton asChild>
+                          <SidebarMenuSubButton
+                            isActive={
+                              active.sub === `${notebookIndex}-${noteIndex}` ||
+                              false
+                            }
+                            asChild
+                          >
                             <div className="flex items-center">
                               <Link
                                 href={note.url}
                                 className="flex gap-2 flex-1 hover:underline underline-offset-3"
                                 onClick={() => {
+                                  handleActiveMenuButton({
+                                    main: notebookIndex,
+                                    sub: `${notebookIndex}-${noteIndex}`,
+                                  });
                                   if (!isMobile) return;
                                   setOpenMobile(false);
                                 }}
