@@ -26,7 +26,7 @@ export default function NoteForm({ onSubmit, note }: FormProps) {
   const form = useForm<z.infer<typeof NoteSchema>>({
     resolver: zodResolver(NoteSchema),
     defaultValues: {
-      title: note?.title || "",
+      title: note?.title || "Untitled Note",
     },
   });
   const isLoading = form.formState.isSubmitting;

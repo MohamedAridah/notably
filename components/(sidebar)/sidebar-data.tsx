@@ -124,7 +124,10 @@ export default function SidebarData({ data }: SidebarDataProps) {
                         className="flex items-center gap-2 flex-1 hover:underline underline-offset-3"
                       >
                         <FolderClosedIcon className="size-4" />
-                        <span className="inline-flex overflow-hidden text-ellipsis whitespace-nowrap w-[131px]">
+                        <span
+                          className="inline-block overflow-hidden text-ellipsis whitespace-nowrap w-[131px]"
+                          title={notebook.title}
+                        >
                           {notebook.title}
                         </span>
                       </Link>
@@ -168,7 +171,7 @@ export default function SidebarData({ data }: SidebarDataProps) {
                             <div className="flex items-center">
                               <Link
                                 href={note.url}
-                                className="flex gap-2 flex-1 hover:underline underline-offset-3"
+                                className="flex items-center gap-2 flex-1 hover:underline underline-offset-3"
                                 onClick={() => {
                                   handleActiveMenuButton({
                                     main: notebookIndex,
@@ -179,7 +182,12 @@ export default function SidebarData({ data }: SidebarDataProps) {
                                 }}
                               >
                                 <NotebookTextIcon className="size-4" />
-                                {note.title}
+                                <span
+                                  className="inline-block overflow-hidden text-ellipsis whitespace-nowrap w-[143px]"
+                                  title={note.title}
+                                >
+                                  {note.title}
+                                </span>
                               </Link>
                               <NoteOptions
                                 note={{

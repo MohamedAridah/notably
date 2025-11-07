@@ -32,7 +32,7 @@ export async function AppSidebar() {
         isDefault: notebook.isDefault,
         items: notebook.notes.map((note) => ({
           id: note.id,
-          title: note.title,
+          title: note.title || "Untitled Note",
           notebook_url: `/dashboard/notebook/${notebook.id}`,
           url: `/dashboard/notebook/${notebook.id}/note/${note.id}`,
           isFavorite: note.isFavorite,

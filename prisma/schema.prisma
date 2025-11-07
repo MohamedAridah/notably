@@ -86,8 +86,8 @@ model Notebook {
 
 model Note {
   id         String    @id @default(uuid())
-  title      String
-  content    Json
+  title      String?
+  content    Json?
   isFavorite Boolean   @default(false)
   notebookId String?
   notebook   Notebook? @relation(fields: [notebookId], references: [id], onDelete: Cascade)

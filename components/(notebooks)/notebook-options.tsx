@@ -17,7 +17,6 @@ import CreateNoteDialog from "@/components/(notes)/create-note-button";
 import {
   MoreHorizontal,
   ExternalLinkIcon,
-  PlusIcon,
   PenSquare,
   Trash2,
 } from "lucide-react";
@@ -34,7 +33,6 @@ export default function NotebookOptions({
   alignStart = false,
   ...props
 }: NotebookOptionsProps) {
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
@@ -57,11 +55,8 @@ export default function NotebookOptions({
             </Link>
           </DropdownMenuItem>
 
-          <DropdownMenuItem onSelect={() => setIsCreateDialogOpen(true)}>
-            <IconMenu
-              text="Create Note"
-              icon={<PlusIcon className="size-4" />}
-            />
+          <DropdownMenuItem>
+            <CreateNoteDialog notebookId={notebook.id} asLabel />
           </DropdownMenuItem>
 
           <DropdownMenuItem>
@@ -89,13 +84,6 @@ export default function NotebookOptions({
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-
-      <CreateNoteDialog
-        notebookId={notebook.id}
-        withTrigger={false}
-        isOpen={isCreateDialogOpen}
-        setIsOpen={setIsCreateDialogOpen}
-      />
 
       <EditNotebookDialog
         notebookId={notebook.id}

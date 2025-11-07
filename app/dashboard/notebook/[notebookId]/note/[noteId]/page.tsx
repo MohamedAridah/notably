@@ -19,7 +19,7 @@ export async function generateMetadata({
   const { note } = await getNoteById(noteId);
 
   return {
-    title: note?.title,
+    title: note?.title || "Untitled Note",
   };
 }
 
@@ -47,7 +47,9 @@ export default async function NotePage({ params }: { params: Params }) {
       <>
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2 group/note-buttons">
-            <h1 className="text-xl font-semibold">{note?.title}</h1>
+            <h1 className="text-xl font-semibold">
+              {note?.title || "Untitled Note"}
+            </h1>
             <div className="flex items-center gap-1">
               <EditNoteDialog
                 note={note}
@@ -84,7 +86,7 @@ export default async function NotePage({ params }: { params: Params }) {
 
         <section className="mt-10 mb-5">
           <RichTextEditorClient
-            content={note.content as JSONContent[]}
+            content={note.content ?? ({} as JSONContent[])}
             noteId={noteId}
           />
         </section>
@@ -102,7 +104,7 @@ export default async function NotePage({ params }: { params: Params }) {
             href: `/dashboard/notebook/${note?.notebookId}`,
           },
           {
-            label: note?.title || "Note",
+            label: note?.title || "Untitled Note",
             href: `/dashboard/notebook/${note?.notebookId}/note/${note?.id}`,
           },
         ]}

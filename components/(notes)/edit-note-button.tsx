@@ -84,7 +84,7 @@ export default function EditNoteDialog({
       )}
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Update Note</DialogTitle>
+          <DialogTitle>Update Note Title</DialogTitle>
           <DialogDescription>
             Edit the note below and save your changes.
           </DialogDescription>

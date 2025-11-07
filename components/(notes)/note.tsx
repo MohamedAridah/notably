@@ -28,7 +28,7 @@ export default function NoteCard({ note }: { note: Note }) {
             />
 
             <Link href={noteURL} className="hover:underline underline-offset-3">
-              {note.title}
+              {note.title || "Untitled Note"}
             </Link>
           </div>
 
