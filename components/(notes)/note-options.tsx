@@ -24,7 +24,7 @@ import { handleToggleFavorite_Note } from "@/lib/utils";
 interface NoteOptionsProps {
   noteId: string;
   notebookId: string;
-  noteTitle?: string;
+  noteTitle?: string | null;
   notebook_url: string;
   note_url: string;
   isFavorite?: boolean;

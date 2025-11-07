@@ -31,43 +31,73 @@ export const getNoteById = async (id: string) => {
   }
 };
 
-// export const createNote = async (
-//   title: string,
-//   content: InputJsonValue,
-//   notebookId: string | null
-// ) => {
-//   const session = await isUserAuthed();
-//   const userId = session.userId as string;
+type CreateNoteProps = {
+  title?: Note["title"];
+  content?: InputJsonValue;
+  notebookId?: string;
+};
 
-//   try {
-//     await prisma.note.create({
-//       data: {
-//         title,
-//         content,
-//         notebookId,
-//         userId,
-//       },
-//     });
+export async function createNote({
+  title,
+  content,
+  notebookId,
+}: CreateNoteProps) {
+  const { session } = await isUserAuthed();
+  const userId = session?.userId!;
+  let finalNotebookId = notebookId;
+  try {
+    if (!notebookId) {
+      const quickNotes = await prisma.notebook.upsert({
+        where: {
+          name_userId: {
+            name: "Quick Notes",
+            userId,
+          },
+        },
+        update: {},
+        create: {
+          name: "Quick Notes",
+          userId,
+          isDefault: true,
+        },
+      });
+      finalNotebookId = quickNotes.id;
+    }
+    const note = await prisma.note.create({
+      data: {
+        title,
+        content,
+        notebookId: finalNotebookId,
+        userId,
+      },
+      select: {
+        id: true,
+        notebookId: true,
+      },
+    });
+    revalidatePath("/dashboard");
+    revalidateTag(`notebooks-user-${userId}`);
+    return {
+      success: true,
+      message: "Note created successfully",
+      noteId: note.id,
+      notebookId:note.notebookId
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+      message: errorMessage(error) || "Failed to create note",
+    };
+  }
+}
 
-//     revalidatePath("/dashboard");
-//     revalidateTag(`notebooks-user-${userId}`);
-//     return { success: true, message: "Note created successfully" };
-//   } catch (error) {
-//     console.log(error);
+export type UpdateNoteValuesType = {
+  title?: Note["title"];
+  content?: InputJsonValue;
+};
 
-//     return {
-//       success: false,
-//       message: errorMessage(error) || "Failed to create note",
-//     };
-//   }
-// };
-
-export type UpdateNoteValuesType ={ title?: Note["title"]; content?: InputJsonValue }
-
-export const updateNote = async (
-  id: string,
-  values: UpdateNoteValuesType
-) => {
+export const updateNote = async (id: string, values: UpdateNoteValuesType) => {
   const { session } = await isUserAuthed();
   const userId = session?.userId!;
 
@@ -150,55 +180,3 @@ export const setNoteFavorite = async (id: string, isFavorite: boolean) => {
     };
   }
 };
-
-export async function createNote(
-  title: string,
-  content: InputJsonValue,
-  notebookId?: string
-) {
-  const { session } = await isUserAuthed();
-  const userId = session?.userId!;
-
-  let finalNotebookId = notebookId;
-
-  try {
-    if (!notebookId) {
-      const quickNotes = await prisma.notebook.upsert({
-        where: {
-          name_userId: {
-            name: "Quick Notes",
-            userId,
-          },
-        },
-        update: {},
-        create: {
-          name: "Quick Notes",
-          userId,
-          isDefault: true,
-        },
-      });
-
-      finalNotebookId = quickNotes.id;
-    }
-
-    await prisma.note.create({
-      data: {
-        title,
-        content,
-        notebookId: finalNotebookId,
-        userId,
-      },
-    });
-
-    revalidatePath("/dashboard");
-    revalidateTag(`notebooks-user-${userId}`);
-    return { success: true, message: "Note created successfully" };
-  } catch (error) {
-    console.log(error);
-
-    return {
-      success: false,
-      message: errorMessage(error) || "Failed to create note",
-    };
-  }
-}
