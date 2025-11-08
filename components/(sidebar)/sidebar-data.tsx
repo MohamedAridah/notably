@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useQueryState } from "nuqs";
@@ -60,6 +60,8 @@ type SidebarDataProps = {
 };
 
 export default function SidebarData({ data }: SidebarDataProps) {
+  const [search] = useQueryState("search", { defaultValue: "" });
+
   const { isMobile, setOpenMobile } = useSidebar();
   const [active, setActive] = useState<{
     [key: string]: number | boolean | string;
@@ -68,19 +70,16 @@ export default function SidebarData({ data }: SidebarDataProps) {
     sub: "",
   });
 
-  const [search] = useQueryState("search", { defaultValue: "" });
-
-  const filteredData = data.navMain.filter((item) => {
-    const notebookMatches = item.title
-      .toLowerCase()
-      .includes(search.toLowerCase());
-
-    const noteMatches = item.items.some((note) =>
-      note.title.toLowerCase().includes(search.toLowerCase())
-    );
-
-    return notebookMatches || noteMatches;
-  });
+  const filteredData = useMemo(() => {
+    const s = search.toLowerCase();
+    return data.navMain.filter((item) => {
+      const notebookMatches = item.title.toLowerCase().includes(s);
+      const noteMatches = item.items.some((note) =>
+        note.title.toLowerCase().includes(s)
+      );
+      return notebookMatches || noteMatches;
+    });
+  }, [data.navMain, search]);
 
   if (filteredData.length === 0 && search) {
     return (

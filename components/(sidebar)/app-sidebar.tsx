@@ -45,7 +45,11 @@ export async function AppSidebar() {
       <SidebarHeader>
         <SidebarMenu className="gap-1.5">
           <SidebarMenuItem className="overflow-x-hidden group-data-[collapsible=icon]:-ml-1">
-            <Link href="/" aria-label="notably logo. click to go to homepage.">
+            <Link
+              href="/"
+              className="w-fit block"
+              aria-label="notably logo. click to go to homepage."
+            >
               <span className="sr-only">Go to Home Page</span>
               <Logo />
             </Link>
