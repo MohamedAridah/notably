@@ -70,10 +70,10 @@ export default function SessionCard({
 
             <div>
               <p className="text-sm text-muted-foreground">
-                Created: {formatDate(session.createdAt)}
+                Created: {formatDate({ date: session.createdAt })}
               </p>
               <p className="text-sm text-muted-foreground">
-                Expires: {formatDate(session.expiresAt)}
+                Expires: {formatDate({ date: session.expiresAt })}
               </p>
             </div>
           </div>

@@ -11,9 +11,29 @@ export const getBrowserInfo = (userAgent: IResult | null) => {
   return `${userAgent.browser.name}, ${userAgent.os.name}`;
 };
 
-export const formatDate = (date: Date) => {
-  return new Intl.DateTimeFormat(undefined, {
-    dateStyle: "medium",
-    timeStyle: "short",
+const DEFAULT_DATE_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
+  weekday: "short",
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+  hour: "numeric",
+  minute: "2-digit",
+  hour12: true,
+};
+
+interface FormatDateParams {
+  date: Date;
+  local?: string;
+  options?: Intl.DateTimeFormatOptions;
+}
+
+export const formatDate = ({
+  date,
+  local = "en-US",
+  options,
+}: FormatDateParams) => {
+  return new Intl.DateTimeFormat(local, {
+    ...DEFAULT_DATE_FORMAT_OPTIONS,
+    ...options,
   }).format(new Date(date));
 };

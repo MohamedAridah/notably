@@ -2,12 +2,14 @@ import { Metadata } from "next";
 import { getCachedNotebook } from "@/server/notebooks";
 import CreateNoteDialog from "@/components/(notes)/create-note-button";
 import BreadCrumbUI from "@/components/utils/breadcrumb";
-import { NotebookText, ShieldAlert } from "lucide-react";
+import { Loader2, NotebookText, ShieldAlert } from "lucide-react";
 import Message from "@/components/utils/message";
 import { Badge } from "@/components/ui/badge";
 import EditNotebookDialog from "@/components/(notebooks)/edit-notebook-button";
 import DeleteNotebookDialog from "@/components/(notebooks)/delete-notebook-button";
 import NotebookNotes from "./_components/notebook-notes";
+import DocumentDetails from "../../_components/document-details";
+import { Suspense } from "react";
 
 export async function generateMetadata({
   params,
@@ -79,16 +81,17 @@ export default async function NotebookPage({ params }: { params: Params }) {
 
         <CreateNoteDialog notebookId={notebookId} />
       </div>
-
-      <div className="flex flex-col gap-2 mt-2">
-        <p className="text-sm">
-          Created at: <span>{new Date(notebook.createdAt).toDateString()}</span>
-        </p>
-        <p className="text-sm">
-          Last updated at:{" "}
-          <span>{new Date(notebook.updatedAt).toDateString()}</span>
-        </p>
-      </div>
+      
+      <Suspense
+        fallback={
+          <div className="flex items-center gap-2">
+            <Loader2 className="text-center size-5 mb-2 animate-spin" />
+            <p>Loading notebook details...</p>
+          </div>
+        }
+      >
+        <DocumentDetails document={notebook} />
+      </Suspense>
 
       <section className="my-10">
         {notebook.notes.length === 0 ? (

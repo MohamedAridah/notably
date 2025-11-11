@@ -74,7 +74,7 @@ export async function AppSidebar() {
         </SidebarMenu>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="overflow-x-hidden">
         <Suspense fallback={<SidebarSkeleton length={5} showIcon />}>
           <SidebarData data={data} />
         </Suspense>

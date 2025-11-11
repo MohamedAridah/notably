@@ -8,7 +8,7 @@ import { type JSONContent } from "@tiptap/react";
 import DeleteNoteDialog from "@/components/(notes)/delete-note-button";
 import EditNoteDialog from "@/components/(notes)/edit-note-button";
 import { Metadata } from "next";
-import NoteDetails from "./note-details";
+import DocumentDetails from "@/app/dashboard/_components/document-details";
 
 export async function generateMetadata({
   params,
@@ -71,18 +71,16 @@ export default async function NotePage({ params }: { params: Params }) {
           </div>
         </div>
 
-        <div className="flex flex-col gap-2">
-          <Suspense
-            fallback={
-              <div className="flex items-center gap-2">
-                <Loader2 className="text-center size-5 mb-2 animate-spin" />
-                <p>Loading note details...</p>
-              </div>
-            }
-          >
-            <NoteDetails note={note} />
-          </Suspense>
-        </div>
+        <Suspense
+          fallback={
+            <div className="flex items-center gap-2">
+              <Loader2 className="text-center size-5 mb-2 animate-spin" />
+              <p>Loading note details...</p>
+            </div>
+          }
+        >
+          <DocumentDetails document={note} />
+        </Suspense>
 
         <section className="mt-10 mb-5">
           <RichTextEditorClient

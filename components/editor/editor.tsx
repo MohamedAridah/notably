@@ -49,6 +49,8 @@ interface RichTextEditorProps {
 
 type MobileViewsType = "main" | "highlighter" | "link";
 
+const DEBOUNCE_TIME = 2750;
+
 export default function RichTextEditor({
   content,
   noteId,
@@ -72,7 +74,7 @@ export default function RichTextEditor({
       toast.error(res.message);
     }
     setIsThereNewContent(false);
-  }, 3500);
+  }, DEBOUNCE_TIME);
 
   const editor = useEditor({
     autofocus: true,

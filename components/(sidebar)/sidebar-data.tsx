@@ -23,10 +23,10 @@ import {
 import {
   ChevronRight,
   FolderClosedIcon,
-  FolderIcon,
   InfoIcon,
   NotebookTextIcon,
 } from "lucide-react";
+import SidebarOptions from "./sidebar-options";
 
 const NoteOptions = dynamic(() => import("@/components/(notes)/note-options"), {
   ssr: false,
@@ -62,6 +62,9 @@ type SidebarDataProps = {
 export default function SidebarData({ data }: SidebarDataProps) {
   const [search] = useQueryState("search", { defaultValue: "" });
 
+  const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const { isMobile, setOpenMobile } = useSidebar();
   const [active, setActive] = useState<{
     [key: string]: number | boolean | string;
@@ -89,21 +92,40 @@ export default function SidebarData({ data }: SidebarDataProps) {
     );
   }
 
-  const handleActiveMenuButton = (cb: {
-    [key: string]: number | boolean | string;
-  }) => {
+  const handleActiveMenuButton = (
+    cb: Record<string, boolean | number | string>
+  ) => {
     setActive((prev) => ({ ...prev, ...cb }));
+  };
+
+  const toggleItem = (id: string, isOpen: boolean) => {
+    setOpenItems((prev) => ({ ...prev, [id]: isOpen }));
+  };
+
+  const handleFold_Unfold = (status: boolean) => {
+    setOpenItems(() =>
+      Object.fromEntries(filteredData.map((item) => [item.id, status]))
+    );
+    setIsExpanded((prev) => !prev);
   };
 
   return (
     <SidebarGroup>
+      {data.navMain.length && (
+        <SidebarOptions
+          isExpanded={isExpanded}
+          handler={() => handleFold_Unfold(!isExpanded)}
+        />
+      )}
       <SidebarGroupContent>
         <SidebarMenu>
           {filteredData.map((notebook, notebookIndex) => (
             <Collapsible
+              key={notebook.id}
               className="group/collapsible"
               defaultOpen
-              key={notebook.id}
+              open={Boolean(!openItems[notebook.id])}
+              onOpenChange={(isOpen) => toggleItem(notebook.id, !isOpen)}
             >
               <SidebarMenuItem key={notebook.id}>
                 <CollapsibleTrigger asChild>

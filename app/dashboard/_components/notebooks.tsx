@@ -1,23 +1,15 @@
 "use client";
 
-import { useCallback } from "react";
 import dynamic from "next/dynamic";
 import { useQueryState } from "nuqs";
-import clsx from "clsx";
 import { NotebookWithCount } from "@/components/(notebooks)/notebook";
-import { Button } from "@/components/ui/button";
+import TableSkeketon from "@/components/(skeletons)/table";
+import ViewController, { DEFAULT_VIEW } from "./view-controller";
 import GridView from "./notebooks-grid-view";
 const DetailsView = dynamic(() => import("./notebooks-details-view"), {
   ssr: false,
   loading: () => <TableSkeketon />,
 });
-import { Grid2X2Icon, Rows3Icon } from "lucide-react";
-import TableSkeketon from "@/components/(skeletons)/table";
-import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-} from "@/components/ui/tooltip";
 
 type NotebooksProps = {
   notebooks: {
@@ -27,51 +19,11 @@ type NotebooksProps = {
 };
 
 const Notebooks = ({ notebooks }: NotebooksProps) => {
-  const [view, setView] = useQueryState("view", { defaultValue: "grid" });
-
-  const isActive = useCallback(
-    (value: "grid" | "rows") =>
-      clsx("hover:text-blue-600", view === value && "text-blue-500"),
-    [view]
-  );
+  const [view] = useQueryState("view", { defaultValue: DEFAULT_VIEW });
 
   return (
     <>
-      <div className="flex justify-end items-center gap-0.5">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="Show as Grid view"
-              onClick={() => setView("grid")}
-              className={isActive("grid")}
-            >
-              <Grid2X2Icon className="size-5" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom">
-            <p>Grid view</p>
-          </TooltipContent>
-        </Tooltip>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="Show as Table view"
-              title="Show as Table view"
-              onClick={() => setView("rows")}
-              className={isActive("rows")}
-            >
-              <Rows3Icon className="size-5" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom">
-            <p>Table view</p>
-          </TooltipContent>
-        </Tooltip>
-      </div>
+      <ViewController />
       {view == "grid" && (
         <>
           {notebooks.notebook__favorites.length > 0 ? (
