@@ -81,7 +81,7 @@ export async function createNote({
       success: true,
       message: "Note created successfully",
       noteId: note.id,
-      notebookId:note.notebookId
+      notebookId: note.notebookId,
     };
   } catch (error) {
     console.log(error);
@@ -177,6 +177,29 @@ export const setNoteFavorite = async (id: string, isFavorite: boolean) => {
       message:
         errorMessage(error) ||
         `Failed to ${isFavorite ? "add" : "remove"} note from favorites`,
+    };
+  }
+};
+
+export const deleteEmptyNotes = async () => {
+  const { session, message } = await isUserAuthed();
+  if (!session) throw new Error(message);
+  const userId = session?.userId!;
+
+  try {
+    await prisma.$executeRaw`DELETE FROM "note" WHERE "content" IS NULL`;
+    revalidatePath("/dashboard");
+    revalidateTag(`notebooks-user-${userId}`);
+    return {
+      success: true,
+      message: "Empty notes deleted successfully",
+    };
+  } catch (error) {
+    console.log(error);
+
+    return {
+      success: false,
+      message: errorMessage(error) || "Failed to delete empty notes",
     };
   }
 };

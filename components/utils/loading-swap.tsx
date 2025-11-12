@@ -4,7 +4,7 @@ import { Loader2 } from "lucide-react";
 interface LoadingSwapProps {
   children?: React.ReactNode;
   isLoading: boolean;
-  loadingText?: string;
+  loadingText?: string | React.ReactElement;
   className?: string;
 }
 

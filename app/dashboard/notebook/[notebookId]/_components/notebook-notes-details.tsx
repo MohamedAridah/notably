@@ -39,7 +39,7 @@ const DetailsView = ({ notes }: { notes: Note[] }) => {
                 href={`/dashboard/notebook/${note.notebookId}/note/${note.id}`}
                 className="hover:underline"
               >
-                {note.title}
+                {note.title || "Untitled Note"}
               </Link>
             </TableCell>
             <TableCell>{new Date(note.createdAt).toDateString()}</TableCell>

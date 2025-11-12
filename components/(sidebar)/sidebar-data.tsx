@@ -27,6 +27,8 @@ import {
   NotebookTextIcon,
 } from "lucide-react";
 import SidebarOptions from "./sidebar-options";
+import DeleteEmptyNotes from "./delete-empty-notes-button";
+import ToggleCollapseButton from "./toggle-collapse-button";
 
 const NoteOptions = dynamic(() => import("@/components/(notes)/note-options"), {
   ssr: false,
@@ -112,10 +114,13 @@ export default function SidebarData({ data }: SidebarDataProps) {
   return (
     <SidebarGroup>
       {data.navMain.length && (
-        <SidebarOptions
-          isExpanded={isExpanded}
-          handler={() => handleFold_Unfold(!isExpanded)}
-        />
+        <SidebarOptions>
+          <DeleteEmptyNotes />
+          <ToggleCollapseButton
+            isExpanded={isExpanded}
+            handler={() => handleFold_Unfold(!isExpanded)}
+          />
+        </SidebarOptions>
       )}
       <SidebarGroupContent>
         <SidebarMenu>

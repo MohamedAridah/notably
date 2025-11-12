@@ -63,6 +63,7 @@ export default function RichTextEditor({
   const editorRef = React.useRef<HTMLDivElement>(null);
 
   const [isThereNewContent, setIsThereNewContent] = React.useState(false);
+  const [contentText, setContentText] = React.useState("");
 
   const debouncedSave = useDebouncedCallback(async (id, content) => {
     const res = await saveNote(id, content);
@@ -113,12 +114,15 @@ export default function RichTextEditor({
       //   onError: (error) => console.error("Upload failed:", error),
       // }),
     ],
-
+    onCreate: ({ editor }) => setContentText(editor.getText()),
     onUpdate: async ({ editor }) => {
       const content = editor.getJSON();
+      const contentAsText = editor.getText();
       setIsThereNewContent(true);
+      setContentText(contentAsText);
       debouncedSave(noteId, content);
     },
+
     content,
   });
 
@@ -146,7 +150,7 @@ export default function RichTextEditor({
 
   return (
     <EditorContext.Provider value={{ editor }}>
-      <EditorState state={isThereNewContent} />
+      <EditorState state={isThereNewContent} text={contentText as string} />
 
       <Toolbar
         ref={toolbarRef}

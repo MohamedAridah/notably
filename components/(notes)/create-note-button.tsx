@@ -30,10 +30,10 @@ export default function CreateNoteDialog({
 
     try {
       toast.promise(createNote({ notebookId }), {
-        loading: "Creating new note...",
-        success: ({ message, noteId, notebookId }) => {
+        loading: "Creating your new note — just a moment...",
+        success: ({ noteId, notebookId }) => {
           router.push(`/dashboard/notebook/${notebookId}/note/${noteId}`);
-          return { message };
+          return { message: "Saved! Jumping to your note now... 🚀" };
         },
         error: ({ message }) => {
           return { message };

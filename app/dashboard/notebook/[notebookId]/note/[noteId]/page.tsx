@@ -102,12 +102,15 @@ export default async function NotePage({ params }: { params: Params }) {
             href: `/dashboard/notebook/${note?.notebookId}`,
           },
           {
-            label: note?.title || "Untitled Note",
+            label: note?.title
+              ? note.title
+              : note?.title !== null
+                ? "Note"
+                : "Untitled Note",
             href: `/dashboard/notebook/${note?.notebookId}/note/${note?.id}`,
           },
         ]}
       />
-
       {content}
     </>
   );
