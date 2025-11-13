@@ -27,19 +27,22 @@ type Props = { notebooks: NotebookWithCount[] };
 
 const DetailsView = ({ notebooks }: Props) => {
   return (
-    <Table>
+    <Table className="w-full table-fixed">
       <TableHeader>
         <TableRow>
-          <TableHead>Notebook Name</TableHead>
-          <TableHead>Sub Notes</TableHead>
-          <TableHead>Date</TableHead>
-          <TableHead className="text-right"></TableHead>
+          <TableHead className="w-5/12">Notebook Name</TableHead>
+          <TableHead className="w-3/12">Sub Notes</TableHead>
+          <TableHead className="w-3/12">Date</TableHead>
+          <TableHead className="text-right w-1/12 max-sm:w-3/12"></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {notebooks.map((notebook) => (
           <TableRow key={notebook.name}>
-            <TableCell className="font-medium flex items-center gap-1.5">
+            <TableCell
+              className="flex items-center gap-1.5"
+              title={notebook.name}
+            >
               <FavoriteButton
                 isFavorite={notebook.isFavorite}
                 id={notebook.id}
@@ -48,7 +51,7 @@ const DetailsView = ({ notebooks }: Props) => {
               />
               <Link
                 href={`/dashboard/notebook/${notebook.id}`}
-                className="hover:underline"
+                className="truncate pr-3 hover:underline"
               >
                 {notebook.name}
               </Link>

@@ -100,6 +100,7 @@ export default async function NotePage({ params }: { params: Params }) {
           {
             label: note?.notebook?.name || "Notebook",
             href: `/dashboard/notebook/${note?.notebookId}`,
+            className: "max-w-40 truncate lg:max-w-none",
           },
           {
             label: note?.title

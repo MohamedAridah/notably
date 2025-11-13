@@ -49,7 +49,7 @@ interface RichTextEditorProps {
 
 type MobileViewsType = "main" | "highlighter" | "link";
 
-const DEBOUNCE_TIME = 2750;
+const DEBOUNCE_TIME = 2500;
 
 export default function RichTextEditor({
   content,

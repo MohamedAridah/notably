@@ -90,7 +90,7 @@ const DialogTriggerButton = React.forwardRef<HTMLButtonElement, TriggerProps>(
 
     if (asLabel) {
       return (
-        <button onClick={rest.onClick} className="w-full text-start">
+        <button onClick={rest.onClick} className="w-full text-start" disabled={state}>
           <IconMenu text={idleText} icon={<Icon className="size-4" />} />
         </button>
       );

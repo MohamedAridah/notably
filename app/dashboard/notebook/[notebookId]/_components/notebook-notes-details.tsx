@@ -17,18 +17,21 @@ const NoteOptions = dynamic(() => import("@/components/(notes)/note-options"), {
 
 const DetailsView = ({ notes }: { notes: Note[] }) => {
   return (
-    <Table>
+    <Table className="w-full table-fixed">
       <TableHeader>
         <TableRow>
-          <TableHead>Note Name</TableHead>
-          <TableHead>Date</TableHead>
-          <TableHead className="text-right"></TableHead>
+          <TableHead className="w-7/12">Note Name</TableHead>
+          <TableHead className="w-4/12">Date</TableHead>
+          <TableHead className="text-right w-auto"></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {notes.map((note) => (
           <TableRow key={note.id}>
-            <TableCell className="font-medium flex items-center gap-1.5">
+            <TableCell
+              className="font-medium flex items-center gap-1.5"
+              title={note.title || "Untitled Note"}
+            >
               <FavoriteButton
                 isFavorite={note.isFavorite}
                 id={note.id}
@@ -37,7 +40,7 @@ const DetailsView = ({ notes }: { notes: Note[] }) => {
               />
               <Link
                 href={`/dashboard/notebook/${note.notebookId}/note/${note.id}`}
-                className="hover:underline"
+                className="truncate pr-3 hover:underline"
               >
                 {note.title || "Untitled Note"}
               </Link>

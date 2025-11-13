@@ -17,9 +17,16 @@ import {
 import NotebookForm from "@/components/forms/(notebooks)/notebook-form";
 import { toast } from "sonner";
 import { PlusIcon } from "lucide-react";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
-export default function CreateNotebookDialog({buttonStyles}:{buttonStyles?:any}) {
+
+export default function CreateNotebookDialog({
+  buttonStyles,
+}: {
+  buttonStyles?: any;
+}) {
   const [isOpen, setIsOpen] = useState(false);
+  const isMobile = useMediaQuery("(max-width:640px)");
 
   const onSubmit = async (data: z.infer<typeof NotebookSchema>) => {
     const { data: session } = await authClient.getSession();
@@ -48,7 +55,7 @@ export default function CreateNotebookDialog({buttonStyles}:{buttonStyles?:any})
       <DialogTrigger asChild>
         <Button {...buttonStyles}>
           <PlusIcon />
-          Create Notebook
+          {!isMobile ? "Create Notebook" : "Notebook"}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

@@ -8,6 +8,8 @@ import DialogTriggerButton, {
 } from "@/components/utils/dialog-trigger-button";
 import { PlusIcon } from "lucide-react";
 import { toast } from "sonner";
+import { useMediaQuery } from "@/hooks/use-media-query";
+
 
 interface DialogProps {
   notebookId?: string;
@@ -18,6 +20,7 @@ export default function CreateNoteDialog({
   ...trigger
 }: DialogProps & Partial<TriggerProps>) {
   const router = useRouter();
+  const isMobile = useMediaQuery("(max-width:640px)");
 
   const handleCreateNote = async () => {
     const { data: session } = await authClient.getSession();
@@ -52,7 +55,7 @@ export default function CreateNoteDialog({
       asIconHidden={trigger?.asIconHidden}
       asLabel={trigger?.asLabel}
       icon={PlusIcon}
-      idleText="Create Note"
+      idleText={!isMobile ? "Create Note" : "Note"}
       processText="Creating..."
       className="group-hover/note-buttons:opacity-100 group-hover/notebook-buttons:opacity-100"
       classNameAsIocn="hover:text-cyan-500"

@@ -151,7 +151,7 @@ export default function SidebarData({ data }: SidebarDataProps) {
                       >
                         <FolderClosedIcon className="size-4" />
                         <span
-                          className="inline-block overflow-hidden text-ellipsis whitespace-nowrap w-[131px]"
+                          className="inline-block truncate w-[131px]"
                           title={notebook.title}
                         >
                           {notebook.title}
@@ -209,7 +209,7 @@ export default function SidebarData({ data }: SidebarDataProps) {
                               >
                                 <NotebookTextIcon className="size-4" />
                                 <span
-                                  className="inline-block overflow-hidden text-ellipsis whitespace-nowrap w-[143px]"
+                                  className="inline-block truncate w-[143px]"
                                   title={note.title}
                                 >
                                   {note.title}

@@ -22,13 +22,13 @@ export default async function SessionManagement({
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="max-sm:px-3.5">
         <CardDescription>
           This is a list of devices that have logged into your account. Revoke
           any sessions that you do not recognize.
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="max-sm:px-3.5">
         <div className="space-y-6">
           {currentSession && (
             <SessionCard session={currentSession} isCurrentSession />

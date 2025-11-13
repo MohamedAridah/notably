@@ -37,6 +37,7 @@ export default async function NotebookPage({ params }: { params: Params }) {
     {
       label: notebook?.name || "Notebook",
       href: `/dashboard/notebook/${notebookId}`,
+      className: "max-w-40 truncate lg:max-w-none",
     },
   ];
 
@@ -72,7 +73,8 @@ export default async function NotebookPage({ params }: { params: Params }) {
                 <DeleteNotebookDialog
                   notebookId={notebookId}
                   callbackURL={"/dashboard"}
-                  trigger={{ asIcon: true, asIconHidden: true }}
+                  trigger={{ asIcon: true, asIconHidden: true}}
+                  
                 />
               </div>
             </div>
@@ -81,7 +83,7 @@ export default async function NotebookPage({ params }: { params: Params }) {
 
         <CreateNoteDialog notebookId={notebookId} />
       </div>
-      
+
       <Suspense
         fallback={
           <div className="flex items-center gap-2">

@@ -14,7 +14,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <HeroHeader className="static" />
-      <main className="max-w-5xl mx-auto p-6 pb-4 flex flex-col sm:flex-row gap-3">
+      <main className="max-w-5xl mx-auto p-4 sm:p-6 flex flex-col sm:flex-row gap-3">
         <SettingsSidebar />
         <section className="sm:flex-9/12 w-full">{children}</section>
       </main>
