@@ -20,6 +20,8 @@ export async function generateMetadata({
 
   return {
     title: note?.title || "Untitled Note",
+    description:
+      "View and edit your note easily. Manage note details, content, and organization within your notebooks.",
   };
 }
 

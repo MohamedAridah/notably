@@ -10,7 +10,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import LoadingSwap from "@/components/utils/loading-swap";
 import PasswordInput from "@/components/utils/password-input";
 import { authClient } from "@/lib/auth-client";

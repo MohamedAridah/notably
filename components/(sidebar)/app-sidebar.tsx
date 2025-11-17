@@ -11,7 +11,7 @@ import { UserForNav } from "../user";
 import Link from "next/link";
 import { Logo } from "../utils/logo";
 import { Suspense } from "react";
-import {  Search } from "./search";
+import { Search } from "./search";
 import SidebarSkeleton from "./sidebar-skeleton";
 import SidebarData from "./sidebar-data";
 import SearchIcon from "./search-icon";
@@ -60,7 +60,9 @@ export async function AppSidebar() {
           </SidebarMenuItem>
 
           <Suspense fallback={<SidebarSkeleton length={1} />}>
-            <Search placeholder="Search your notes..." className="group-data-[collapsible=icon]:hidden block" />
+            <SidebarMenuItem className="group-data-[collapsible=icon]:hidden block">
+              <Search placeholder="Search your notes..." />
+            </SidebarMenuItem>
           </Suspense>
 
           <SidebarMenuItem>

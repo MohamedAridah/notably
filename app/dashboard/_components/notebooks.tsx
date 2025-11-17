@@ -42,8 +42,12 @@ const Notebooks = ({ notebooks }: NotebooksProps) => {
 
   return (
     <>
-      <div className="flex gap-2 items-center">
-        <Search placeholder="Search your notebooks..." query="q" />
+      <div className={`flex gap-2 items-center ${!term ? "mb-4" : ""}`}>
+        <Search
+          query="q"
+          id="search-dashboard"
+          placeholder="Search your notebooks..."
+        />
         <ViewController />
       </div>
 

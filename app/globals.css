@@ -191,7 +191,13 @@
 
   .custom-scrollbar {
     &::-webkit-scrollbar {
-      width: 7px;
+      width: 0;
+    }
+
+    &:hover {
+      &::-webkit-scrollbar {
+        width: 7px;
+      }
     }
 
     &::-webkit-scrollbar-track {

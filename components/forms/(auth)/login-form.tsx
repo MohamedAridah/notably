@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import z from "zod";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { SignInUser } from "@/server/auth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,6 +28,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Loader2, StarsIcon } from "lucide-react";
+import PasswordInput from "@/components/utils/password-input";
 
 export default function SignInForm() {
   const form = useForm<z.infer<typeof SignInSchema>>({
@@ -94,8 +95,7 @@ export default function SignInForm() {
                     </Link>
                   </div>
                   <FormControl>
-                    <Input
-                      type="password"
+                    <PasswordInput
                       placeholder="********"
                       autoComplete="off"
                       {...field}

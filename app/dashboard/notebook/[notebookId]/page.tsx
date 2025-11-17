@@ -21,6 +21,10 @@ export async function generateMetadata({
 
   return {
     title: notebook?.name,
+    description:
+      "Manage and view notes in the notebook named " +
+      (notebook?.name || "Notebook") +
+      ". Easily create, edit, and organize your notes within this notebook.",
   };
 }
 
@@ -94,7 +98,7 @@ export default async function NotebookPage({ params }: { params: Params }) {
         <DocumentDetails document={notebook} />
       </Suspense>
 
-      <section className="my-10">
+      <section className="flex flex-col flex-1 w-full gap-4 my-10">
         {notebook._count.notes === 0 ? (
           <Message
             Icon={<NotebookText className="text-center size-10 mx-auto mb-3" />}

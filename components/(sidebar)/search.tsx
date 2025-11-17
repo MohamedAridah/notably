@@ -19,11 +19,11 @@ export function Search({
 
   return (
     <div className={cn("relative flex-1 shrink-0", props.className)}>
-      <label htmlFor="search" className="sr-only">
+      <label htmlFor={props.id || "search"} className="sr-only">
         Search
       </label>
       <Input
-        id="search"
+        id={props.id || "search"}
         className={cn("bg-background h-8 w-full shadow-none pl-8")}
         placeholder={placeholder}
         value={search}

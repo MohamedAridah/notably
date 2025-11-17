@@ -28,6 +28,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Loader2, StarsIcon } from "lucide-react";
+import PasswordInput from "@/components/utils/password-input";
 
 export default function SignUpForm() {
   const form = useForm<z.infer<typeof SignUpSchema>>({
@@ -106,7 +107,7 @@ export default function SignUpForm() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input
+                    <PasswordInput
                       type="password"
                       placeholder="********"
                       autoComplete="off"
@@ -124,7 +125,7 @@ export default function SignUpForm() {
                 <FormItem>
                   <FormLabel>Confirm Password</FormLabel>
                   <FormControl>
-                    <Input
+                    <PasswordInput
                       type="password"
                       placeholder="********"
                       autoComplete="off"

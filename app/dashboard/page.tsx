@@ -7,6 +7,12 @@ import { NotebookIcon, ShieldAlert } from "lucide-react";
 import { classifyNotebooks } from "@/helpers/classify-notebooks";
 import { NotebookWithNotes } from "@/components/(notebooks)/notebook";
 import CreateNoteDialog from "@/components/(notes)/create-note-button";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  description:
+    "Overview of your notebooks including favorites and other notebooks. Create, view, and manage your notebooks easily from the dashboard.",
+};
 
 export default async function Dashboard() {
   const notebooksResponse = await getCachedNotebooks();

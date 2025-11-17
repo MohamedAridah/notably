@@ -64,10 +64,11 @@ type SidebarDataProps = {
 export default function SidebarData({ data }: SidebarDataProps) {
   const [search] = useQueryState("search", { defaultValue: "" });
 
+  const { isMobile, setOpenMobile } = useSidebar();
+
   const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const { isMobile, setOpenMobile } = useSidebar();
   const [active, setActive] = useState<{
     [key: string]: number | boolean | string;
   }>({
@@ -131,18 +132,23 @@ export default function SidebarData({ data }: SidebarDataProps) {
               defaultOpen
               open={Boolean(!openItems[notebook.id])}
               onOpenChange={(isOpen) => toggleItem(notebook.id, !isOpen)}
+              asChild
             >
               <SidebarMenuItem key={notebook.id}>
                 <CollapsibleTrigger asChild>
                   <SidebarMenuButton
                     tooltip={notebook.title}
                     isActive={active.main === notebookIndex || false}
+                    aria-expanded={
+                      active.main === notebookIndex ? "true" : "false"
+                    }
+                    data-state={openItems[notebook.id] ? "closed" : "open"}
                     asChild
                   >
-                    <div className="flex">
+                    <div role="button" className="flex flex-1">
                       <Link
                         href={notebook.url}
-                        onClick={(e) => {
+                        onClick={() => {
                           handleActiveMenuButton({ main: notebookIndex });
                           if (!isMobile) return;
                           setOpenMobile(false);
@@ -159,20 +165,20 @@ export default function SidebarData({ data }: SidebarDataProps) {
                       </Link>
 
                       {!notebook.isDefault && (
-                        <div
-                          onClick={(e) => e.stopPropagation()}
-                          className="flex items-center gap-2"
-                        >
-                          <NotebookOptions
-                            notebook={{
-                              id: notebook.id,
-                              name: notebook.title,
-                              isFavorite: notebook.isFavorite,
-                            }}
-                            // className="flex items-center sm:opacity-0 group-hover/notebook-buttons:opacity-100"
-                            className="flex items-center"
-                          />
-                        </div>
+                        // <div
+                        //   onClick={(e) => e.stopPropagation()}
+                        //   className="flex items-center gap-2"
+                        // >
+                        <NotebookOptions
+                          notebook={{
+                            id: notebook.id,
+                            name: notebook.title,
+                            isFavorite: notebook.isFavorite,
+                          }}
+                          // className="flex items-center sm:opacity-0 group-hover/notebook-buttons:opacity-100"
+                          className="flex items-center"
+                        />
+                        // </div>
                       )}
 
                       {notebook.items.length > 0 && (
