@@ -14,17 +14,27 @@ export const getNotebooks = async (userId: string) => {
       where: {
         userId,
       },
-      include: {
+      select: {
         _count: {
           select: {
             notes: true,
           },
         },
-        notes: true,
+        notes: {
+          select: {
+            id: true,
+            title: true,
+            isFavorite: true,
+          },
+        },
+        id: true,
+        isDefault: true,
+        isFavorite: true,
+        name: true,
       },
-      orderBy:{
-        isDefault:"desc"
-      }
+      orderBy: {
+        isDefault: "desc",
+      },
     });
 
     return { success: true, notebooks };
@@ -74,7 +84,14 @@ export const getNotebookById = async (id: string, userId: string) => {
             notes: true,
           },
         },
-        notes: true,
+        notes: {
+          select: {
+            id: true,
+            notebookId: true,
+            title: true,
+            isFavorite: true,
+          },
+        },
       },
     });
 
@@ -136,7 +153,6 @@ export const updateNotebook = async (id: string, values: Partial<Notebook>) => {
 
     return {
       success: true,
-      notebook,
       message: "Notebook updated successfully",
     };
   } catch (error) {

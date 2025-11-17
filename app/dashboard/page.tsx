@@ -4,8 +4,8 @@ import Message from "@/components/utils/message";
 import BreadCrumbUI from "@/components/utils/breadcrumb";
 import Notebooks from "./_components/notebooks";
 import { NotebookIcon, ShieldAlert } from "lucide-react";
-import { filterNotebooks } from "@/helpers/filter-notebooks";
-import { NotebookWithCount } from "@/components/(notebooks)/notebook";
+import { classifyNotebooks } from "@/helpers/classify-notebooks";
+import { NotebookWithNotes } from "@/components/(notebooks)/notebook";
 import CreateNoteDialog from "@/components/(notes)/create-note-button";
 
 export default async function Dashboard() {
@@ -30,7 +30,7 @@ export default async function Dashboard() {
 
   const isEmpty = (notebooks?.length ?? 0) === 0;
   const { favorites: notebooks__favorites, others: notebooks__others } =
-    await filterNotebooks(notebooks ?? []);
+    await classifyNotebooks(notebooks ?? []);
 
   return (
     <>
@@ -59,8 +59,8 @@ export default async function Dashboard() {
       ) : (
         <Notebooks
           notebooks={{
-            notebook__favorites: notebooks__favorites as NotebookWithCount[],
-            notebook__others: notebooks__others as NotebookWithCount[],
+            notebook__favorites: notebooks__favorites as NotebookWithNotes[],
+            notebook__others: notebooks__others as NotebookWithNotes[],
           }}
         />
       )}

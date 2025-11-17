@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { type Note } from "@prisma/client";
 import {
   Card,
   CardDescription,
@@ -13,8 +12,9 @@ import { ExternalLinkIcon } from "lucide-react";
 import EditNoteDialog from "./edit-note-button";
 import FavoriteButton from "../utils/favorite-button";
 import { handleToggleFavorite_Note } from "@/lib/utils";
+import { NoteScoped } from "@/app/dashboard/notebook/[notebookId]/_components/notebook-notes";
 
-export default function NoteCard({ note }: { note: Note }) {
+export default function NoteCard({ note }: { note: NoteScoped }) {
   const noteURL = `/dashboard/notebook/${note.notebookId}/note/${note.id}`;
   return (
     <Card className="shadow-xs hover:shadow-sm transition-shadow ease-in-out duration-150">

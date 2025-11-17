@@ -8,14 +8,14 @@ import {
 } from "@/components/ui/table";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { Note } from "@prisma/client";
 import FavoriteButton from "@/components/utils/favorite-button";
 import { handleToggleFavorite_Note } from "@/lib/utils";
+import { NoteScoped } from "./notebook-notes";
 const NoteOptions = dynamic(() => import("@/components/(notes)/note-options"), {
   ssr: false,
 });
 
-const DetailsView = ({ notes }: { notes: Note[] }) => {
+const DetailsView = ({ notes }: { notes: NoteScoped[] }) => {
   return (
     <Table className="w-full table-fixed">
       <TableHeader>
@@ -45,7 +45,9 @@ const DetailsView = ({ notes }: { notes: Note[] }) => {
                 {note.title || "Untitled Note"}
               </Link>
             </TableCell>
-            <TableCell>{new Date(note.createdAt).toDateString()}</TableCell>
+            <TableCell>
+              {new Date(note.createdAt as Date).toDateString()}
+            </TableCell>
             <TableCell className="text-right">
               <NoteOptions
                 note={{

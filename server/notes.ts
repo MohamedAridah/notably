@@ -18,7 +18,9 @@ export const getNoteById = async (id: string) => {
         userId,
       },
       include: {
-        notebook: true,
+        notebook: {
+          select: { name: true },
+        },
       },
     });
 
@@ -131,7 +133,7 @@ export const deleteNote = async (id: string) => {
   const userId = session?.userId!;
 
   try {
-    const note = await prisma.note.delete({
+    await prisma.note.delete({
       where: {
         id,
         userId,

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { type Notebook } from "@prisma/client";
+import { Prisma, type Notebook } from "@prisma/client";
 import {
   Card,
   CardDescription,
@@ -16,6 +16,12 @@ import FavoriteButton from "../utils/favorite-button";
 import { handleToggleFavorite_Notebook } from "@/lib/utils";
 
 export type NotebookWithCount = Notebook & { _count: { notes: number } };
+export type NotebookWithNotes = Prisma.NotebookGetPayload<{
+  include: {
+    _count: { select: { notes: true } };
+    notes: { select: { id: true; title: true; isFavorite: true } };
+  };
+}>;
 
 export default function Notebook({
   notebook,

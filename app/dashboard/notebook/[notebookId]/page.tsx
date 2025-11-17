@@ -73,8 +73,7 @@ export default async function NotebookPage({ params }: { params: Params }) {
                 <DeleteNotebookDialog
                   notebookId={notebookId}
                   callbackURL={"/dashboard"}
-                  trigger={{ asIcon: true, asIconHidden: true}}
-                  
+                  trigger={{ asIcon: true, asIconHidden: true }}
                 />
               </div>
             </div>
@@ -96,7 +95,7 @@ export default async function NotebookPage({ params }: { params: Params }) {
       </Suspense>
 
       <section className="my-10">
-        {notebook.notes.length === 0 ? (
+        {notebook._count.notes === 0 ? (
           <Message
             Icon={<NotebookText className="text-center size-10 mx-auto mb-3" />}
             description="No notes yet. Create your first note now!"
