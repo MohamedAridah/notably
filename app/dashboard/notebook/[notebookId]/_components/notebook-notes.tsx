@@ -34,8 +34,6 @@ const NotebookNotes = ({ notes }: { notes: NoteScoped[] }) => {
     });
   }, [term]);
 
-  console.log("filteredData: ", filteredData);
-
   const resultText = filteredData.length > 1 ? "results" : "result";
 
   return (

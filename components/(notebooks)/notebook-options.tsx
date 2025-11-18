@@ -42,12 +42,9 @@ export default function NotebookOptions({
         <DropdownMenuTrigger
           className="hover:cursor-pointer"
           onClick={(e) => e.stopPropagation()}
-          asChild
         >
-          <div role="button">
-            <MoreHorizontal className="size-4" />
-            <span className="sr-only">Open note options menu</span>
-          </div>
+          <MoreHorizontal className="size-4" />
+          <span className="sr-only">Open note options menu</span>
         </DropdownMenuTrigger>
         <DropdownMenuContent
           className={`pointer-events-auto ${alignStart ? "mr-3" : ""}`}

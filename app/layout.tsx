@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import { Metadata } from "next";
 import { Inter } from "next/font/google";
 // import { Geist, Geist_Mono, Inter } from "next/font/google";
 import { ThemeProvider } from "@/providers/theme-provider";

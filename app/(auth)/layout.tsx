@@ -1,5 +1,14 @@
 import AuthHeader from "./_components/header";
 
+export const metadata = {
+  title: {
+    default: "Join Notably",
+    template: "%s - Notably",
+  },
+  description:
+    "Access your Notably account to capture, organize, and link your notes, code snippets, and personal insights seamlessly.",
+};
+
 export default function AuthLayout({
   children,
 }: Readonly<{

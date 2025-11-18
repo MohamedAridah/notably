@@ -1,13 +1,14 @@
 import { HeroHeader } from "@/components/header";
 import Footer from "@/components/footer";
 import SettingsSidebar from "./_components/settings-sidebar";
-import { Metadata } from "next";
 
-export const metadata: Metadata = {
+export const metadata = {
   title: {
     default: "Account Settings",
     template: "Account Settings | %s",
   },
+  description:
+    "Manage your Notably account settings including profile information, security preferences, and application configurations to tailor your experience.",
 };
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {

@@ -1,9 +1,8 @@
-import { Metadata } from "next";
 import DeleteUserPanel from "../../_components/delete-user-panel";
 import PageHeader from "../../_components/page-header";
 import PassworChangedPanel from "../../_components/password-change-panel";
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Security",
 };
 
