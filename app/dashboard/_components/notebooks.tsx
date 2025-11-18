@@ -6,7 +6,7 @@ import { NotebookWithNotes } from "@/components/(notebooks)/notebook";
 import TableSkeketon from "@/components/(skeletons)/table";
 import ViewController, { DEFAULT_VIEW } from "./view-controller";
 import GridView from "./notebooks-grid-view";
-import { Search } from "@/components/(sidebar)/search";
+import { Search } from "@/components/utils/search";
 import { useMemo } from "react";
 const DetailsView = dynamic(() => import("./notebooks-details-view"), {
   ssr: false,
@@ -42,10 +42,13 @@ const Notebooks = ({ notebooks }: NotebooksProps) => {
 
   return (
     <>
-      <div className={`flex gap-2 items-center ${!term ? "mb-4" : ""}`}>
+      <div
+        className={`flex gap-1 sm:gap-2 items-center ${!term ? "mb-4" : ""}`}
+      >
         <Search
           query="q"
           id="search-dashboard"
+          className_input="h-8.5"
           placeholder="Search your notebooks..."
         />
         <ViewController />

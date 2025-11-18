@@ -31,6 +31,7 @@ export const getNotebooks = async (userId: string) => {
         isDefault: true,
         isFavorite: true,
         name: true,
+        createdAt: true,
       },
       orderBy: {
         isDefault: "desc",
@@ -90,6 +91,7 @@ export const getNotebookById = async (id: string, userId: string) => {
             notebookId: true,
             title: true,
             isFavorite: true,
+            createdAt: true,
           },
         },
       },

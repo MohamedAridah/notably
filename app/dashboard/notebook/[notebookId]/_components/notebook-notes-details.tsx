@@ -45,9 +45,7 @@ const DetailsView = ({ notes }: { notes: NoteScoped[] }) => {
                 {note.title || "Untitled Note"}
               </Link>
             </TableCell>
-            <TableCell>
-              {new Date(note.createdAt as Date).toDateString()}
-            </TableCell>
+            <TableCell>{new Date(note.createdAt).toDateString()}</TableCell>
             <TableCell className="text-right">
               <NoteOptions
                 note={{

@@ -8,11 +8,13 @@ import { cn } from "@/lib/utils";
 interface SearchProps {
   placeholder: string;
   query?: string;
+  className_input?: string;
 }
 
 export function Search({
   placeholder,
   query = "search",
+  className_input,
   ...props
 }: React.ComponentProps<"div"> & SearchProps) {
   const [search, setSearch] = useQueryState(query, { defaultValue: "" });
@@ -24,7 +26,10 @@ export function Search({
       </label>
       <Input
         id={props.id || "search"}
-        className={cn("bg-background h-8 w-full shadow-none pl-8")}
+        className={cn(
+          "bg-background h-8 w-full shadow-none pl-8",
+          className_input
+        )}
         placeholder={placeholder}
         value={search}
         autoComplete="off"

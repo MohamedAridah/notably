@@ -11,7 +11,7 @@ import { UserForNav } from "../user";
 import Link from "next/link";
 import { Logo } from "../utils/logo";
 import { Suspense } from "react";
-import { Search } from "./search";
+import { Search } from "@/components/utils/search";
 import SidebarSkeleton from "./sidebar-skeleton";
 import SidebarData from "./sidebar-data";
 import SearchIcon from "./search-icon";

@@ -8,7 +8,7 @@ import TableSkeketon from "@/components/(skeletons)/table";
 import ViewController, {
   DEFAULT_VIEW,
 } from "@/app/dashboard/_components/view-controller";
-import { Search } from "@/components/(sidebar)/search";
+import { Search } from "@/components/utils/search";
 import { useMemo } from "react";
 const DetailsView = dynamic(() => import("./notebook-notes-details"), {
   ssr: false,
@@ -17,10 +17,8 @@ const DetailsView = dynamic(() => import("./notebook-notes-details"), {
 
 export type NoteScoped = Pick<
   Note,
-  "id" | "notebookId" | "title" | "isFavorite"
-> & {
-  createdAt?: Date;
-};
+  "id" | "notebookId" | "title" | "isFavorite" | "createdAt"
+>;
 
 const NotebookNotes = ({ notes }: { notes: NoteScoped[] }) => {
   const [view] = useQueryState("view", { defaultValue: DEFAULT_VIEW });
@@ -29,19 +27,26 @@ const NotebookNotes = ({ notes }: { notes: NoteScoped[] }) => {
   const filteredData = useMemo(() => {
     const s = term.toLowerCase();
     return notes.filter((item) => {
-      const noteMatches = item.title?.toLowerCase().includes(s);
+      const noteMatches = (item.title ?? "untitled note")
+        ?.toLowerCase()
+        .includes(s);
       return noteMatches;
     });
   }, [term]);
+
+  console.log("filteredData: ", filteredData);
 
   const resultText = filteredData.length > 1 ? "results" : "result";
 
   return (
     <>
-      <div className={`flex gap-2 items-center ${!term ? "mb-4" : ""}`}>
+      <div
+        className={`flex gap-1 sm:gap-2 items-center ${!term ? "mb-4" : ""}`}
+      >
         <Search
           query="q"
           id="search-notebook-notes"
+          className_input="h-8.5"
           placeholder="Search notes in this notebook..."
         />
         <ViewController />

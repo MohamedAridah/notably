@@ -23,10 +23,11 @@ export default function ViewController() {
   );
 
   return (
-    <div className="flex justify-end items-center gap-0.5">
+    <div className="flex justify-end items-center">
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
+            type="button"
             variant="ghost"
             size="icon"
             aria-label="Show as Grid view"
@@ -43,6 +44,7 @@ export default function ViewController() {
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
+            type="button"
             variant="ghost"
             size="icon"
             aria-label="Show as Table view"
