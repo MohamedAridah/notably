@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import z from "zod";
 import { createNotebook } from "@/server/notebooks";
@@ -18,12 +18,12 @@ import NotebookForm from "@/components/forms/(notebooks)/notebook-form";
 import { toast } from "sonner";
 import { PlusIcon } from "lucide-react";
 import { useMediaQuery } from "@/hooks/use-media-query";
-
-
 export default function CreateNotebookDialog({
   buttonStyles,
+  cb,
 }: {
-  buttonStyles?: any;
+  cb?: () => void;
+  buttonStyles?: React.ComponentProps<typeof Button>;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width:640px)");
@@ -47,6 +47,8 @@ export default function CreateNotebookDialog({
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      cb && cb();
     }
   };
 

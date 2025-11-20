@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { handleToggleFavorite_Note } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,14 +13,15 @@ import {
 import EditNoteDialog from "@/components/(notes)/edit-note-button";
 import DeleteNoteDialog from "@/components/(notes)/delete-note-button";
 import IconMenu from "@/components/utils/icon-menu";
+import FavoriteButton from "@/components/utils/favorite-button";
+import MoveNoteDialog from "./move-note-button";
 import {
   MoreHorizontalIcon,
   ExternalLinkIcon,
   PenSquareIcon,
   Trash2,
+  ReplaceIcon,
 } from "lucide-react";
-import FavoriteButton from "../utils/favorite-button";
-import { handleToggleFavorite_Note } from "@/lib/utils";
 
 interface NoteOptionsProps {
   noteId: string;
@@ -39,6 +41,7 @@ export default function NoteOptions({
 }) {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isMoveDialogOpen, setIsMoveDialogOpen] = useState(false);
 
   return (
     <>
@@ -68,10 +71,18 @@ export default function NoteOptions({
               withText
             />
           </DropdownMenuItem>
+
           <DropdownMenuItem onSelect={() => setIsEditDialogOpen(true)}>
             <IconMenu
               text="Update"
               icon={<PenSquareIcon className="size-4" />}
+            />
+          </DropdownMenuItem>
+
+          <DropdownMenuItem onSelect={() => setIsMoveDialogOpen(true)}>
+            <IconMenu
+              text="Move to notebook"
+              icon={<ReplaceIcon className="size-4" />}
             />
           </DropdownMenuItem>
 
@@ -92,6 +103,14 @@ export default function NoteOptions({
         withTrigger={false}
         isOpen={isEditDialogOpen}
         setIsOpen={setIsEditDialogOpen}
+      />
+
+      <MoveNoteDialog
+        noteId={note.noteId}
+        currentNotebookId={note.notebookId}
+        withTrigger={false}
+        isOpen={isMoveDialogOpen}
+        setIsOpen={setIsMoveDialogOpen}
       />
 
       <DeleteNoteDialog

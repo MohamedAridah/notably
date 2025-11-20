@@ -97,6 +97,7 @@ export async function createNote({
 export type UpdateNoteValuesType = {
   title?: Note["title"];
   content?: InputJsonValue;
+  notebookId?: string;
 };
 
 export const updateNote = async (id: string, values: UpdateNoteValuesType) => {
