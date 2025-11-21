@@ -113,7 +113,7 @@ const NotebooksList = ({
   return (
     <div className="flex flex-col gap-4 items-end">
       <CreateNotebookDialog
-        buttonStyles={{ size: "sm" }}
+        size="sm"
         cb={() => setIsNewNotebookCreated((prev) => +prev + 1)}
       />
       <div className="w-full grid md:grid-cols-[repeat(auto-fill,_minmax(10rem,_1fr))] gap-4 items-start mt-4 py-5">

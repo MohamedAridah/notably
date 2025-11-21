@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { getCachedNotebook } from "@/server/notebooks";
+import { getCachedNotebook, setNotebookFavorite } from "@/server/notebooks";
 import CreateNoteDialog from "@/components/(notes)/create-note-button";
 import BreadCrumbUI from "@/components/utils/breadcrumb";
 import { Loader2, NotebookText, ShieldAlert } from "lucide-react";
@@ -10,6 +10,7 @@ import DeleteNotebookDialog from "@/components/(notebooks)/delete-notebook-butto
 import NotebookNotes from "./_components/notebook-notes";
 import DocumentDetails from "../../_components/document-details";
 import { Suspense } from "react";
+import FavoriteButton from "@/components/utils/favorite-button";
 
 export async function generateMetadata({
   params,
@@ -65,7 +66,14 @@ export default async function NotebookPage({ params }: { params: Params }) {
 
       <div className="flex items-center justify-between group-hover/notebook-buttons:opacity-100">
         <div className="flex items-center gap-2 group/notebook-buttons">
-          <h1 className="text-xl font-semibold">{notebook.name}</h1>
+          <div className="flex items-center gap-1.5">
+            <h1 className="text-xl font-semibold">{notebook.name}</h1>
+            <FavoriteButton
+              isFavorite={notebook.isFavorite}
+              id={notebook.id}
+              onToggle={setNotebookFavorite}
+            />
+          </div>
           {!notebook.isDefault && (
             <div className="flex items-center gap-1">
               <EditNotebookDialog
@@ -76,6 +84,7 @@ export default async function NotebookPage({ params }: { params: Params }) {
               <div className="flex -items-center gap-2">
                 <DeleteNotebookDialog
                   notebookId={notebookId}
+                  notebookName={notebook.name}
                   callbackURL={"/dashboard"}
                   trigger={{ asIcon: true, asIconHidden: true }}
                 />

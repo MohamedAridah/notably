@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { getNoteById } from "@/server/notes";
+import { getNoteById, setNoteFavorite } from "@/server/notes";
 import BreadCrumbUI from "@/components/utils/breadcrumb";
 import Message from "@/components/utils/message";
 import RichTextEditorClient from "@/components/editor/editor.client";
@@ -9,6 +9,7 @@ import DeleteNoteDialog from "@/components/(notes)/delete-note-button";
 import EditNoteDialog from "@/components/(notes)/edit-note-button";
 import { Metadata } from "next";
 import DocumentDetails from "@/app/dashboard/_components/document-details";
+import FavoriteButton from "@/components/utils/favorite-button";
 
 export async function generateMetadata({
   params,
@@ -49,9 +50,16 @@ export default async function NotePage({ params }: { params: Params }) {
       <>
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2 group/note-buttons">
-            <h1 className="text-xl font-semibold">
-              {note?.title || "Untitled Note"}
-            </h1>
+            <div className="flex items-center gap-1.5">
+              <h1 className="text-xl font-semibold">
+                {note?.title || "Untitled Note"}
+              </h1>
+              <FavoriteButton
+                isFavorite={note.isFavorite}
+                id={note.id}
+                onToggle={setNoteFavorite}
+              />
+            </div>
             <div className="flex items-center gap-1">
               <EditNoteDialog
                 note={note}

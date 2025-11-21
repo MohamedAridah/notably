@@ -11,7 +11,7 @@ import {
 import { Notebook } from "@prisma/client";
 import dynamic from "next/dynamic";
 import FavoriteButton from "@/components/utils/favorite-button";
-import { handleToggleFavorite_Notebook } from "@/lib/utils";
+import { setNotebookFavorite } from "@/server/notebooks";
 const NotebookOptions = dynamic(
   () => import("@/components/(notebooks)/notebook-options"),
   { ssr: false }
@@ -46,7 +46,7 @@ const DetailsView = ({ notebooks }: Props) => {
               <FavoriteButton
                 isFavorite={notebook.isFavorite}
                 id={notebook.id}
-                onToggle={handleToggleFavorite_Notebook}
+                onToggle={setNotebookFavorite}
                 iconStyles="size-3.5"
               />
               <Link

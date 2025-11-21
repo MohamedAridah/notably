@@ -13,8 +13,10 @@ import {
 import DialogTriggerButton, {
   TriggerAppearance,
 } from "@/components/utils/dialog-trigger-button";
+import NotebooksListSkeleton from "@/components/(skeletons)/notebooks-list";
 const NotebooksList = dynamic(() => import("./move-to-list"), {
   ssr: false,
+  loading: () => <NotebooksListSkeleton />,
 });
 import { ReplaceIcon } from "lucide-react";
 

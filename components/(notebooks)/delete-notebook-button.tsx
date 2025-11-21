@@ -23,6 +23,7 @@ import DialogTriggerButton, {
 
 interface DialogProps {
   notebookId: string;
+  notebookName?: string;
   callbackURL?: string;
   isOpen?: boolean;
   setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -30,6 +31,7 @@ interface DialogProps {
 
 export default function DeleteNotebookDialog({
   notebookId,
+  notebookName,
   callbackURL,
   isOpen,
   setIsOpen,
@@ -84,8 +86,19 @@ export default function DeleteNotebookDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently delete this notebook and all its notes. This
-            action cannot be undone.
+            This will permanently delete{" "}
+            {notebookName ? (
+              <>
+                {" "}
+                <span className="font-semibold text-primary">
+                  {notebookName}
+                </span>{" "}
+                notebook
+              </>
+            ) : (
+              "this notebook"
+            )}{" "}
+            and all its notes. This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

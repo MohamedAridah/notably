@@ -21,7 +21,8 @@ import {
   Trash2,
 } from "lucide-react";
 import FavoriteButton from "../utils/favorite-button";
-import { handleToggleFavorite_Notebook } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import { setNotebookFavorite } from "@/server/notebooks";
 
 interface NotebookOptionsProps extends React.ComponentProps<"div"> {
   notebook: Pick<Notebook, "id" | "name" | "isFavorite">;
@@ -40,7 +41,7 @@ export default function NotebookOptions({
     <>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger
-          className="hover:cursor-pointer"
+          className={cn("hover:cursor-pointer", props.className)}
           onClick={(e) => e.stopPropagation()}
         >
           <MoreHorizontal className="size-4" />
@@ -66,7 +67,7 @@ export default function NotebookOptions({
             <FavoriteButton
               isFavorite={notebook.isFavorite}
               id={notebook.id}
-              onToggle={handleToggleFavorite_Notebook}
+              onToggle={setNotebookFavorite}
               iconStyles="size-3.5"
               withText
             />
@@ -98,6 +99,7 @@ export default function NotebookOptions({
 
       <DeleteNotebookDialog
         notebookId={notebook.id}
+        notebookName={notebook.name}
         withTrigger={false}
         isOpen={isDeleteDialogOpen}
         setIsOpen={setIsDeleteDialogOpen}

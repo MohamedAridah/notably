@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { handleToggleFavorite_Note } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,23 +22,29 @@ import {
   Trash2,
   ReplaceIcon,
 } from "lucide-react";
+import { setNoteFavorite } from "@/server/notes";
 
 interface NoteOptionsProps {
-  noteId: string;
-  notebookId: string;
-  noteTitle?: string | null;
-  notebook_url: string;
-  note_url: string;
-  isFavorite?: boolean;
+  note: {
+    noteId: string;
+    notebookId: string;
+    noteTitle?: string | null;
+    notebook_url: string;
+    note_url: string;
+    isFavorite?: boolean;
+  };
+}
+
+interface NoteOptionsProps extends React.ComponentProps<"div"> {
+  note: NoteOptionsProps["note"];
+  alignStart?: boolean;
 }
 
 export default function NoteOptions({
   note,
   alignStart = false,
-}: {
-  note: NoteOptionsProps;
-  alignStart?: boolean;
-}) {
+  ...props
+}: NoteOptionsProps) {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isMoveDialogOpen, setIsMoveDialogOpen] = useState(false);
@@ -46,7 +52,9 @@ export default function NoteOptions({
   return (
     <>
       <DropdownMenu modal={false}>
-        <DropdownMenuTrigger className="hover:cursor-pointer">
+        <DropdownMenuTrigger
+          className={cn("hover:cursor-pointer", props.className)}
+        >
           <MoreHorizontalIcon className="size-4" />
           <span className="sr-only">Open note options menu</span>
         </DropdownMenuTrigger>
@@ -66,7 +74,7 @@ export default function NoteOptions({
             <FavoriteButton
               isFavorite={note.isFavorite as boolean}
               id={note.noteId}
-              onToggle={handleToggleFavorite_Note}
+              onToggle={setNoteFavorite}
               iconStyles="size-3.5"
               withText
             />

@@ -9,8 +9,8 @@ import {
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import FavoriteButton from "@/components/utils/favorite-button";
-import { handleToggleFavorite_Note } from "@/lib/utils";
 import { NoteScoped } from "./notebook-notes";
+import { setNoteFavorite } from "@/server/notes";
 const NoteOptions = dynamic(() => import("@/components/(notes)/note-options"), {
   ssr: false,
 });
@@ -20,7 +20,7 @@ const DetailsView = ({ notes }: { notes: NoteScoped[] }) => {
     <Table className="w-full table-fixed">
       <TableHeader>
         <TableRow>
-          <TableHead className="w-7/12">Note Name</TableHead>
+          <TableHead className="w-6/12">Note Name</TableHead>
           <TableHead className="w-4/12">Date</TableHead>
           <TableHead className="text-right w-auto"></TableHead>
         </TableRow>
@@ -35,7 +35,7 @@ const DetailsView = ({ notes }: { notes: NoteScoped[] }) => {
               <FavoriteButton
                 isFavorite={note.isFavorite}
                 id={note.id}
-                onToggle={handleToggleFavorite_Note}
+                onToggle={setNoteFavorite}
                 iconStyles="size-3.5"
               />
               <Link

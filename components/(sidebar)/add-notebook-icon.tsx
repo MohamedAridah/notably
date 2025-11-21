@@ -1,23 +1,23 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import CreateNoteDialog from "@/components/(notes)/create-note-button";
-import { sidebarMenuButtonVariants } from "@/components/ui/sidebar";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { NotepadTextIcon } from "lucide-react";
+import { sidebarMenuButtonVariants } from "@/components/ui/sidebar";
+import CreateNotebookDialog from "../(notebooks)/create-notebook-button";
+import { NotebookIcon } from "lucide-react";
 
-export default function AddNoteIcon() {
+export default function AddNotebookIcon() {
   const trigger = (
     <div className="group-data-[collapsible=icon]:inline-flex hidden hover:cursor-pointer">
-      <CreateNoteDialog
+      <CreateNotebookDialog
         className={cn(sidebarMenuButtonVariants({}))}
         classNameAsIocn=""
         asIcon
-        icon={NotepadTextIcon}
+        icon={NotebookIcon}
       />
     </div>
   );
@@ -26,7 +26,7 @@ export default function AddNoteIcon() {
     <Tooltip>
       <TooltipTrigger asChild>{trigger}</TooltipTrigger>
       <TooltipContent side="right" align="center">
-        Create Note
+        Create Notebook
       </TooltipContent>
     </Tooltip>
   );

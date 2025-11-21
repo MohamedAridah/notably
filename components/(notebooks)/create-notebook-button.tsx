@@ -5,7 +5,6 @@ import { authClient } from "@/lib/auth-client";
 import z from "zod";
 import { createNotebook } from "@/server/notebooks";
 import { NotebookSchema } from "@/validations/zod/notebook-schemas";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -18,47 +17,76 @@ import NotebookForm from "@/components/forms/(notebooks)/notebook-form";
 import { toast } from "sonner";
 import { PlusIcon } from "lucide-react";
 import { useMediaQuery } from "@/hooks/use-media-query";
-export default function CreateNotebookDialog({
-  buttonStyles,
-  cb,
-}: {
+import { useRouter } from "next/navigation";
+import DialogTriggerButton, {
+  TriggerProps,
+} from "../utils/dialog-trigger-button";
+
+interface CreateNotebookDialogProps {
   cb?: () => void;
-  buttonStyles?: React.ComponentProps<typeof Button>;
-}) {
+}
+
+export default function CreateNotebookDialog({
+  cb,
+  ...trigger
+}: CreateNotebookDialogProps & Partial<TriggerProps>) {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width:640px)");
+
+  const idleText = isMobile ? "Notebook" : "Create Notebook";
 
   const onSubmit = async (data: z.infer<typeof NotebookSchema>) => {
     const { data: session } = await authClient.getSession();
     const userId = session?.user.id;
-
     if (!userId) {
       toast.error("You must be signed in to create a notebook.");
       return;
     }
-
     try {
-      const { success, message } = await createNotebook(data.name, userId);
+      toast.loading("Creating your new notebook — Just a moment...");
+      const {
+        success,
+        id: notebookId,
+        message,
+      } = await createNotebook(data.name, userId);
+      toast.dismiss();
       if (success) {
-        toast.success(message);
+        if (data.redirectTo) {
+          router.push(`/dashboard/notebook/${notebookId}`);
+          toast.success("Done! Jumping to your notebook now... 🚀");
+        } else {
+          toast.success(message);
+        }
         setIsOpen(false);
       } else {
         toast.error(message);
       }
     } catch (error) {
-      console.error(error);
+      const e = error as Error;
+      console.error("Failed to create notebook: ", e);
+      toast.dismiss();
+      toast.error(e.message);
     } finally {
-      cb && cb();
+      if (cb) cb();
     }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button {...buttonStyles}>
-          <PlusIcon />
-          {!isMobile ? "Create Notebook" : "Notebook"}
-        </Button>
+        <DialogTriggerButton
+          asIcon={trigger?.asIcon}
+          asIconHidden={trigger?.asIconHidden}
+          asLabel={trigger?.asLabel}
+          icon={PlusIcon}
+          idleText={idleText}
+          processText="Creating"
+          size="default"
+          className=""
+          classNameAsIocn=""
+          {...trigger}
+        />
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

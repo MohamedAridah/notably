@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2 } from "lucide-react";
 
 type FormProps = {
@@ -27,6 +28,7 @@ export default function NotebookForm({ notebook, onSubmit }: FormProps) {
     resolver: zodResolver(NotebookSchema),
     defaultValues: {
       name: notebook?.name || "",
+      redirectTo: true,
     },
   });
   const isLoading = form.formState.isSubmitting;
@@ -47,6 +49,36 @@ export default function NotebookForm({ notebook, onSubmit }: FormProps) {
                   {...field}
                 />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="redirectTo"
+          render={({ field }) => (
+            <FormItem className="flex items-center">
+              <FormControl
+                onChange={() => {
+                  console.log("changed");
+                }}
+              >
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  onKeyDown={(e) => {
+                    if (e.code === "Enter" || e.key === "Enter") {
+                      field.onChange(!field.value);
+                      return;
+                    }
+                  }}
+                  className="cursor-pointer"
+                />
+              </FormControl>
+              <FormLabel className="cursor-pointer">
+                Redirect after creation
+              </FormLabel>
               <FormMessage />
             </FormItem>
           )}

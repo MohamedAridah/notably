@@ -13,7 +13,8 @@ import DeleteNotebookDialog from "@/components/(notebooks)/delete-notebook-butto
 import { ExternalLinkIcon } from "lucide-react";
 import EditNotebookDialog from "./edit-notebook-button";
 import FavoriteButton from "../utils/favorite-button";
-import { handleToggleFavorite_Notebook } from "@/lib/utils";
+import NotebookOptions from "./notebook-options";
+import { setNotebookFavorite } from "@/server/notebooks";
 
 export type NotebookWithCount = Notebook & { _count: { notes: number } };
 export type NotebookWithNotes = Prisma.NotebookGetPayload<{
@@ -38,7 +39,7 @@ export default function Notebook({
               <FavoriteButton
                 isFavorite={notebook.isFavorite}
                 id={notebook.id}
-                onToggle={handleToggleFavorite_Notebook}
+                onToggle={setNotebookFavorite}
               />
               <Link
                 href={notebookURL}
@@ -55,7 +56,15 @@ export default function Notebook({
               />
             )}
           </div>
-          <Badge className="tabular-nums">{notebook._count.notes}</Badge>
+
+          <div className="flex items-center gap-2">
+            <Badge className="tabular-nums">{notebook._count.notes}</Badge>
+            <NotebookOptions
+              notebook={notebook}
+              alignStart={true}
+              className={buttonVariants({ variant: "ghost", size: "sm" })}
+            />
+          </div>
         </CardTitle>
         <CardDescription>
           <p>{notebook._count.notes ?? 0} notes</p>
@@ -71,6 +80,7 @@ export default function Notebook({
         </Link>
         <DeleteNotebookDialog
           notebookId={notebook.id}
+          notebookName={notebook.name}
           callbackURL="/dashboard"
         />
       </CardFooter>

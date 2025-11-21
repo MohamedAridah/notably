@@ -57,7 +57,7 @@ export default async function Dashboard() {
           description={
             <>
               <p className="mb-2">No notebooks found. Go and create one!</p>
-              <CreateNotebookDialog buttonStyles={{ variant: "outline" }} />
+              <CreateNotebookDialog variant="outline" />
             </>
           }
         />

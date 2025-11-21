@@ -118,7 +118,7 @@ export const getCachedNotebook = async (id: string) => {
 
 export const createNotebook = async (name: string, userId: string) => {
   try {
-    await prisma.notebook.create({
+    const notebook = await prisma.notebook.create({
       data: {
         name,
         userId,
@@ -127,7 +127,11 @@ export const createNotebook = async (name: string, userId: string) => {
 
     revalidateTag(`notebooks-user-${userId}`);
     revalidatePath("/dashboard");
-    return { success: true, message: "Notebook created successfully" };
+    return {
+      success: true,
+      id: notebook.id,
+      message: "Notebook created successfully",
+    };
   } catch (error) {
     return {
       success: false,
