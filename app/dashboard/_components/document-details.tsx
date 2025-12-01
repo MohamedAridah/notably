@@ -1,7 +1,6 @@
-import { formatDate } from "@/app/(settings)/_components/utils/utils";
-import { cn } from "@/lib/utils";
 import { Note, Notebook } from "@prisma/client";
-import React from "react";
+import { cn } from "@/lib/utils";
+import { formatDate } from "@/app/(settings)/_components/utils/utils";
 
 type DocumentDetailsProps = {
   document: Notebook | Note;

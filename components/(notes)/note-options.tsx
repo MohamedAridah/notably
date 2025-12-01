@@ -21,8 +21,11 @@ import {
   PenSquareIcon,
   Trash2,
   ReplaceIcon,
+  RotateCwIcon,
 } from "lucide-react";
-import { setNoteFavorite } from "@/server/notes";
+import { setNoteFavoriteAction } from "@/server/notes";
+import { NoteCardMode, NoteModePolicies } from "./note-mode-policies";
+import RestoreNoteDialog from "./restore-note-button";
 
 interface NoteOptionsProps {
   note: {
@@ -38,16 +41,21 @@ interface NoteOptionsProps {
 interface NoteOptionsProps extends React.ComponentProps<"div"> {
   note: NoteOptionsProps["note"];
   alignStart?: boolean;
+  mode?: NoteCardMode;
 }
 
 export default function NoteOptions({
   note,
   alignStart = false,
+  mode = "default",
   ...props
 }: NoteOptionsProps) {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isMoveDialogOpen, setIsMoveDialogOpen] = useState(false);
+  const [isRestoreDialogOpen, setIsRestoreDialogOpen] = useState(false);
+
+  const policy = NoteModePolicies[mode];
 
   return (
     <>
@@ -61,40 +69,58 @@ export default function NoteOptions({
         <DropdownMenuContent
           className={`pointer-events-auto ${alignStart ? "mr-3" : ""}`}
         >
-          <DropdownMenuItem>
-            <Link href={note.note_url}>
-              <IconMenu
-                text="Details"
-                icon={<ExternalLinkIcon className="size-4" />}
+          {policy.canView && (
+            <DropdownMenuItem>
+              <Link href={note.note_url}>
+                <IconMenu
+                  text="Details"
+                  icon={<ExternalLinkIcon className="size-4" />}
+                />
+              </Link>
+            </DropdownMenuItem>
+          )}
+
+          {policy.favoriteInteractive && (
+            <DropdownMenuItem>
+              <FavoriteButton
+                isFavorite={note.isFavorite as boolean}
+                id={note.noteId}
+                onToggle={setNoteFavoriteAction}
+                iconStyles="size-3.5"
+                withText
               />
-            </Link>
-          </DropdownMenuItem>
+            </DropdownMenuItem>
+          )}
 
-          <DropdownMenuItem>
-            <FavoriteButton
-              isFavorite={note.isFavorite as boolean}
-              id={note.noteId}
-              onToggle={setNoteFavorite}
-              iconStyles="size-3.5"
-              withText
-            />
-          </DropdownMenuItem>
+          {policy.canEdit && (
+            <DropdownMenuItem onSelect={() => setIsEditDialogOpen(true)}>
+              <IconMenu
+                text="Update"
+                icon={<PenSquareIcon className="size-4" />}
+              />
+            </DropdownMenuItem>
+          )}
 
-          <DropdownMenuItem onSelect={() => setIsEditDialogOpen(true)}>
-            <IconMenu
-              text="Update"
-              icon={<PenSquareIcon className="size-4" />}
-            />
-          </DropdownMenuItem>
+          {policy.canEdit && (
+            <DropdownMenuItem onSelect={() => setIsMoveDialogOpen(true)}>
+              <IconMenu
+                text="Move to notebook"
+                icon={<ReplaceIcon className="size-4" />}
+              />
+            </DropdownMenuItem>
+          )}
 
-          <DropdownMenuItem onSelect={() => setIsMoveDialogOpen(true)}>
-            <IconMenu
-              text="Move to notebook"
-              icon={<ReplaceIcon className="size-4" />}
-            />
-          </DropdownMenuItem>
+          {policy.canRestore && (
+            <DropdownMenuItem onSelect={() => setIsRestoreDialogOpen(true)}>
+              <IconMenu
+                text="Restore"
+                icon={<RotateCwIcon className="size-4" />}
+              />
+            </DropdownMenuItem>
+          )}
 
           <DropdownMenuSeparator />
+
           <DropdownMenuItem onSelect={() => setIsDeleteDialogOpen(true)}>
             <IconMenu
               className="text-red-500"
@@ -127,6 +153,13 @@ export default function NoteOptions({
         isOpen={isDeleteDialogOpen}
         setIsOpen={setIsDeleteDialogOpen}
         callbackURL={note.notebook_url}
+      />
+
+      <RestoreNoteDialog
+        noteId={note.noteId}
+        withTrigger={false}
+        isOpen={isRestoreDialogOpen}
+        setIsOpen={setIsRestoreDialogOpen}
       />
     </>
   );

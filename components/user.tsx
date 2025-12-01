@@ -1,12 +1,10 @@
 "use client";
 
-import {
-  BadgeCheck,
-  ChevronsUpDown,
-  LayoutDashboard,
-  Loader2,
-  LogOut,
-} from "lucide-react";
+import React from "react";
+import Link from "next/link";
+import { type User } from "better-auth";
+import { authClient } from "@/lib/auth-client";
+import useLogout from "@/hooks/use-logout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -22,12 +20,14 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { authClient } from "@/lib/auth-client";
-import useLogout from "@/hooks/use-logout";
 import { Skeleton } from "@/components/ui/skeleton";
-import { type User } from "better-auth";
-import React from "react";
-import Link from "next/link";
+import {
+  BadgeCheck,
+  ChevronsUpDown,
+  LayoutDashboardIcon,
+  Loader2,
+  LogOut,
+} from "lucide-react";
 
 type UserType = {
   user: Pick<User, "name" | "email" | "image">;
@@ -158,7 +158,7 @@ const UserMenu = ({ links }: { links?: UserLinkType[] }) => {
         ))}
       <DropdownMenuItem asChild>
         <Link href="/dashboard">
-          <LayoutDashboard />
+          <LayoutDashboardIcon />
           Dashboard
         </Link>
       </DropdownMenuItem>

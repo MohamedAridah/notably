@@ -12,6 +12,7 @@ import {
 import {
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -24,6 +25,8 @@ import {
   ChevronRight,
   FolderClosedIcon,
   InfoIcon,
+  LibraryBigIcon,
+  LibraryIcon,
   NotebookTextIcon,
 } from "lucide-react";
 import SidebarOptions from "./sidebar-options";
@@ -114,27 +117,30 @@ export default function SidebarData({ data }: SidebarDataProps) {
 
   return (
     <SidebarGroup>
-      {data.navMain.length && (
-        <SidebarOptions>
-          <DeleteEmptyNotes />
-          <ToggleCollapseButton
-            isExpanded={isExpanded}
-            handler={() => handleFold_Unfold(!isExpanded)}
-          />
-        </SidebarOptions>
-      )}
+      <SidebarGroupLabel className="justify-between items-center">
+        My Notebooks
+        {data.navMain.length !== 0 && (
+          <SidebarOptions>
+            <DeleteEmptyNotes />
+            <ToggleCollapseButton
+              isExpanded={isExpanded}
+              handler={() => handleFold_Unfold(!isExpanded)}
+            />
+          </SidebarOptions>
+        )}
+      </SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
           {filteredData.map((notebook, notebookIndex) => (
             <Collapsible
-              key={notebook.id}
+              key={notebook.id + " collapse"}
               className="group/collapsible"
               defaultOpen
               open={Boolean(!openItems[notebook.id])}
               onOpenChange={(isOpen) => toggleItem(notebook.id, !isOpen)}
               asChild
             >
-              <SidebarMenuItem key={notebook.id}>
+              <SidebarMenuItem key={notebook.id + " item"}>
                 <CollapsibleTrigger asChild>
                   <SidebarMenuButton
                     tooltip={notebook.title}
@@ -165,20 +171,21 @@ export default function SidebarData({ data }: SidebarDataProps) {
                       </Link>
 
                       {!notebook.isDefault && (
-                        // <div
-                        //   onClick={(e) => e.stopPropagation()}
-                        //   className="flex items-center gap-2"
-                        // >
-                        <NotebookOptions
-                          notebook={{
-                            id: notebook.id,
-                            name: notebook.title,
-                            isFavorite: notebook.isFavorite,
-                          }}
-                          // className="flex items-center sm:opacity-0 group-hover/notebook-buttons:opacity-100"
-                          className="flex items-center"
-                        />
-                        // </div>
+                        <div
+                          onClick={(e) => e.stopPropagation()}
+                          // className="flex items-center gap-2"
+                        >
+                          <NotebookOptions
+                            notebook={{
+                              id: notebook.id,
+                              name: notebook.title,
+                              isFavorite: notebook.isFavorite,
+                            }}
+                            
+                            // className="flex items-center sm:opacity-0 group-hover/notebook-buttons:opacity-100"
+                            className="flex items-center"
+                          />
+                        </div>
                       )}
 
                       {notebook.items.length > 0 && (
@@ -241,6 +248,12 @@ export default function SidebarData({ data }: SidebarDataProps) {
               </SidebarMenuItem>
             </Collapsible>
           ))}
+
+          {filteredData.length === 0 ? (
+            <SidebarMenuItem className="flex items-center gap-2 text-xs pl-2 grougroup-data-[collapsible=icon]:hidden">
+              <LibraryIcon className="size-5" /> No notebooks yet.
+            </SidebarMenuItem>
+          ) : null}
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>

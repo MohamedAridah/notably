@@ -1,28 +1,32 @@
+import { Suspense } from "react";
+import Link from "next/link";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
+  SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { getCachedNotebooks } from "@/server/notebooks";
-import { UserForNav } from "../user";
-import Link from "next/link";
-import { Logo } from "../utils/logo";
-import { Suspense } from "react";
+import { getCachedNotebooksAction } from "@/server/notebooks";
+import { UserForNav } from "@/components/user";
+import { Logo } from "@/components/utils/logo";
 import { Search } from "@/components/utils/search";
-import SidebarSkeleton from "./sidebar-skeleton";
-import SidebarData from "./sidebar-data";
-import SearchIcon from "./search-icon";
-import { HomeIcon } from "lucide-react";
-import CreateNoteDialog from "../(notes)/create-note-button";
-import AddNoteIcon from "./add-note-icon";
+import SidebarData from "@/components/(sidebar)/sidebar-data";
+import SearchIcon from "@/components/(sidebar)/search-icon";
+import AddNoteIcon from "@/components/(sidebar)/add-note-icon";
+import AddNotebookIcon from "@/components/(sidebar)/add-notebook-icon";
+import SidebarSkeleton from "@/components/(sidebar)/sidebar-skeleton";
+import CreateNoteDialog from "@/components/(notes)/create-note-button";
 import CreateNotebookDialog from "@/components/(notebooks)/create-notebook-button";
-import AddNotebookIcon from "./add-notebook-icon";
+import { HomeIcon, LayoutDashboardIcon, Trash2Icon } from "lucide-react";
 
 export async function AppSidebar() {
-  const notebooks = await getCachedNotebooks();
+  const notebooks = await getCachedNotebooksAction();
 
   const data = {
     navMain:
@@ -62,32 +66,63 @@ export async function AppSidebar() {
           </SidebarMenuItem>
 
           <Suspense fallback={<SidebarSkeleton length={1} />}>
-            <SidebarMenuItem className="group-data-[collapsible=icon]:hidden block">
+            <SidebarMenuItem className="group-data-[collapsible=icon]:hidden block mt-2 mb-4">
               <Search placeholder="Search your notes..." />
             </SidebarMenuItem>
           </Suspense>
-
-          <SidebarMenuItem>
-            <CreateNoteDialog
-              variant="secondary"
-              size="sm"
-              className="w-full mt-1 group-data-[collapsible=icon]:hidden"
-            />
-            <AddNoteIcon />
-          </SidebarMenuItem>
-
-          <SidebarMenuItem>
-            <CreateNotebookDialog
-              variant="outline"
-              size="sm"
-              className="w-full group-data-[collapsible=icon]:hidden"
-            />
-            <AddNotebookIcon />
-          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
 
       <SidebarContent className="overflow-x-hidden">
+        <SidebarGroup>
+          <SidebarGroupLabel>Quick Actions</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <CreateNoteDialog
+                  variant="ghost"
+                  size="sm"
+                  className="w-full group-data-[collapsible=icon]:hidden justify-start"
+                />
+                <AddNoteIcon />
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <CreateNotebookDialog
+                  variant="ghost"
+                  size="sm"
+                  className="w-full group-data-[collapsible=icon]:hidden justify-start"
+                />
+                <AddNotebookIcon />
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Dashboard">
+                  <Link href="/dashboard">
+                    <LayoutDashboardIcon className="size-4" />
+                    Dashboard
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Trash">
+                  <Link href="/dashboard/trash">
+                    <Trash2Icon className="size-4" />
+                    Trash
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
         <Suspense fallback={<SidebarSkeleton length={5} showIcon />}>
           <SidebarData data={data} />
         </Suspense>

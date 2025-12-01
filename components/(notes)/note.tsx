@@ -13,9 +13,18 @@ import EditNoteDialog from "./edit-note-button";
 import FavoriteButton from "../utils/favorite-button";
 import { NoteScoped } from "@/app/dashboard/notebook/[notebookId]/_components/notebook-notes";
 import NoteOptions from "./note-options";
-import { setNoteFavorite } from "@/server/notes";
+import { setNoteFavoriteAction } from "@/server/notes";
+import { NoteCardMode, NoteModePolicies } from "./note-mode-policies";
+import RestoreNoteDialog from "./restore-note-button";
 
-export default function NoteCard({ note }: { note: NoteScoped }) {
+export default function NoteCard({
+  note,
+  mode = "default",
+}: {
+  note: NoteScoped;
+  mode?: NoteCardMode;
+}) {
+  const policy = NoteModePolicies[mode];
   const notebookURL = `/dashboard/notebook/${note.notebookId}`;
   const noteURL = `/dashboard/notebook/${note.notebookId}/note/${note.id}`;
 
@@ -25,27 +34,36 @@ export default function NoteCard({ note }: { note: NoteScoped }) {
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-2 group/note-buttons">
             <div className="flex items-center gap-1.5">
-              <FavoriteButton
-                isFavorite={note.isFavorite}
-                id={note.id}
-                onToggle={setNoteFavorite}
-              />
+              {policy.canFavorite && (
+                <FavoriteButton
+                  isFavorite={note.isFavorite}
+                  id={note.id}
+                  onToggle={setNoteFavoriteAction}
+                />
+              )}
 
-              <Link
-                href={noteURL}
-                className="hover:underline underline-offset-3"
-              >
-                {note.title || "Untitled Note"}
-              </Link>
+              {policy.canView ? (
+                <Link
+                  href={noteURL}
+                  className="hover:underline underline-offset-3"
+                >
+                  {note.title || "Untitled Note"}
+                </Link>
+              ) : (
+                <span>{note.title || "Untitled Note"}</span>
+              )}
             </div>
-            <EditNoteDialog
-              note={note}
-              noteId={note.id}
-              trigger={{ asIcon: true, asIconHidden: true }}
-            />
+
+            {policy.canEdit && (
+              <EditNoteDialog
+                note={note}
+                noteId={note.id}
+                trigger={{ asIcon: true, asIconHidden: true }}
+              />
+            )}
           </div>
 
-          <div>
+          {policy.canOptions && (
             <NoteOptions
               note={{
                 notebookId: note.notebookId as string,
@@ -58,18 +76,24 @@ export default function NoteCard({ note }: { note: NoteScoped }) {
               alignStart={true}
               className={buttonVariants({ variant: "ghost", size: "sm" })}
             />
-          </div>
+          )}
         </CardTitle>
         <CardDescription>Click view to see note content.</CardDescription>
       </CardHeader>
+
       <CardFooter className="ml-auto gap-2">
-        <Link
-          href={noteURL}
-          className={buttonVariants({ variant: "outline", size: "sm" })}
-        >
-          <ExternalLinkIcon /> View
-        </Link>
-        <DeleteNoteDialog noteId={note.id} />
+        {policy.canView && (
+          <Link
+            href={noteURL}
+            className={buttonVariants({ variant: "outline", size: "sm" })}
+          >
+            <ExternalLinkIcon /> View
+          </Link>
+        )}
+
+        <DeleteNoteDialog noteId={note.id} mode={policy.deleteAction} />
+
+        {note.deletedAt && <RestoreNoteDialog noteId={note.id} />}
       </CardFooter>
     </Card>
   );

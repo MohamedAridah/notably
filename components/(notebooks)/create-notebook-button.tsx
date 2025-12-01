@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 import z from "zod";
-import { createNotebook } from "@/server/notebooks";
+import { authClient } from "@/lib/auth-client";
+import { createNotebookAction } from "@/server/notebooks";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { NotebookSchema } from "@/validations/zod/notebook-schemas";
 import {
   Dialog,
@@ -14,13 +16,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import NotebookForm from "@/components/forms/(notebooks)/notebook-form";
-import { toast } from "sonner";
-import { PlusIcon } from "lucide-react";
-import { useMediaQuery } from "@/hooks/use-media-query";
-import { useRouter } from "next/navigation";
 import DialogTriggerButton, {
   TriggerProps,
-} from "../utils/dialog-trigger-button";
+} from "@/components/utils/dialog-trigger-button";
+import { NotebookIcon } from "lucide-react";
+import { toast } from "sonner";
 
 interface CreateNotebookDialogProps {
   cb?: () => void;
@@ -45,11 +45,9 @@ export default function CreateNotebookDialog({
     }
     try {
       toast.loading("Creating your new notebook — Just a moment...");
-      const {
-        success,
-        id: notebookId,
-        message,
-      } = await createNotebook(data.name, userId);
+      const { success, notebookId, message } = await createNotebookAction(
+        data.name
+      );
       toast.dismiss();
       if (success) {
         if (data.redirectTo) {
@@ -79,7 +77,7 @@ export default function CreateNotebookDialog({
           asIcon={trigger?.asIcon}
           asIconHidden={trigger?.asIconHidden}
           asLabel={trigger?.asLabel}
-          icon={PlusIcon}
+          icon={NotebookIcon}
           idleText={idleText}
           processText="Creating"
           size="default"

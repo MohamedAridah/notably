@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Notebook } from "@prisma/client";
 import z from "zod";
 import { NotebookSchema } from "@/validations/zod/notebook-schemas";
 import { authClient } from "@/lib/auth-client";
-import { updateNotebook } from "@/server/notebooks";
+import { updateNotebookAction } from "@/server/notebooks";
 import {
   Dialog,
   DialogContent,
@@ -36,6 +37,7 @@ export default function EditNotebookDialog({
   trigger,
   withTrigger = true,
 }: DialogProps & TriggerAppearance) {
+  const router = useRouter();
   const [dialogState, setDialogState] = useState(false);
 
   const onSubmit = async (data: z.infer<typeof NotebookSchema>) => {
@@ -48,10 +50,14 @@ export default function EditNotebookDialog({
     }
 
     try {
-      const { success, message } = await updateNotebook(notebookId, {
+      const { success, message } = await updateNotebookAction(notebookId, {
         name: data.name,
       });
+
       if (success) {
+        if (data.redirectTo) {
+          router.push(`/dashboard/notebook/${notebookId}`);
+        }
         toast.success(message);
         setIsOpen ? setIsOpen(false) : setDialogState(false);
       } else {
@@ -90,7 +96,7 @@ export default function EditNotebookDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <NotebookForm onSubmit={onSubmit} notebook={notebook} />
+        <NotebookForm onSubmit={onSubmit} notebook={notebook} mode="update"/>
       </DialogContent>
     </Dialog>
   );

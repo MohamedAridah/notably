@@ -2,14 +2,13 @@
 
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
-import { createNote } from "@/server/notes";
+import { createNoteAction } from "@/server/notes";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import DialogTriggerButton, {
   TriggerProps,
 } from "@/components/utils/dialog-trigger-button";
-import { PlusIcon } from "lucide-react";
 import { toast } from "sonner";
-import { useMediaQuery } from "@/hooks/use-media-query";
-
+import { NotepadTextIcon } from "lucide-react";
 
 interface DialogProps {
   notebookId?: string;
@@ -32,7 +31,7 @@ export default function CreateNoteDialog({
     }
 
     try {
-      toast.promise(createNote({ notebookId }), {
+      toast.promise(createNoteAction(notebookId), {
         loading: "Creating your new note — just a moment...",
         success: ({ noteId, notebookId }) => {
           router.push(`/dashboard/notebook/${notebookId}/note/${noteId}`);
@@ -54,7 +53,7 @@ export default function CreateNoteDialog({
       asIcon={trigger?.asIcon}
       asIconHidden={trigger?.asIconHidden}
       asLabel={trigger?.asLabel}
-      icon={PlusIcon}
+      icon={NotepadTextIcon}
       idleText={!isMobile ? "Create Note" : "Note"}
       processText="Creating..."
       className="group-hover/note-buttons:opacity-100 group-hover/notebook-buttons:opacity-100"

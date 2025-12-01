@@ -1,5 +1,5 @@
-import { updateNote } from "@/server/notes";
 import { NextResponse } from "next/server";
+import { updateNoteAction } from "@/server/notes";
 
 export async function PATCH(req: Request) {
   const { id, content } = await req.json();
@@ -11,7 +11,7 @@ export async function PATCH(req: Request) {
     );
   }
 
-  const { success, message } = await updateNote(id, { content });
+  const { success, message } = await updateNoteAction(id, { content });
 
   if (!success) {
     return NextResponse.json(
