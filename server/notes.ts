@@ -1,208 +1,166 @@
 "use server";
 
-import prisma from "@/lib/prisma";
-import { Note } from "@prisma/client";
-import { InputJsonValue } from "@prisma/client/runtime/library";
-import errorMessage from "@/helpers/errorMessage";
-import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
-import { isUserAuthed } from "./auth";
+import { Note, Prisma } from "@prisma/client";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { isUserAuthed } from "@/server/auth";
+import { getCachedNoteById, getCachedTrashedNotes } from "@/lib/cache/notes";
+import {
+  createNoteInDB,
+  deleteEmptyNotesFromDB,
+  deleteNoteFromDB,
+  trashNoteInDB,
+  restoreNoteInDB,
+  setNoteFavoriteInDB,
+  updateNoteInDB,
+} from "@/lib/db/notes";
 
-export const getNoteById = async (id: string) => {
-  const { session } = await isUserAuthed();
-  const userId = session?.userId!;
+/**
+ * Get cached note by ID
+ */
+export const getCachedNoteByIdAction = async (noteId: string) => {
+  const userId = await isUserAuthed();
+  return getCachedNoteById(noteId, userId);
+};
 
-  try {
-    const note = await prisma.note.findUnique({
-      where: {
-        id,
-        userId,
-      },
-      include: {
-        notebook: {
-          select: { name: true },
-        },
-      },
-    });
+/**
+ * Get cached trashed notes
+ */
+export const getCachedTrashedNotesAction = async () => {
+  const userId = await isUserAuthed();
+  return getCachedTrashedNotes(userId);
+};
 
-    return { success: true, note };
-  } catch (error) {
-    return {
-      success: false,
-      message: errorMessage(error) || "Failed to get note",
-    };
+/**
+ * Create new note
+ */
+export const createNoteAction = async (
+  notebookId?: string,
+  title?: Note["title"],
+  content?: Prisma.InputJsonValue
+) => {
+  const userId = await isUserAuthed();
+  const result = await createNoteInDB(userId, title, content, notebookId);
+
+  if (result.success) {
+    revalidateTag(`notebooks-user-${userId}`);
+    revalidateTag(`notebook-${result.notebookId}-${userId}`);
+    revalidatePath("/dashboard");
   }
+
+  return result;
 };
 
-type CreateNoteProps = {
-  title?: Note["title"];
-  content?: InputJsonValue;
-  notebookId?: string;
-};
+/**
+ * Update existing note
+ */
+export const updateNoteAction = async (id: string, data: Partial<Note>) => {
+  const userId = await isUserAuthed();
+  const result = await updateNoteInDB(id, userId, data);
 
-export async function createNote({
-  title,
-  content,
-  notebookId,
-}: CreateNoteProps) {
-  const { session } = await isUserAuthed();
-  const userId = session?.userId!;
-  let finalNotebookId = notebookId;
-  try {
-    if (!notebookId) {
-      const quickNotes = await prisma.notebook.upsert({
-        where: {
-          name_userId: {
-            name: "Quick Notes",
-            userId,
-          },
-        },
-        update: {},
-        create: {
-          name: "Quick Notes",
-          userId,
-          isDefault: true,
-        },
-      });
-      finalNotebookId = quickNotes.id;
+  if (result.success) {
+    revalidateTag(`note-${id}-${userId}`);
+    revalidateTag(`notebooks-user-${userId}`);
+    if (result.notebookId) {
+      revalidateTag(`notebook-${result.notebookId}-${userId}`);
     }
-    const note = await prisma.note.create({
-      data: {
-        title,
-        content,
-        notebookId: finalNotebookId,
-        userId,
-      },
-      select: {
-        id: true,
-        notebookId: true,
-      },
-    });
     revalidatePath("/dashboard");
-    revalidateTag(`notebooks-user-${userId}`);
-    return {
-      success: true,
-      message: "Note created successfully",
-      noteId: note.id,
-      notebookId: note.notebookId,
-    };
-  } catch (error) {
-    console.log(error);
-    return {
-      success: false,
-      message: errorMessage(error) || "Failed to create note",
-    };
   }
-}
 
-export type UpdateNoteValuesType = {
-  title?: Note["title"];
-  content?: InputJsonValue;
-  notebookId?: string;
+  return result;
 };
 
-export const updateNote = async (id: string, values: UpdateNoteValuesType) => {
-  const { session } = await isUserAuthed();
-  const userId = session?.userId!;
+/**
+ * Move note to trash
+ */
+export const trashNoteAction = async (noteId: string) => {
+  const userId = await isUserAuthed();
+  const result = await trashNoteInDB(noteId, userId);
 
-  try {
-    await prisma.note.update({
-      where: {
-        id,
-        userId,
-      },
-      data: { ...values },
-      select: {
-        id: true,
-      },
-    });
-    revalidatePath("/dashboard");
+  if (result.success) {
+    revalidateTag(`note-${noteId}-${userId}`);
+    revalidateTag(`trashed-notes-user-${userId}`);
     revalidateTag(`notebooks-user-${userId}`);
-    return {
-      success: true,
-      message: "Note saved successfully",
-    };
-  } catch (error) {
-    return {
-      success: false,
-      message: errorMessage(error) || "Failed to save note",
-    };
+    revalidateTag(`notebook-${result.notebookId}-${userId}`);
+    revalidatePath("/dashboard", "layout");
   }
+
+  return result;
 };
 
-export const deleteNote = async (id: string) => {
-  const { session } = await isUserAuthed();
-  const userId = session?.userId!;
+/**
+ * Restore note from trash
+ */
+export const restoreNoteAction = async (noteId: string) => {
+  const userId = await isUserAuthed();
+  const result = await restoreNoteInDB(noteId, userId);
 
-  try {
-    await prisma.note.delete({
-      where: {
-        id,
-        userId,
-      },
-    });
-    revalidatePath("/dashboard");
+  if (result.success) {
+    revalidateTag(`note-${noteId}-${userId}`);
+    revalidateTag(`trashed-notes-user-${userId}`);
     revalidateTag(`notebooks-user-${userId}`);
-    return {
-      success: true,
-      message: "Note deleted successfully",
-    };
-  } catch (error) {
-    return {
-      success: false,
-      message: errorMessage(error) || "Failed to delete note",
-    };
+    if (result.notebookId) {
+      revalidateTag(`notebook-${result.notebookId}-${userId}`);
+    }
+    revalidatePath("/dashboard");
   }
+
+  return result;
 };
 
-export const setNoteFavorite = async (id: string, isFavorite: boolean) => {
-  const { session } = await isUserAuthed();
-  const userId = session?.userId!;
+/**
+ * Permanently delete note
+ */
+export const deleteNoteAction = async (noteId: string) => {
+  const userId = await isUserAuthed();
+  const result = await deleteNoteFromDB(noteId, userId);
 
-  try {
-    const note = await prisma.note.update({
-      where: { id, userId },
-      data: { isFavorite },
-    });
-
-    revalidateTag(`notebook-${note.notebookId}`);
-    revalidateTag(`notebooks-user-${note.userId}`);
+  if (result.success) {
+    revalidateTag(`note-${noteId}-${userId}`);
+    revalidateTag(`trashed-notes-user-${userId}`);
+    revalidateTag(`notebooks-user-${userId}`);
+    if (result.notebookId) {
+      revalidateTag(`notebook-${result.notebookId}-${userId}`);
+    }
     revalidatePath("/dashboard");
-
-    return {
-      success: true,
-      message: isFavorite
-        ? "Note added to your favorites."
-        : "Note removed from your favorites.",
-    };
-  } catch (error) {
-    return {
-      success: false,
-      message:
-        errorMessage(error) ||
-        `Failed to ${isFavorite ? "add" : "remove"} note from favorites`,
-    };
   }
+
+  return result;
 };
 
-export const deleteEmptyNotes = async () => {
-  const { session, message } = await isUserAuthed();
-  if (!session) throw new Error(message);
-  const userId = session?.userId!;
+/**
+ * Toggle note favorite status
+ */
+export const setNoteFavoriteAction = async (
+  id: string,
+  isFavorite: boolean
+) => {
+  const userId = await isUserAuthed();
+  const result = await setNoteFavoriteInDB(id, userId, isFavorite);
 
-  try {
-    await prisma.$executeRaw`DELETE FROM "note" WHERE "content" IS NULL`;
-    revalidatePath("/dashboard");
+  if (result.success) {
+    revalidateTag(`note-${id}-${userId}`);
     revalidateTag(`notebooks-user-${userId}`);
-    return {
-      success: true,
-      message: "Empty notes deleted successfully",
-    };
-  } catch (error) {
-    console.log(error);
-
-    return {
-      success: false,
-      message: errorMessage(error) || "Failed to delete empty notes",
-    };
+    if (result.notebookId) {
+      revalidateTag(`notebook-${result.notebookId}-${userId}`);
+    }
+    revalidatePath("/dashboard");
   }
+
+  return result;
+};
+
+/**
+ * Delete all empty notes for user
+ */
+export const deleteEmptyNotesAction = async () => {
+  const userId = await isUserAuthed();
+  const result = await deleteEmptyNotesFromDB(userId);
+
+  if (result.success) {
+    revalidateTag(`trashed-notes-user-${userId}`);
+    revalidateTag(`notebooks-user-${userId}`);
+    revalidatePath("/dashboard");
+  }
+
+  return result;
 };

@@ -1,16 +1,27 @@
+import { Suspense } from "react";
 import { Metadata } from "next";
-import { getCachedNotebook, setNotebookFavorite } from "@/server/notebooks";
+import Link from "next/link";
+import {
+  getCachedNotebookByIdAction,
+  setNotebookFavoriteAction,
+} from "@/server/notebooks";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import CreateNoteDialog from "@/components/(notes)/create-note-button";
 import BreadCrumbUI from "@/components/utils/breadcrumb";
-import { Loader2, NotebookText, ShieldAlert } from "lucide-react";
 import Message from "@/components/utils/message";
-import { Badge } from "@/components/ui/badge";
 import EditNotebookDialog from "@/components/(notebooks)/edit-notebook-button";
 import DeleteNotebookDialog from "@/components/(notebooks)/delete-notebook-button";
 import NotebookNotes from "./_components/notebook-notes";
 import DocumentDetails from "../../_components/document-details";
-import { Suspense } from "react";
 import FavoriteButton from "@/components/utils/favorite-button";
+import {
+  ArrowLeftIcon,
+  Loader2,
+  NotebookText,
+  ShieldAlert,
+  Trash2Icon,
+} from "lucide-react";
 
 export async function generateMetadata({
   params,
@@ -18,7 +29,7 @@ export async function generateMetadata({
   params: Params;
 }): Promise<Metadata> {
   const notebookId = (await params).notebookId;
-  const { notebook } = await getCachedNotebook(notebookId);
+  const { notebook } = await getCachedNotebookByIdAction(notebookId);
 
   return {
     title: notebook?.name,
@@ -35,7 +46,8 @@ type Params = Promise<{
 
 export default async function NotebookPage({ params }: { params: Params }) {
   const notebookId = (await params).notebookId;
-  const { notebook } = await getCachedNotebook(notebookId);
+  const { success, notebook, message } =
+    await getCachedNotebookByIdAction(notebookId);
 
   const breadCrumbs = [
     { label: "Dashboard", href: "/dashboard" },
@@ -46,6 +58,26 @@ export default async function NotebookPage({ params }: { params: Params }) {
     },
   ];
 
+  if (!success) {
+    return (
+      <>
+        <BreadCrumbUI breadCrumbs={breadCrumbs} />
+
+        <Message
+          Icon={
+            <ShieldAlert className="text-center size-10 mx-auto mb-3 text-orange-400" />
+          }
+          description={
+            <>
+              <p className="text-lg font-semibold">{message as string}</p>
+              <p>Sorry, something went wrong.</p>
+            </>
+          }
+        />
+      </>
+    );
+  }
+
   if (!notebook) {
     return (
       <>
@@ -55,6 +87,34 @@ export default async function NotebookPage({ params }: { params: Params }) {
             <ShieldAlert className="text-center size-10 mx-auto mb-3 text-orange-400" />
           }
           description="Notebook is not found"
+        />
+      </>
+    );
+  }
+
+  if (notebook.deletedAt) {
+    return (
+      <>
+        <BreadCrumbUI breadCrumbs={breadCrumbs} />
+
+        <Message
+          Icon={
+            <Trash2Icon className="text-center size-10 mx-auto mb-3 text-destructive" />
+          }
+          description={
+            <>
+              <p>
+                This notebook is currently deleted. Restore it from the Trash to
+                view its details or notes
+              </p>
+
+              <Button variant="outline" className="mt-3" asChild>
+                <Link href="/dashboard/trash">
+                  <ArrowLeftIcon /> Go to Trash
+                </Link>
+              </Button>
+            </>
+          }
         />
       </>
     );
@@ -71,7 +131,7 @@ export default async function NotebookPage({ params }: { params: Params }) {
             <FavoriteButton
               isFavorite={notebook.isFavorite}
               id={notebook.id}
-              onToggle={setNotebookFavorite}
+              onToggle={setNotebookFavoriteAction}
             />
           </div>
           {!notebook.isDefault && (

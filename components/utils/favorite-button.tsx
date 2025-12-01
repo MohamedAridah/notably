@@ -16,6 +16,7 @@ type FavoriteButtonProps = {
   withText?: boolean;
   iconStyles?: string;
   className?: string;
+  disabled?: boolean;
 };
 
 const FavoriteButton: React.FC<FavoriteButtonProps> = ({
@@ -25,6 +26,7 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({
   withText = false,
   iconStyles = "",
   className = "",
+  disabled = false,
 }) => {
   const [isPending, startTransition] = useTransition();
   const [localFavorite, setLocalFavorite] = useState(isFavorite);
@@ -40,7 +42,12 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({
 
     startTransition(async () => {
       try {
-        const { success, message } = await onToggle(id, optimisticValue);
+        const { success, message } = !disabled
+          ? await onToggle(id, optimisticValue)
+          : {
+              success: false,
+              message: "Favorite action disabled in this mode. Restore notebook to enable.",
+            };
 
         if (success) {
           toast.success(message);

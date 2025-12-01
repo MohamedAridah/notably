@@ -1,6 +1,6 @@
 import { Button } from "../ui/button";
 import { FileXIcon } from "lucide-react";
-import { deleteEmptyNotes } from "@/server/notes";
+import { deleteEmptyNotesAction } from "@/server/notes";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -18,7 +18,7 @@ export default function DeleteEmptyNotes() {
     }
 
     try {
-      toast.promise(deleteEmptyNotes, {
+      toast.promise(deleteEmptyNotesAction, {
         loading: "Deleting empty notes...",
         success: ({ message }) => {
           router.push("/dashboard");

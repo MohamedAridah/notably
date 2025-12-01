@@ -6,7 +6,7 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
 import VerifyEmail from "@/emails/verify-email";
 import ResetPassword from "@/emails/reset-password";
-import { createQuickNotesNotebook } from "@/server/notebooks";
+import { createDefaultNotebook } from "@/lib/db/notebooks";
 import VerifyUpdatedEmail from "@/emails/verify-updated-email";
 import DeleteAccount from "@/emails/delete-account";
 import WelcomeEmail from "@/emails/welcome-email";
@@ -69,7 +69,7 @@ export const auth = betterAuth({
       create: {
         after: async (account) => {
           //create a default notebook for the user
-          await createQuickNotesNotebook(account.userId);
+          await createDefaultNotebook(account.userId);
         },
       },
     },

@@ -5,7 +5,7 @@ import { type Note } from "@prisma/client";
 import z from "zod";
 import { authClient } from "@/lib/auth-client";
 import { NoteSchema } from "@/validations/zod/note-schemas";
-import { updateNote } from "@/server/notes";
+import { updateNoteAction } from "@/server/notes";
 import NoteForm from "@/components/forms/(notes)/note-form";
 import {
   Dialog,
@@ -48,7 +48,7 @@ export default function EditNoteDialog({
     }
 
     try {
-      const { success, message } = await updateNote(noteId, {
+      const { success, message } = await updateNoteAction(noteId, {
         title: data.title,
       });
       if (success) {

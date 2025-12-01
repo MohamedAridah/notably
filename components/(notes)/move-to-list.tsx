@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
-import { updateNote } from "@/server/notes";
+import { updateNoteAction } from "@/server/notes";
 import { getNotebooks } from "@/helpers/get-notebooks-client";
 import { buttonVariants } from "@/components/ui/button";
 import CreateNotebookDialog from "../(notebooks)/create-notebook-button";
@@ -52,7 +52,7 @@ const NotebooksList = ({
     try {
       setIsMoving(true);
       toast.loading("Moving note...", { position });
-      const { success } = await updateNote(noteId, {
+      const { success } = await updateNoteAction(noteId, {
         notebookId: newNotebookId,
       });
       if (success) {
@@ -112,10 +112,17 @@ const NotebooksList = ({
 
   return (
     <div className="flex flex-col gap-4 items-end">
-      <CreateNotebookDialog
-        size="sm"
-        cb={() => setIsNewNotebookCreated((prev) => +prev + 1)}
-      />
+      <div className="flex items-center justify-between gap-2 w-full">
+        {notebooks.length > 0 && (
+          <p className="text-sm text-orange-500">
+            You need at least two notebooks to move one.
+          </p>
+        )}
+        <CreateNotebookDialog
+          size="sm"
+          cb={() => setIsNewNotebookCreated((prev) => +prev + 1)}
+        />
+      </div>
       <div className="w-full grid md:grid-cols-[repeat(auto-fill,_minmax(10rem,_1fr))] gap-4 items-start mt-4 py-5">
         {notebooks.map((notebook) => (
           <button

@@ -19,23 +19,34 @@ import {
   ExternalLinkIcon,
   PenSquare,
   Trash2,
+  RotateCwIcon,
 } from "lucide-react";
 import FavoriteButton from "../utils/favorite-button";
 import { cn } from "@/lib/utils";
-import { setNotebookFavorite } from "@/server/notebooks";
+import { setNotebookFavoriteAction } from "@/server/notebooks";
+import {
+  NotebookCardMode,
+  NotebookModePolicies,
+} from "../(notebooks)/notebook-mode-policies";
+import RestoreNotebookDialog from "./restore-notebook-button";
 
 interface NotebookOptionsProps extends React.ComponentProps<"div"> {
   notebook: Pick<Notebook, "id" | "name" | "isFavorite">;
   alignStart?: boolean;
+  mode?: NotebookCardMode;
 }
 
 export default function NotebookOptions({
   notebook,
   alignStart = false,
+  mode = "default",
   ...props
 }: NotebookOptionsProps) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isRestoreDialogOpen, setIsRestoreDialogOpen] = useState(false);
+  const { canEdit, favoriteInteractive, canView, canRestore, canCreate } =
+    NotebookModePolicies[mode];
 
   return (
     <>
@@ -50,32 +61,50 @@ export default function NotebookOptions({
         <DropdownMenuContent
           className={`pointer-events-auto ${alignStart ? "mr-3" : ""}`}
         >
-          <DropdownMenuItem>
-            <Link href={`/dashboard/notebook/${notebook.id}`}>
-              <IconMenu
-                text="Details"
-                icon={<ExternalLinkIcon className="size-4" />}
+          {canView && (
+            <DropdownMenuItem>
+              <Link href={`/dashboard/notebook/${notebook.id}`}>
+                <IconMenu
+                  text="Details"
+                  icon={<ExternalLinkIcon className="size-4" />}
+                />
+              </Link>
+            </DropdownMenuItem>
+          )}
+
+          {canCreate && (
+            <DropdownMenuItem>
+              <CreateNoteDialog notebookId={notebook.id} asLabel />
+            </DropdownMenuItem>
+          )}
+
+          {favoriteInteractive && (
+            <DropdownMenuItem>
+              <FavoriteButton
+                isFavorite={notebook.isFavorite}
+                id={notebook.id}
+                onToggle={setNotebookFavoriteAction}
+                iconStyles="size-3.5"
+                withText
+                disabled={!favoriteInteractive}
               />
-            </Link>
-          </DropdownMenuItem>
+            </DropdownMenuItem>
+          )}
 
-          <DropdownMenuItem>
-            <CreateNoteDialog notebookId={notebook.id} asLabel />
-          </DropdownMenuItem>
+          {canEdit && (
+            <DropdownMenuItem onSelect={() => setIsEditDialogOpen(true)}>
+              <IconMenu text="Update" icon={<PenSquare className="size-4" />} />
+            </DropdownMenuItem>
+          )}
 
-          <DropdownMenuItem>
-            <FavoriteButton
-              isFavorite={notebook.isFavorite}
-              id={notebook.id}
-              onToggle={setNotebookFavorite}
-              iconStyles="size-3.5"
-              withText
-            />
-          </DropdownMenuItem>
-
-          <DropdownMenuItem onSelect={() => setIsEditDialogOpen(true)}>
-            <IconMenu text="Update" icon={<PenSquare className="size-4" />} />
-          </DropdownMenuItem>
+          {canRestore && (
+            <DropdownMenuItem onSelect={() => setIsRestoreDialogOpen(true)}>
+              <IconMenu
+                text="Restore"
+                icon={<RotateCwIcon className="size-4" />}
+              />
+            </DropdownMenuItem>
+          )}
 
           <DropdownMenuSeparator />
 
@@ -103,6 +132,15 @@ export default function NotebookOptions({
         withTrigger={false}
         isOpen={isDeleteDialogOpen}
         setIsOpen={setIsDeleteDialogOpen}
+        // callbackURL={mode === "default" ? "/dashboard" : undefined}
+      />
+
+      <RestoreNotebookDialog
+        notebookId={notebook.id}
+        notebookName={notebook.name}
+        withTrigger={false}
+        isOpen={isRestoreDialogOpen}
+        setIsOpen={setIsRestoreDialogOpen}
       />
     </>
   );

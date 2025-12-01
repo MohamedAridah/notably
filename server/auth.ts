@@ -1,10 +1,10 @@
 "use server";
 
-import { auth } from "@/lib/auth";
-import errorMessage from "@/helpers/errorMessage";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import errorMessage from "@/helpers/errorMessage";
 
 interface SignUpUserParams {
   email: string;
@@ -105,13 +105,14 @@ export const isUserAuthed = async () => {
     redirect("/auth/sign-in");
   }
 
-  const currentUser = await prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: { id: session.user.id },
+    select: { id: true },
   });
 
-  if (!currentUser) {
-    return { success: false, message: "User not authenticated" };
+  if (!user) {
+    throw new Error("User not authenticated");
   }
 
-  return { success: true, session: session.session };
+  return user.id;
 };

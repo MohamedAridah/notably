@@ -8,7 +8,7 @@ export default function SearchIcon() {
 
   return (
     <SidebarMenuButton
-      className="group-data-[collapsible=icon]:block hidden hover:cursor-pointer"
+      className="group-data-[collapsible=icon]:block hidden hover:cursor-pointer mt-2 mb-4"
       tooltip={'Search'}
       aria-label="Search for notes and notebooks"
       onClick={() => setOpen(true)}

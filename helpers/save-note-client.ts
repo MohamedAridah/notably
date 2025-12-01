@@ -1,9 +1,6 @@
-import { UpdateNoteValuesType } from "@/server/notes";
+import { Note } from "@prisma/client";
 
-export const saveNote = async (
-  noteId: string,
-  content: UpdateNoteValuesType["content"]
-) => {
+export const saveNote = async (noteId: string, content: Note["content"]) => {
   try {
     const res = await (
       await fetch("/api/update-note", {

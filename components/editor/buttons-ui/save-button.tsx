@@ -2,7 +2,7 @@
 
 import React from "react";
 import { type Editor } from "@tiptap/react";
-import { updateNote } from "@/server/notes";
+import { updateNoteAction } from "@/server/notes";
 import { toast } from "sonner";
 import { Button } from "@/components/tiptap-ui-primitive/button";
 import { Plus } from "lucide-react";
@@ -28,7 +28,7 @@ const SaveNoteButton = ({
     try {
       setIsSaving(true);
       const content = editor.getJSON();
-      const { success, message } = await updateNote(noteId, { content });
+      const { success, message } = await updateNoteAction(noteId, { content });
       if (success) {
         toast.success(message);
         setIsThereNewContent(false);

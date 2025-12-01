@@ -1,12 +1,12 @@
-import { getCachedNotebooks } from "@/server/notebooks";
+import { getCachedNotebooksAction } from "@/server/notebooks";
+import { classifyNotebooks } from "@/helpers/classify-notebooks";
 import CreateNotebookDialog from "@/components/(notebooks)/create-notebook-button";
 import Message from "@/components/utils/message";
 import BreadCrumbUI from "@/components/utils/breadcrumb";
 import Notebooks from "./_components/notebooks";
-import { NotebookIcon, ShieldAlert } from "lucide-react";
-import { classifyNotebooks } from "@/helpers/classify-notebooks";
 import { NotebookWithNotes } from "@/components/(notebooks)/notebook";
 import CreateNoteDialog from "@/components/(notes)/create-note-button";
+import { NotebookIcon, ShieldAlert } from "lucide-react";
 
 export const metadata = {
   description:
@@ -14,8 +14,8 @@ export const metadata = {
 };
 
 export default async function Dashboard() {
-  const notebooksResponse = await getCachedNotebooks();
-  const { success, notebooks, message, description } = notebooksResponse;
+  const notebooksResponse = await getCachedNotebooksAction();
+  const { success, notebooks, message } = notebooksResponse;
 
   if (!success) {
     return (
@@ -26,14 +26,14 @@ export default async function Dashboard() {
         description={
           <>
             <p className="text-lg font-semibold">{message as string}</p>
-            <p>{description || "Sorry, something went wrong."}</p>
+            <p>Sorry, something went wrong.</p>
           </>
         }
       />
     );
   }
 
-  const isEmpty = (notebooks?.length ?? 0) === 0;
+  const isEmpty = notebooks?.length === 0;
   const { favorites: notebooks__favorites, others: notebooks__others } =
     await classifyNotebooks(notebooks ?? []);
 

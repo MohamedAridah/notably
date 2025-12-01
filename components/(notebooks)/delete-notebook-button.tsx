@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { deleteNotebook } from "@/server/notebooks";
+import {
+  trashNotebookAction,
+  deleteNotebookAction,
+  restoreNotebookAction,
+} from "@/server/notebooks";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,19 +24,38 @@ import { toast } from "sonner";
 import DialogTriggerButton, {
   TriggerAppearance,
 } from "@/components/utils/dialog-trigger-button";
+import LoadingSwap from "../utils/loading-swap";
+import { authClient } from "@/lib/auth-client";
+
+export type DeleteNotebookAction = "move-to-trash" | "delete-permanently";
 
 interface DialogProps {
   notebookId: string;
-  notebookName?: string;
+  notebookName: string;
   callbackURL?: string;
+  mode?: DeleteNotebookAction;
   isOpen?: boolean;
   setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
+const dialogTexts = {
+  "move-to-trash": {
+    title: "Move notebook to Trash?",
+    button: "Move to Trash",
+    processText: "Moving...",
+  },
+  "delete-permanently": {
+    title: "Delete notebook permanently?",
+    button: "Delete Forever",
+    processText: "Deleting...",
+  },
+} as const;
 
 export default function DeleteNotebookDialog({
   notebookId,
   notebookName,
   callbackURL,
+  mode = "move-to-trash",
   isOpen,
   setIsOpen,
   trigger,
@@ -42,23 +65,44 @@ export default function DeleteNotebookDialog({
   const [dialogState, setDialogState] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  const toastAction =
+    mode === "move-to-trash"
+      ? {
+          label: "Undo",
+          onClick: async () => restoreNotebookAction(notebookId),
+        }
+      : undefined;
+
   const handleDeleteNotebook = async () => {
+    const { data: session } = await authClient.getSession();
+    const userId = session?.user.id;
+
+    if (!userId) {
+      toast.error("You must be signed in to create a notebook.");
+      return;
+    }
+
     try {
       setIsDeleting(true);
-      const { success, message } = await deleteNotebook(notebookId);
+
+      const action =
+        mode === "move-to-trash" ? trashNotebookAction : deleteNotebookAction;
+
+      const { success, message } = await action(notebookId);
+
       if (success) {
-        toast.success(message);
-      } else {
-        toast.error(message);
-      }
+        toast.success(message, { action: toastAction });
+        if (callbackURL) router.push(callbackURL);
+      } else toast.error(message);
     } catch (error) {
       toast.error((error as Error).message);
     } finally {
       setIsDeleting(false);
       setIsOpen ? setIsOpen(false) : setDialogState(false);
-      if (callbackURL) router.push(callbackURL);
     }
   };
+
+  const text = dialogTexts[mode];
 
   return (
     <AlertDialog
@@ -75,42 +119,59 @@ export default function DeleteNotebookDialog({
             size="sm"
             state={isDeleting}
             idleText="Delete"
-            processText="Deleting"
+            processText={text.processText}
             icon={Trash2}
             className="group-hover/notebook-buttons:opacity-100"
             classNameAsIocn="hover:text-red-500"
           />
         </AlertDialogTrigger>
       )}
+
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>{text.title}</AlertDialogTitle>
+
           <AlertDialogDescription>
-            This will permanently delete{" "}
-            {notebookName ? (
-              <>
-                {" "}
-                <span className="font-semibold text-primary">
-                  {notebookName}
-                </span>{" "}
-                notebook
-              </>
-            ) : (
-              "this notebook"
-            )}{" "}
-            and all its notes. This action cannot be undone.
+            <AlertDialogDescriptionText
+              mode={mode}
+              notebookName={notebookName}
+            />
           </AlertDialogDescription>
         </AlertDialogHeader>
+
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
+
           <AlertDialogAction
             className={buttonVariants({ variant: "destructive" })}
             onClick={handleDeleteNotebook}
           >
-            Continue
+            <LoadingSwap isLoading={isDeleting}>{text.button}</LoadingSwap>
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
   );
 }
+
+const AlertDialogDescriptionText = ({
+  mode,
+  notebookName,
+}: {
+  mode: DeleteNotebookAction;
+  notebookName: string;
+}) => {
+  return mode === "move-to-trash" ? (
+    <>
+      This will move{" "}
+      <span className="font-semibold text-primary">{notebookName}</span> and all
+      its notes to Trash. You can restore it later.
+    </>
+  ) : (
+    <>
+      This will permanently delete{" "}
+      <span className="font-semibold text-primary">{notebookName}</span> and all
+      its notes. This action cannot be undone.
+    </>
+  );
+};

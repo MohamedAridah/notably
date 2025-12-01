@@ -1,238 +1,108 @@
 "use server";
 
-import prisma from "@/lib/prisma";
 import { Notebook } from "@prisma/client";
-import errorMessage from "@/helpers/errorMessage";
-import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
-import { APIError } from "better-auth";
-import { isUserAuthed } from "./auth";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { isUserAuthed } from "@/server/auth";
 
-export const getNotebooks = async (userId: string) => {
-  try {
-    console.log("getNotebooks called");
-    const notebooks = await prisma.notebook.findMany({
-      where: {
-        userId,
-      },
-      select: {
-        _count: {
-          select: {
-            notes: true,
-          },
-        },
-        notes: {
-          select: {
-            id: true,
-            title: true,
-            isFavorite: true,
-          },
-        },
-        id: true,
-        isDefault: true,
-        isFavorite: true,
-        name: true,
-        createdAt: true,
-      },
-      orderBy: {
-        isDefault: "desc",
-      },
-    });
+import {
+  getCachedNotebookById,
+  getCachedNotebooks,
+  getCachedTrashedNotebooks,
+} from "@/lib/cache/notebooks";
+import {
+  createNotebookInDB,
+  deleteNotebookFromDB,
+  setNotebookFavoriteInDB,
+  updateNotebookDeletedAt,
+  updateNotebookInDB,
+} from "@/lib/db/notebooks";
 
-    return { success: true, notebooks };
-  } catch (error) {
-    if ((error as APIError).statusCode === 500) {
-      return {
-        success: false,
-        message: "Internal Server Error",
-        description: (error as APIError).message,
-      };
-    }
-
-    return {
-      success: false,
-      message: (error as Error).message || "Failed to get notebooks",
-    };
-  }
+export const getCachedNotebooksAction = async () => {
+  const userId = await isUserAuthed();
+  return getCachedNotebooks(userId);
 };
 
-export const getCachedNotebooks = async () => {
-  const { session } = await isUserAuthed();
-  const userId = session?.userId!;
-
-  return unstable_cache(
-    async () => {
-      console.log("getCachedNotebooks called");
-      return getNotebooks(userId);
-    },
-    [`notebooks-user-${userId}`],
-    {
-      tags: [`notebooks-user-${userId}`],
-    }
-  )();
+export const getCachedTrashedNotebooksAction = async () => {
+  const userId = await isUserAuthed();
+  return getCachedTrashedNotebooks(userId);
 };
 
-export const getNotebookById = async (id: string, userId: string) => {
-  try {
-    console.log("getNotebook called with id:", id);
-    const notebook = await prisma.notebook.findUnique({
-      where: {
-        id,
-        userId,
-      },
-      include: {
-        _count: {
-          select: {
-            notes: true,
-          },
-        },
-        notes: {
-          select: {
-            id: true,
-            notebookId: true,
-            title: true,
-            isFavorite: true,
-            createdAt: true,
-          },
-        },
-      },
-    });
-
-    return { success: true, notebook };
-  } catch (error) {
-    return { success: false, message: "Failed to get notebook" };
-  }
+export const getCachedNotebookByIdAction = async (notebookId: string) => {
+  const userId = await isUserAuthed();
+  return getCachedNotebookById(notebookId, userId);
 };
 
-export const getCachedNotebook = async (id: string) => {
-  const { session } = await isUserAuthed();
-  const userId = session?.userId!;
+export const createNotebookAction = async (name: string) => {
+  const userId = await isUserAuthed();
+  const result = await createNotebookInDB(name, userId);
 
-  return unstable_cache(
-    async () => getNotebookById(id, userId),
-    [`notebook-${id}-${userId}`],
-    {
-      tags: [`notebook-${id}`, `notebooks-user-${userId}`],
-    }
-  )();
+  revalidateTag(`notebooks-user-${userId}`);
+  revalidatePath("/dashboard");
+
+  return result;
 };
 
-export const createNotebook = async (name: string, userId: string) => {
-  try {
-    const notebook = await prisma.notebook.create({
-      data: {
-        name,
-        userId,
-      },
-    });
+export const updateNotebookAction = async (
+  id: string,
+  data: Partial<Notebook>
+) => {
+  const userId = await isUserAuthed();
+  const result = await updateNotebookInDB(id, userId, data);
 
-    revalidateTag(`notebooks-user-${userId}`);
-    revalidatePath("/dashboard");
-    return {
-      success: true,
-      id: notebook.id,
-      message: "Notebook created successfully",
-    };
-  } catch (error) {
-    return {
-      success: false,
-      message: errorMessage(error) || "Failed to create notebook",
-    };
-  }
+  revalidateTag(`notebook-${id}-${userId}`);
+  revalidateTag(`notebooks-user-${userId}`);
+  revalidatePath("/dashboard");
+
+  return result;
 };
 
-export const updateNotebook = async (id: string, values: Partial<Notebook>) => {
-  const { session } = await isUserAuthed();
-  const userId = session?.userId!;
+export const trashNotebookAction = async (notebookId: string) => {
+  const userId = await isUserAuthed();
+  const result = await updateNotebookDeletedAt(notebookId, userId, new Date());
 
-  try {
-    const notebook = await prisma.notebook.update({
-      where: {
-        id,
-        userId,
-      },
-      data: values,
-    });
+  revalidateTag(`notebook-${notebookId}-${userId}`);
+  revalidateTag(`notebooks-user-${userId}`);
+  revalidateTag(`trashed-notebooks-user-${userId}`);
+  revalidatePath("/dashboard", "layout");
 
-    revalidateTag(`notebook-${id}`);
-    revalidateTag(`notebooks-user-${notebook.userId}`);
-    revalidatePath("/dashboard");
-
-    return {
-      success: true,
-      message: "Notebook updated successfully",
-    };
-  } catch (error) {
-    return { success: false, message: "Failed to get notebook" };
-  }
+  return result;
 };
 
-export const deleteNotebook = async (id: string) => {
-  const { session } = await isUserAuthed();
-  const userId = session?.userId!;
+export const restoreNotebookAction = async (notebookId: string) => {
+  const userId = await isUserAuthed();
+  const result = await updateNotebookDeletedAt(notebookId, userId, null);
 
-  try {
-    const notebook = await prisma.notebook.delete({
-      where: {
-        id,
-        userId,
-      },
-    });
+  revalidateTag(`notebook-${notebookId}-${userId}`);
+  revalidateTag(`notebooks-user-${userId}`);
+  revalidateTag(`trashed-notebooks-user-${userId}`);
+  revalidatePath("/dashboard", "layout");
 
-    revalidateTag(`notebook-${id}`);
-    revalidateTag(`notebooks-user-${notebook.userId}`);
-    revalidatePath("/dashboard");
-    return {
-      success: true,
-      message: "Notebook deleted successfully",
-    };
-  } catch (error) {
-    return {
-      success: false,
-      message: errorMessage(error) || "Failed to delete notebook",
-    };
-  }
+  return result;
 };
 
-export const setNotebookFavorite = async (id: string, isFavorite: boolean) => {
-  const { session } = await isUserAuthed();
-  const userId = session?.userId!;
+export const deleteNotebookAction = async (notebookId: string) => {
+  const userId = await isUserAuthed();
+  const result = await deleteNotebookFromDB(notebookId, userId);
 
-  try {
-    const notebook = await prisma.notebook.update({
-      where: { id, userId },
-      data: { isFavorite },
-    });
+  revalidateTag(`trashed-notebooks-user-${userId}`);
+  revalidateTag(`notebooks-user-${userId}`);
+  revalidateTag(`notebook-${notebookId}-${userId}`);
+  revalidatePath("/dashboard");
 
-    revalidateTag(`notebook-${id}`);
-    revalidateTag(`notebooks-user-${notebook.userId}`);
-    revalidatePath("/dashboard");
-
-    return {
-      success: true,
-      message: isFavorite
-        ? "Notebook added to your favorites."
-        : "Notebook removed from your favorites.",
-    };
-  } catch (error) {
-    return {
-      success: false,
-      message:
-        errorMessage(error) ||
-        `Failed to ${isFavorite ? "add" : "remove"} notebook from favorites`,
-    };
-  }
+  return result;
 };
 
-export async function createQuickNotesNotebook(userId: string) {
-  try {
-    await prisma.notebook.create({
-      data: {
-        name: "Quick Notes",
-        userId,
-        isDefault: true,
-      },
-    });
-  } catch (err) {
-    console.log("Error creating Quick Notes notebook:", err);
-  }
-}
+export const setNotebookFavoriteAction = async (
+  id: string,
+  isFavorite: boolean
+) => {
+  const userId = await isUserAuthed();
+
+  const result = await setNotebookFavoriteInDB(id, userId, isFavorite);
+
+  revalidateTag(`notebook-${id}-${userId}`);
+  revalidateTag(`notebooks-user-${userId}`);
+  revalidatePath("/dashboard");
+
+  return result;
+};
