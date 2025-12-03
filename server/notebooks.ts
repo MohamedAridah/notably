@@ -85,8 +85,8 @@ export const deleteNotebookAction = async (notebookId: string) => {
   const result = await deleteNotebookFromDB(notebookId, userId);
 
   revalidateTag(`trashed-notebooks-user-${userId}`);
+  revalidateTag(`trashed-notes-user-${userId}`);
   revalidateTag(`notebooks-user-${userId}`);
-  revalidateTag(`notebook-${notebookId}-${userId}`);
   revalidatePath("/dashboard");
 
   return result;

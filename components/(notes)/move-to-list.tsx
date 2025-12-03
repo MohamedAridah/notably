@@ -3,10 +3,16 @@
 import { useEffect, useState, useTransition } from "react";
 import { updateNoteAction } from "@/server/notes";
 import { getNotebooks } from "@/helpers/get-notebooks-client";
+import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import CreateNotebookDialog from "../(notebooks)/create-notebook-button";
 import { toast } from "sonner";
-import { Loader2Icon, NotebookIcon, ShieldAlertIcon } from "lucide-react";
+import {
+  Loader2Icon,
+  NotebookIcon,
+  ShieldAlertIcon,
+  TriangleAlertIcon,
+} from "lucide-react";
 
 interface NotebooksListProps {
   currentNotebookId: string;
@@ -49,37 +55,30 @@ const NotebooksList = ({
 
   const handleMoveNote = async (newNotebookId: string) => {
     const position = "top-center";
+    setIsMoving(true);
+    const toastId = toast.loading("Moving note...", { position });
+    const notebookFrom = getNotebookName(currentNotebookId);
+    const notebookTo = getNotebookName(newNotebookId);
+
     try {
-      setIsMoving(true);
-      toast.loading("Moving note...", { position });
       const { success } = await updateNoteAction(noteId, {
         notebookId: newNotebookId,
       });
       if (success) {
-        toast.dismiss();
         toast.success("Note moved successfully!", {
+          id: toastId,
           position,
           duration: 6000,
-          description: (
-            <div>
-              Moved from{" "}
-              <span className="font-bold">
-                {getNotebookName(currentNotebookId)}
-              </span>{" "}
-              to{" "}
-              <span className="font-bold">
-                {getNotebookName(newNotebookId)}
-              </span>
-            </div>
-          ),
+          description: <ToastDescription from={notebookFrom} to={notebookTo} />,
         });
         handleClose && handleClose();
       } else {
-        toast.error("Failed to move note.", { position });
+        toast.error("Failed to move note.", { position, id: toastId });
       }
     } catch (error) {
       console.error(error);
       toast.error("An unexpected error occurred while moving the note.", {
+        id: toastId,
         position,
       });
     } finally {
@@ -113,13 +112,15 @@ const NotebooksList = ({
   return (
     <div className="flex flex-col gap-4 items-end">
       <div className="flex items-center justify-between gap-2 w-full">
-        {notebooks.length > 0 && (
-          <p className="text-sm text-orange-500">
-            You need at least two notebooks to move one.
+        {notebooks.length <= 1 && (
+          <p className="flex items-center gap-1text-sm text-orange-500">
+            <TriangleAlertIcon className="size-4" /> You need at least two
+            notebooks to move this note.
           </p>
         )}
         <CreateNotebookDialog
           size="sm"
+          className="ml-auto"
           cb={() => setIsNewNotebookCreated((prev) => +prev + 1)}
         />
       </div>
@@ -130,11 +131,16 @@ const NotebooksList = ({
             role="button"
             disabled={notebook.id == currentNotebookId || isMoving}
             aria-label="Select this notebook to move the note to."
-            className={buttonVariants({
-              variant: "outline",
-              className:
-                "flex-col justify-between gap-4 h-auto py-4 !whitespace-normal active:scale-95",
-            })}
+            className={cn(
+              buttonVariants({
+                variant: "outline",
+                className:
+                  "flex-col justify-between gap-4 h-auto py-4 !whitespace-normal active:scale-95",
+              }),
+
+              notebook.id == currentNotebookId &&
+                "disabled:bg-[repeating-linear-gradient(45deg,#ff8904,#ff8904_10px,transparent_10px,transparent_20px)] disabled:opacity-80"
+            )}
             onClick={() => handleMoveNote(notebook.id)}
           >
             <NotebookIcon className="size-6 text-primary" />
@@ -149,3 +155,12 @@ const NotebooksList = ({
 };
 
 export default NotebooksList;
+
+const ToastDescription = ({ from, to }: { from: string; to: string }) => {
+  return (
+    <div>
+      Moved from <span className="font-bold">{from}</span> to{" "}
+      <span className="font-bold">{to}</span>
+    </div>
+  );
+};

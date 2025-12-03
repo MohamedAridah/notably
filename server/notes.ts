@@ -63,7 +63,7 @@ export const updateNoteAction = async (id: string, data: Partial<Note>) => {
     if (result.notebookId) {
       revalidateTag(`notebook-${result.notebookId}-${userId}`);
     }
-    revalidatePath("/dashboard");
+    revalidatePath("/dashboard", "layout");
   }
 
   return result;
@@ -159,7 +159,7 @@ export const deleteEmptyNotesAction = async () => {
   if (result.success) {
     revalidateTag(`trashed-notes-user-${userId}`);
     revalidateTag(`notebooks-user-${userId}`);
-    revalidatePath("/dashboard");
+    revalidatePath("/dashboard",'layout');
   }
 
   return result;

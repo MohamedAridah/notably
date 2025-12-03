@@ -244,6 +244,7 @@ export const createNotebookInDB = async (
     return {
       success: true,
       notebookId: notebook.id,
+      message: "Notebook created successfully",
     };
   } catch (error) {
     console.error("DB Error in createNotebook:", error);

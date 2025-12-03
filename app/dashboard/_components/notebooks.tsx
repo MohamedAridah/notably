@@ -164,17 +164,15 @@ const Notebooks = ({ notebooks }: { notebooks: NotebooksProps }) => {
         </p>
       )}
 
-      <div>
-        {displayState.isEmpty ? (
-          <p className="text-muted-foreground text-center py-8">
-            {displayState.isSearching
-              ? "No notebooks match your search."
-              : "No notebooks found."}
-          </p>
-        ) : (
-          renderContent(displayState, view)
-        )}
-      </div>
+      {displayState.isEmpty ? (
+        <p className="text-muted-foreground text-center py-8">
+          {displayState.isSearching
+            ? "No notebooks match your search."
+            : "No notebooks found."}
+        </p>
+      ) : (
+        renderContent(displayState, view)
+      )}
     </>
   );
 };

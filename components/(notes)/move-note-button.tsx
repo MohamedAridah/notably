@@ -67,7 +67,9 @@ export default function MoveNoteDialog({
         <NotebooksList
           noteId={noteId}
           currentNotebookId={currentNotebookId}
-          handleClose={() => setDialogState(false)}
+          handleClose={() =>
+            setIsOpen ? setIsOpen(false) : setDialogState(false)
+          }
         />
       </DialogContent>
     </Dialog>

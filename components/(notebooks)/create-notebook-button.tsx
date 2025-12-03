@@ -43,28 +43,30 @@ export default function CreateNotebookDialog({
       toast.error("You must be signed in to create a notebook.");
       return;
     }
+
+    const toastId = toast.loading(
+      "Creating your new notebook — Just a moment..."
+    );
     try {
-      toast.loading("Creating your new notebook — Just a moment...");
       const { success, notebookId, message } = await createNotebookAction(
         data.name
       );
-      toast.dismiss();
       if (success) {
         if (data.redirectTo) {
           router.push(`/dashboard/notebook/${notebookId}`);
-          toast.success("Done! Jumping to your notebook now... 🚀");
+          toast.success("Done! Jumping to your notebook now... 🚀", {
+            id: toastId,
+          });
         } else {
-          toast.success(message);
+          toast.success(message, { id: toastId });
         }
         setIsOpen(false);
       } else {
-        toast.error(message);
+        toast.error(message, { id: toastId });
       }
     } catch (error) {
-      const e = error as Error;
-      console.error("Failed to create notebook: ", e);
-      toast.dismiss();
-      toast.error(e.message);
+      console.error("Failed to create notebook: ", error);
+      toast.error((error as Error).message, { id: toastId });
     } finally {
       if (cb) cb();
     }
