@@ -16,27 +16,33 @@ const NoteOptions = dynamic(() => import("@/components/(notes)/note-options"), {
   ssr: false,
 });
 
+export type NoteScopedWithNotebookName = NoteScoped & {
+  notebook?: { name: string };
+};
+
 const DetailsView = ({
   notes,
   mode = "default",
 }: {
-  notes: NoteScoped[];
+  notes: NoteScopedWithNotebookName[];
   mode?: NoteCardMode;
 }) => {
   const policy = NoteModePolicies[mode];
+  const isTrashMode = mode === "trash";
 
   return (
     <Table className="w-full table-fixed">
       <TableHeader>
         <TableRow>
-          <TableHead className="w-6/12">Note Name</TableHead>
+          <TableHead className={`${isTrashMode ? "w-5/12" : "w-6/12"}`}>
+            Note Name
+          </TableHead>
           {mode === "default" && (
             <TableHead className="w-4/12">Created</TableHead>
           )}
-          {mode === "trash" && (
-            <TableHead className="w-4/12">Deleted</TableHead>
-          )}
-          <TableHead className="text-right w-auto"></TableHead>
+          {isTrashMode && <TableHead className="w-3/12">Notebook</TableHead>}
+          {isTrashMode && <TableHead className="w-3/12">Deleted</TableHead>}
+          <TableHead className="text-right w-1/12 max-sm:w-3/12"></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -51,6 +57,7 @@ const DetailsView = ({
                   isFavorite={note.isFavorite}
                   id={note.id}
                   onToggle={setNoteFavoriteAction}
+                  disabled={!policy.favoriteInteractive}
                   iconStyles="size-3.5"
                 />
               )}
@@ -68,6 +75,18 @@ const DetailsView = ({
                 </span>
               )}
             </TableCell>
+
+            {note.deletedAt && (
+              <TableCell className="truncate pr-3">
+                <Link
+                  href={`/dashboard/notebook/${note.notebookId}`}
+                  className="hover:underline"
+                  title={note.notebook?.name}
+                >
+                  {note.notebook?.name}
+                </Link>
+              </TableCell>
+            )}
 
             {!note.deletedAt && (
               <TableCell>{new Date(note.createdAt).toDateString()}</TableCell>

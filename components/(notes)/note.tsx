@@ -39,6 +39,7 @@ export default function NoteCard({
                   isFavorite={note.isFavorite}
                   id={note.id}
                   onToggle={setNoteFavoriteAction}
+                  disabled={!policy.favoriteInteractive}
                 />
               )}
 

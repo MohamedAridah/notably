@@ -46,7 +46,8 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({
           ? await onToggle(id, optimisticValue)
           : {
               success: false,
-              message: "Favorite action disabled in this mode. Restore notebook to enable.",
+              message:
+                "Favorites are disabled in trash mode. Restore notebook or note first to enable.",
             };
 
         if (success) {

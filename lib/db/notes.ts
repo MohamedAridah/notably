@@ -1,4 +1,4 @@
-'use server'
+"use server";
 
 import prisma from "@/lib/prisma";
 import { Note, Prisma } from "@prisma/client";
@@ -85,6 +85,11 @@ export async function getTrashedNotesFromDB(userId: string) {
         createdAt: true,
         deletedAt: true,
         notebookId: true,
+        notebook: {
+          select: {
+            name: true,
+          },
+        },
       },
       orderBy: {
         deletedAt: "desc",
@@ -364,8 +369,8 @@ export async function setNoteFavoriteInDB(
     return {
       success: true,
       message: isFavorite
-        ? "Note added to favorites"
-        : "Note removed from favorites",
+        ? "Note added to your favorites successfully."
+        : "Note removed from your favorites successfully.",
       notebookId: note.notebookId,
     };
   } catch (error) {

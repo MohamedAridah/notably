@@ -17,6 +17,7 @@ import ViewController, {
 } from "../../_components/view-controller";
 import { NotebookIcon, NotebookTextIcon } from "lucide-react";
 import { NoteScoped } from "../../notebook/[notebookId]/_components/notebook-notes";
+import { NoteScopedWithNotebookName } from "@/components/(notes)/notebook-notes-details";
 const NotebookDetailsView = dynamic(
   () => import("@/components/(notebooks)/notebooks-details-view"),
   {
@@ -146,7 +147,7 @@ const renderTrashContent = (
           )}
           {view === "rows" && (
             <NoteDetailsView
-              notes={displayState.notes as NoteScoped[]}
+              notes={displayState.notes as NoteScopedWithNotebookName[]}
               mode="trash"
             />
           )}
