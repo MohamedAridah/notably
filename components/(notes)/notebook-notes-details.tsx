@@ -9,16 +9,12 @@ import {
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import FavoriteButton from "@/components/utils/favorite-button";
-import { NoteScoped } from "@/app/dashboard/notebook/[notebookId]/_components/notebook-notes";
 import { setNoteFavoriteAction } from "@/server/notes";
 import { NoteCardMode, NoteModePolicies } from "./note-mode-policies";
+import { NoteScopedWithNotebookName } from "./note";
 const NoteOptions = dynamic(() => import("@/components/(notes)/note-options"), {
   ssr: false,
 });
-
-export type NoteScopedWithNotebookName = NoteScoped & {
-  notebook?: { name: string };
-};
 
 const DetailsView = ({
   notes,
@@ -65,7 +61,7 @@ const DetailsView = ({
               {policy.canView ? (
                 <Link
                   href={`/dashboard/notebook/${note.notebookId}/note/${note.id}`}
-                  className="truncate pr-3 hover:underline"
+                  className="truncate pr-3 hover:underline underline-offset-3"
                 >
                   {note.title || "Untitled Note"}
                 </Link>
@@ -80,7 +76,7 @@ const DetailsView = ({
               <TableCell className="truncate pr-3">
                 <Link
                   href={`/dashboard/notebook/${note.notebookId}`}
-                  className="hover:underline"
+                  className="hover:underline underline-offset-3"
                   title={note.notebook?.name}
                 >
                   {note.notebook?.name}

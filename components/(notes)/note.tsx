@@ -11,17 +11,22 @@ import DeleteNoteDialog from "@/components/(notes)/delete-note-button";
 import { ExternalLinkIcon } from "lucide-react";
 import EditNoteDialog from "./edit-note-button";
 import FavoriteButton from "../utils/favorite-button";
-import { NoteScoped } from "@/app/dashboard/notebook/[notebookId]/_components/notebook-notes";
 import NoteOptions from "./note-options";
 import { setNoteFavoriteAction } from "@/server/notes";
 import { NoteCardMode, NoteModePolicies } from "./note-mode-policies";
 import RestoreNoteDialog from "./restore-note-button";
+import { Note } from "@prisma/client";
+
+export type NoteScoped = Omit<Note, "content" | "updatedAt" | "userId">;
+export type NoteScopedWithNotebookName = NoteScoped & {
+  notebook?: { name: string };
+};
 
 export default function NoteCard({
   note,
   mode = "default",
 }: {
-  note: NoteScoped;
+  note: NoteScopedWithNotebookName;
   mode?: NoteCardMode;
 }) {
   const policy = NoteModePolicies[mode];
@@ -79,7 +84,25 @@ export default function NoteCard({
             />
           )}
         </CardTitle>
-        <CardDescription>Click view to see note content.</CardDescription>
+        <CardDescription>
+          {mode === "default" ? (
+            "Click view to see note content."
+          ) : (
+            <>
+              <p className="mt-1">
+                Categorized under{" "}
+                <Link
+                  href={notebookURL}
+                  className="font-semibold hover:underline underline-offset-3"
+                >
+                  {note.notebook?.name}
+                </Link>{" "}
+                notebook.
+              </p>
+              <p className="mt-1">Restore note to view or edit its content.</p>
+            </>
+          )}
+        </CardDescription>
       </CardHeader>
 
       <CardFooter className="ml-auto gap-2">

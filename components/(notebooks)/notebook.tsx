@@ -90,7 +90,7 @@ export default function Notebook({
         </CardTitle>
 
         <CardDescription>
-          <p>{notebook._count.notes ?? 0} notes</p>
+         <p>This notebook contains {notebook._count.notes} notes.</p>
         </CardDescription>
       </CardHeader>
 

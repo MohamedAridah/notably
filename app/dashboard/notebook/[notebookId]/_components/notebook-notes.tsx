@@ -2,7 +2,6 @@
 
 import { useMemo } from "react";
 import dynamic from "next/dynamic";
-import { type Note } from "@prisma/client";
 import { useQueryState } from "nuqs";
 import GridView from "@/components/(notes)/notebook-notes-grid";
 import TableSkeketon from "@/components/(skeletons)/table";
@@ -10,6 +9,7 @@ import ViewController, {
   DEFAULT_VIEW,
 } from "@/app/dashboard/_components/view-controller";
 import { Search } from "@/components/utils/search";
+import { NoteScoped } from "@/components/(notes)/note";
 
 const DetailsView = dynamic(
   () => import("@/components/(notes)/notebook-notes-details"),
@@ -18,11 +18,6 @@ const DetailsView = dynamic(
     loading: () => <TableSkeketon />,
   }
 );
-
-export type NoteScoped = Pick<
-  Note,
-  "id" | "notebookId" | "title" | "isFavorite" | "createdAt" | "deletedAt"
->;
 
 type NoteDisplayState = {
   isSearching: boolean;

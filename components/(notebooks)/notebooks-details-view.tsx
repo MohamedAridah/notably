@@ -70,7 +70,7 @@ const DetailsView = ({ notebooks, mode = "default" }: Props) => {
               {policy.canView ? (
                 <Link
                   href={`/dashboard/notebook/${notebook.id}`}
-                  className="truncate pr-3 hover:underline"
+                  className="truncate pr-3 hover:underline underline-offset-3"
                 >
                   {notebook.name}
                 </Link>
