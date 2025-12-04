@@ -1,29 +1,23 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import { getCachedNotebooksAction } from "@/server/notebooks";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { getCachedNotebooksAction } from "@/server/notebooks";
 import { UserForNav } from "@/components/user";
 import { Logo } from "@/components/utils/logo";
 import { Search } from "@/components/utils/search";
 import SidebarData from "@/components/(sidebar)/sidebar-data";
 import SearchIcon from "@/components/(sidebar)/search-icon";
-import AddNoteIcon from "@/components/(sidebar)/add-note-icon";
-import AddNotebookIcon from "@/components/(sidebar)/add-notebook-icon";
 import SidebarSkeleton from "@/components/(sidebar)/sidebar-skeleton";
-import CreateNoteDialog from "@/components/(notes)/create-note-button";
-import CreateNotebookDialog from "@/components/(notebooks)/create-notebook-button";
-import { HomeIcon, LayoutDashboardIcon, Trash2Icon } from "lucide-react";
+import SidebarNavigation from "@/components/(sidebar)/sidebar-navigation";
+import SidebarQuickActions from "@/components/(sidebar)/sidebar-quick-actions";
+import { HomeIcon } from "lucide-react";
 
 export async function AppSidebar() {
   const notebooks = await getCachedNotebooksAction();
@@ -74,54 +68,9 @@ export async function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent className="overflow-x-hidden">
-        <SidebarGroup>
-          <SidebarGroupLabel>Quick Actions</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <CreateNoteDialog
-                  variant="ghost"
-                  size="sm"
-                  className="w-full group-data-[collapsible=icon]:hidden justify-start"
-                />
-                <AddNoteIcon />
-              </SidebarMenuItem>
+        <SidebarQuickActions />
 
-              <SidebarMenuItem>
-                <CreateNotebookDialog
-                  variant="ghost"
-                  size="sm"
-                  className="w-full group-data-[collapsible=icon]:hidden justify-start"
-                />
-                <AddNotebookIcon />
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Dashboard">
-                  <Link href="/dashboard">
-                    <LayoutDashboardIcon className="size-4" />
-                    Dashboard
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Trash">
-                  <Link href="/dashboard/trash">
-                    <Trash2Icon className="size-4" />
-                    Trash
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        <SidebarNavigation />
 
         <Suspense fallback={<SidebarSkeleton length={5} showIcon />}>
           <SidebarData data={data} />

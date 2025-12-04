@@ -12,9 +12,11 @@ import NotesGridView from "@/components/(notes)/notebook-notes-grid";
 import { Search } from "@/components/utils/search";
 import { useMemo } from "react";
 import { Note, Notebook } from "@prisma/client";
-import ViewController, { DEFAULT_VIEW } from "../_components/view-controller";
+import ViewController, {
+  DEFAULT_VIEW,
+} from "../../_components/view-controller";
 import { NotebookIcon, NotebookTextIcon } from "lucide-react";
-import { NoteScoped } from "../notebook/[notebookId]/_components/notebook-notes";
+import { NoteScoped } from "../../notebook/[notebookId]/_components/notebook-notes";
 const NotebookDetailsView = dynamic(
   () => import("@/components/(notebooks)/notebooks-details-view"),
   {

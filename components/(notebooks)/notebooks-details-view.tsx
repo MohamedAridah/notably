@@ -75,7 +75,7 @@ const DetailsView = ({ notebooks, mode = "default" }: Props) => {
                   {notebook.name}
                 </Link>
               ) : (
-                <span>{notebook.name}</span>
+                <span className="truncate pr-3">{notebook.name}</span>
               )}
             </TableCell>
 

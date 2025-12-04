@@ -5,7 +5,8 @@ import Message from "@/components/utils/message";
 import BreadCrumbUI from "@/components/utils/breadcrumb";
 import { NotebookWithNotes } from "@/components/(notebooks)/notebook";
 import { Button } from "@/components/ui/button";
-import TrashUI from "./trash-ui";
+import TrashUI from "./_components/trash-ui";
+import EmptyTrashDialog from "./_components/empty-trash-button";
 import { ArrowLeftIcon, NotebookIcon } from "lucide-react";
 
 export const metadata = {
@@ -49,6 +50,7 @@ export default async function Trash() {
 
       <div className="flex items-center justify-between mb-5">
         <h1 className="font-semibold">Trash</h1>
+        {!isEmpty && <EmptyTrashDialog />}
       </div>
 
       {isEmpty ? (

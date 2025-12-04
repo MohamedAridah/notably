@@ -1,3 +1,5 @@
+'use server'
+
 import { unstable_cache } from "next/cache";
 import {
   getNotebooksFromDB,
@@ -10,7 +12,7 @@ import {
  * Tag: notebooks-user-${userId}
  * Used in: Dashboard page
  */
-export const getCachedNotebooks = (userId: string) => {
+export const getCachedNotebooks =async (userId: string) => {
   console.log("Cache layer: getCachedNotebooks for user:", userId);
 
   return unstable_cache(
@@ -27,7 +29,7 @@ export const getCachedNotebooks = (userId: string) => {
  * Tag: trashed-notebooks-user-${userId}
  * Used in: Trash page
  */
-export const getCachedTrashedNotebooks = (userId: string) => {
+export const getCachedTrashedNotebooks = async(userId: string) => {
   console.log("Cache layer: getCachedTrashedNotebooks for user:", userId);
 
   return unstable_cache(
@@ -44,7 +46,7 @@ export const getCachedTrashedNotebooks = (userId: string) => {
  * Tag: notebook-${id}-${userId}
  * Used in: Notebook detail page
  */
-export const getCachedNotebookById = (id: string, userId: string) => {
+export const getCachedNotebookById = async(id: string, userId: string) => {
   console.log("Cache layer: getCachedNotebookById:", { id, userId });
 
   return unstable_cache(

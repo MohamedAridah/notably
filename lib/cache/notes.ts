@@ -1,3 +1,5 @@
+"use server";
+
 import { unstable_cache } from "next/cache";
 import { getNoteByIdFromDB, getTrashedNotesFromDB } from "@/lib/db/notes";
 
@@ -6,7 +8,7 @@ import { getNoteByIdFromDB, getTrashedNotesFromDB } from "@/lib/db/notes";
  * Tag: note-${id}-${userId}
  * Used in: Note editor page
  */
-export const getCachedNoteById = (id: string, userId: string) => {
+export const getCachedNoteById = async(id: string, userId: string) => {
   console.log("Cache layer: getCachedNoteById:", { id, userId });
 
   return unstable_cache(
@@ -23,7 +25,7 @@ export const getCachedNoteById = (id: string, userId: string) => {
  * Tag: trashed-notes-user-${userId}
  * Used in: Trash page
  */
-export const getCachedTrashedNotes = (userId: string) => {
+export const getCachedTrashedNotes = async(userId: string) => {
   console.log("Cache layer: getCachedTrashedNotes for user:", userId);
 
   return unstable_cache(

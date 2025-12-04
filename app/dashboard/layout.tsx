@@ -5,8 +5,8 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: {
-    default: "Dashboard - Notabky . Think Better",
-    template: "%s - Notabky . Think Better",
+    default: "Dashboard - Notably . Think Better",
+    template: "%s - Notably . Think Better",
   },
 };
 

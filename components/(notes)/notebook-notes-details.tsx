@@ -9,7 +9,7 @@ import {
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import FavoriteButton from "@/components/utils/favorite-button";
-import { NoteScoped } from "../../app/dashboard/notebook/[notebookId]/_components/notebook-notes";
+import { NoteScoped } from "@/app/dashboard/notebook/[notebookId]/_components/notebook-notes";
 import { setNoteFavoriteAction } from "@/server/notes";
 import { NoteCardMode, NoteModePolicies } from "./note-mode-policies";
 const NoteOptions = dynamic(() => import("@/components/(notes)/note-options"), {
@@ -63,7 +63,9 @@ const DetailsView = ({
                   {note.title || "Untitled Note"}
                 </Link>
               ) : (
-                <span>{note.title}</span>
+                <span className="truncate pr-3">
+                  {note.title || "Untitled Note"}
+                </span>
               )}
             </TableCell>
 
