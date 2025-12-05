@@ -82,7 +82,10 @@ export default function EditNoteDialog({
           />
         </DialogTrigger>
       )}
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent
+        className="sm:max-w-[425px]"
+        onKeyDown={(e) => e.stopPropagation()}
+      >
         <DialogHeader>
           <DialogTitle>Update Note Title</DialogTitle>
           <DialogDescription>

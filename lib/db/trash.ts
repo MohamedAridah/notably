@@ -14,14 +14,20 @@ export const emptyUserTrash = async (userId: string) => {
   }
 
   console.log("DB Query: emptyUserTrash:", { userId });
+  const deleteNotebooksPromise = prisma.notebook.deleteMany({
+    where: {
+      userId,
+      deletedAt: { not: null },
+    },
+  });
+  const deleteNotesPromise = prisma.note.deleteMany({
+    where: {
+      userId,
+      deletedAt: { not: null },
+    },
+  });
   try {
-    await prisma.notebook.deleteMany({
-      where: {
-        userId,
-        deletedAt: { not: null },
-      },
-    });
-
+    await prisma.$transaction([deleteNotebooksPromise, deleteNotesPromise]);
     return {
       success: true,
       message: "Success! Trash has been emptied.",
