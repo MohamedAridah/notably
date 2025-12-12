@@ -1,22 +1,22 @@
 "use client";
 
+import { useMemo } from "react";
 import dynamic from "next/dynamic";
+import { Note, Notebook } from "@prisma/client";
 import { useQueryState } from "nuqs";
-import {
-  NotebookWithCount,
-  NotebookWithNotes,
-} from "@/components/(notebooks)/notebook";
 import TableSkeketon from "@/components/(skeletons)/table";
 import NotebooksGridView from "@/components/(notebooks)/notebooks-grid-view";
 import NotesGridView from "@/components/(notes)/notebook-notes-grid";
 import { Search } from "@/components/utils/search";
-import { useMemo } from "react";
-import { Note, Notebook } from "@prisma/client";
 import ViewController, {
   DEFAULT_VIEW,
 } from "../../_components/view-controller";
 import { NotebookIcon, NotebookTextIcon } from "lucide-react";
-import { NoteScopedWithNotebookName } from "@/components/(notes)/note";
+import {
+  NotebookWithCountAndNotes,
+  NoteCardDefault,
+  NoteCardTrashed,
+} from "@/types/types";
 const NotebookDetailsView = dynamic(
   () => import("@/components/(notebooks)/notebooks-details-view"),
   {
@@ -120,13 +120,13 @@ const renderTrashContent = (
           </h2>
           {view === "grid" && (
             <NotebooksGridView
-              notebooks={displayState.notebooks as NotebookWithCount[]}
+              notebooks={displayState.notebooks as NotebookWithCountAndNotes[]}
               notebookMode="trash"
             />
           )}
           {view === "rows" && (
             <NotebookDetailsView
-              notebooks={displayState.notebooks as NotebookWithNotes[]}
+              notebooks={displayState.notebooks as NotebookWithCountAndNotes[]}
               mode="trash"
             />
           )}
@@ -140,13 +140,17 @@ const renderTrashContent = (
           </h2>
           {view === "grid" && (
             <NotesGridView
-              notes={displayState.notes as NoteScopedWithNotebookName[]}
+              notes={
+                displayState.notes as (NoteCardDefault & NoteCardTrashed)[]
+              }
               noteMode="trash"
             />
           )}
           {view === "rows" && (
             <NoteDetailsView
-              notes={displayState.notes as NoteScopedWithNotebookName[]}
+              notes={
+                displayState.notes as (NoteCardDefault & NoteCardTrashed)[]
+              }
               mode="trash"
             />
           )}

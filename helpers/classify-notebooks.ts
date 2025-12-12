@@ -1,8 +1,10 @@
 "use server";
 
-import { Notebook } from "@prisma/client";
+import { NotebookWithCountAndNotes } from "@/types/types";
 
-export const classifyNotebooks = async (notebooks: Partial<Notebook>[]) => {
+export const classifyNotebooks = async (
+  notebooks: NotebookWithCountAndNotes[]
+) => {
   if (!Array.isArray(notebooks)) return { favorites: [], others: [] };
 
   const favorites = [];

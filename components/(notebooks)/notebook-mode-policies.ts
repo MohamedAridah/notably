@@ -31,3 +31,5 @@ export const NotebookModePolicies = {
   //   deleteAction: "move-to-archive" as const,
   // },
 } satisfies Record<NotebookCardMode, any>;
+
+export type NotebookPolicy = (typeof NotebookModePolicies)[NotebookCardMode];

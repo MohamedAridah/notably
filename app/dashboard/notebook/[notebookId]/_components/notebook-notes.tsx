@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import dynamic from "next/dynamic";
+import { NotebookByIdResponseNotes, NoteCardDefault } from "@/types/types";
 import { useQueryState } from "nuqs";
 import GridView from "@/components/(notes)/notebook-notes-grid";
 import TableSkeketon from "@/components/(skeletons)/table";
@@ -9,8 +10,6 @@ import ViewController, {
   DEFAULT_VIEW,
 } from "@/app/dashboard/_components/view-controller";
 import { Search } from "@/components/utils/search";
-import { NoteScoped } from "@/components/(notes)/note";
-
 const DetailsView = dynamic(
   () => import("@/components/(notes)/notebook-notes-details"),
   {
@@ -21,12 +20,12 @@ const DetailsView = dynamic(
 
 type NoteDisplayState = {
   isSearching: boolean;
-  data: NoteScoped[];
+  data: NoteCardDefault[];
   isEmpty: boolean;
   resultCount: number;
 };
 
-const filterNotes = (notes: NoteScoped[], searchTerm: string): NoteScoped[] => {
+const filterNotes = (notes: NoteCardDefault[], searchTerm: string): NoteCardDefault[] => {
   if (!searchTerm.trim()) return notes;
 
   const searchLower = searchTerm.toLowerCase();
@@ -37,7 +36,7 @@ const filterNotes = (notes: NoteScoped[], searchTerm: string): NoteScoped[] => {
 };
 
 const getDisplayState = (
-  notes: NoteScoped[],
+  notes: NoteCardDefault[],
   searchTerm: string
 ): NoteDisplayState => {
   const isSearching = searchTerm.trim().length > 0;
@@ -63,11 +62,11 @@ const renderContent = (
   return view === "grid" ? (
     <GridView notes={data} />
   ) : (
-    <DetailsView notes={data} />
+    <DetailsView notes={data as NotebookByIdResponseNotes[]} />
   );
 };
 
-const NotebookNotes = ({ notes }: { notes: NoteScoped[] }) => {
+const NotebookNotes = ({ notes }: { notes: NotebookByIdResponseNotes[] }) => {
   const [view] = useQueryState("view", { defaultValue: DEFAULT_VIEW });
   const [term] = useQueryState("q", { defaultValue: "" });
 

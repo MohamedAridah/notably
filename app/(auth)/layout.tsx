@@ -19,7 +19,7 @@ export default function AuthLayout({
     <section className="flex flex-col min-h-dvh">
       <AuthHeader />
       <div
-        className={`w-full max-w-md mx-auto min-h-[${height}] my-auto py-14`}
+        className={`w-full max-w-md md:max-w-lg mx-auto min-h-[${height}] my-auto py-14`}
       >
         {children}
       </div>

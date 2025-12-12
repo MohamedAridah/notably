@@ -1,4 +1,4 @@
-"use server"
+"use server";
 
 import prisma from "@/lib/prisma";
 import { Notebook } from "@prisma/client";
@@ -61,6 +61,7 @@ export async function getNotebooksFromDB(
             id: true,
             title: true,
             isFavorite: true,
+            createdAt: true,
           },
           where: {
             deletedAt: null,

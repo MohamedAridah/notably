@@ -2,13 +2,12 @@
 
 import { useMemo } from "react";
 import dynamic from "next/dynamic";
+import { NotebookWithCountAndNotes } from "@/types/types";
 import { useQueryState } from "nuqs";
-import { NotebookWithNotes } from "@/components/(notebooks)/notebook";
 import TableSkeketon from "@/components/(skeletons)/table";
 import ViewController, { DEFAULT_VIEW } from "./view-controller";
 import GridView from "@/components/(notebooks)/notebooks-grid-view";
 import { Search } from "@/components/utils/search";
-
 const DetailsView = dynamic(
   () => import("@/components/(notebooks)/notebooks-details-view"),
   {
@@ -18,41 +17,46 @@ const DetailsView = dynamic(
 );
 
 type NotebooksProps = {
-  notebook__favorites: NotebookWithNotes[];
-  notebook__others: NotebookWithNotes[];
+  favorites: NotebookWithCountAndNotes[];
+  others: NotebookWithCountAndNotes[];
 };
 
-type NotebookCategorized = {
-  favorites: NotebookWithNotes[];
-  others: NotebookWithNotes[];
-};
+type NotebookCategorized = NotebooksProps;
 
 type NotebookDisplayState = {
   isSearching: boolean;
-  data: NotebookCategorized | NotebookWithNotes[];
+  data: NotebookCategorized | NotebookWithCountAndNotes[];
   isEmpty: boolean;
   resultCount: number;
 };
 
 const filterNotebooks = (
-  notebooks: NotebookWithNotes[],
+  notebooks: NotebookWithCountAndNotes[],
   searchTerm: string
-): NotebookWithNotes[] => {
+): NotebookWithCountAndNotes[] => {
   if (!searchTerm.trim()) return notebooks;
 
   const searchLower = searchTerm.toLowerCase();
-  return notebooks.filter((notebook) => {
+  return notebooks.reduce((acc, notebook) => {
     const notebookMatches = notebook.name.toLowerCase().includes(searchLower);
-    const noteMatches = notebook.notes.some((note) =>
+    const matchedNotes = notebook.notes.filter((note) =>
       note.title?.toLowerCase().includes(searchLower)
     );
-    return notebookMatches || noteMatches;
-  });
+
+    if (notebookMatches || matchedNotes.length > 0) {
+      acc.push({
+        ...notebook,
+        notes: matchedNotes,
+      });
+    }
+
+    return acc;
+  }, [] as NotebookWithCountAndNotes[]);
 };
 
 const getDisplayState = (
-  favorites: NotebookWithNotes[],
-  others: NotebookWithNotes[],
+  favorites: NotebookWithCountAndNotes[],
+  others: NotebookWithCountAndNotes[],
   searchTerm: string
 ): NotebookDisplayState => {
   const isSearching = searchTerm.trim().length > 0;
@@ -86,11 +90,11 @@ const renderContent = (
   }
 
   if (displayState.isSearching) {
-    const data = displayState.data as NotebookWithNotes[];
+    const data = displayState.data as NotebookWithCountAndNotes[];
     return view === "grid" ? (
-      <GridView notebooks={data} />
+      <GridView notebooks={data} allowFilter />
     ) : (
-      <DetailsView notebooks={data} />
+      <DetailsView notebooks={data} allowFilter />
     );
   }
 
@@ -128,13 +132,8 @@ const Notebooks = ({ notebooks }: { notebooks: NotebooksProps }) => {
   const [term] = useQueryState("q", { defaultValue: "" });
 
   const displayState = useMemo(
-    () =>
-      getDisplayState(
-        notebooks.notebook__favorites,
-        notebooks.notebook__others,
-        term
-      ),
-    [term, notebooks.notebook__favorites, notebooks.notebook__others]
+    () => getDisplayState(notebooks.favorites, notebooks.others, term),
+    [term, notebooks.favorites, notebooks.others]
   );
 
   const resultText = displayState.resultCount === 1 ? "result" : "results";

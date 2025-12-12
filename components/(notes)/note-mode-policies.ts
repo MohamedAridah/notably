@@ -31,3 +31,5 @@ export const NoteModePolicies = {
   //   deleteAction: "move-to-archive" as const,
   // },
 } satisfies Record<NoteCardMode, any>;
+
+export type NotePolicy = (typeof NoteModePolicies)[NoteCardMode];

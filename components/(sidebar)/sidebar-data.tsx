@@ -21,18 +21,16 @@ import {
   SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import SidebarOptions from "@/components/(sidebar)/sidebar-options";
+import DeleteEmptyNotes from "@/components/(sidebar)/delete-empty-notes-button";
+import ToggleCollapseButton from "@/components/(sidebar)/toggle-collapse-button";
 import {
   ChevronRight,
   FolderClosedIcon,
   InfoIcon,
-  LibraryBigIcon,
   LibraryIcon,
   NotebookTextIcon,
 } from "lucide-react";
-import SidebarOptions from "./sidebar-options";
-import DeleteEmptyNotes from "./delete-empty-notes-button";
-import ToggleCollapseButton from "./toggle-collapse-button";
-
 const NoteOptions = dynamic(() => import("@/components/(notes)/note-options"), {
   ssr: false,
 });
@@ -80,14 +78,24 @@ export default function SidebarData({ data }: SidebarDataProps) {
   });
 
   const filteredData = useMemo(() => {
-    const s = search.toLowerCase();
-    return data.navMain.filter((item) => {
-      const notebookMatches = item.title.toLowerCase().includes(s);
-      const noteMatches = item.items.some((note) =>
-        note.title.toLowerCase().includes(s)
+    const searchLower = search.toLowerCase();
+    return data.navMain.reduce((acc, notebook) => {
+      const notebookMatches = notebook.title
+        .toLowerCase()
+        .includes(searchLower);
+      const matchedNotes = notebook.items.filter((note) =>
+        note.title?.toLowerCase().includes(searchLower)
       );
-      return notebookMatches || noteMatches;
-    });
+
+      if (notebookMatches || matchedNotes.length > 0) {
+        acc.push({
+          ...notebook,
+          items: matchedNotes,
+        });
+      }
+
+      return acc;
+    }, [] as NotebookLink[]);
   }, [data.navMain, search]);
 
   if (filteredData.length === 0 && search) {
@@ -181,7 +189,6 @@ export default function SidebarData({ data }: SidebarDataProps) {
                               name: notebook.title,
                               isFavorite: notebook.isFavorite,
                             }}
-                            
                             // className="flex items-center sm:opacity-0 group-hover/notebook-buttons:opacity-100"
                             className="flex items-center"
                           />

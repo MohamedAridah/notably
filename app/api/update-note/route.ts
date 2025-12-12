@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { updateNoteAction } from "@/server/notes";
+import { isUserAuthed } from "@/server/auth";
 
 export async function PATCH(req: Request) {
   const { id, content } = await req.json();
@@ -11,14 +12,19 @@ export async function PATCH(req: Request) {
     );
   }
 
-  const { success, message } = await updateNoteAction(id, { content });
+  try {
+    await isUserAuthed();
+    const { success, message } = await updateNoteAction(id, { content });
 
-  if (!success) {
-    return NextResponse.json(
-      { error: "Internal Server Error" + "\n" + message },
-      { status: 500 }
-    );
+    if (!success) {
+      return NextResponse.json(
+        { error: "Internal Server Error" + "\n" + message },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({ success, message });
+  } catch (error) {
+    return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
   }
-
-  return NextResponse.json({ success, message });
 }

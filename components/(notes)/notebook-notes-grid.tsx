@@ -1,11 +1,12 @@
-import NoteCard, { NoteScopedWithNotebookName } from "@/components/(notes)/note";
+import NoteCard from "@/components/(notes)/note";
 import { NoteCardMode } from "./note-mode-policies";
+import { NoteCardDefault, NoteCardTrashed } from "@/types/types";
 
 const GridView = ({
   notes,
   noteMode,
 }: {
-  notes: NoteScopedWithNotebookName[];
+  notes: NoteCardDefault[];
   noteMode?: NoteCardMode;
 }) => {
   return (

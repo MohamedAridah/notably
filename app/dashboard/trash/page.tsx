@@ -3,11 +3,11 @@ import { getCachedTrashedNotebooksAction } from "@/server/notebooks";
 import { getCachedTrashedNotesAction } from "@/server/notes";
 import Message from "@/components/utils/message";
 import BreadCrumbUI from "@/components/utils/breadcrumb";
-import { NotebookWithNotes } from "@/components/(notebooks)/notebook";
 import { Button } from "@/components/ui/button";
 import TrashUI from "./_components/trash-ui";
 import EmptyTrashDialog from "./_components/empty-trash-button";
 import { ArrowLeftIcon, NotebookIcon } from "lucide-react";
+import { NotebookWithCountAndNotes } from "@/types/types";
 
 export const metadata = {
   description:
@@ -71,7 +71,7 @@ export default async function Trash() {
         />
       ) : (
         <TrashUI
-          notebooks={notebooksRes.notebooks as NotebookWithNotes[]}
+          notebooks={notebooksRes.notebooks as NotebookWithCountAndNotes[]}
           notes={notesRes.notes as any}
         />
       )}

@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { NoteCardDefault, NoteCardTrashed } from "@/types/types";
+import { setNoteFavoriteAction } from "@/server/notes";
 import {
   Card,
   CardDescription,
@@ -8,25 +10,21 @@ import {
 } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import DeleteNoteDialog from "@/components/(notes)/delete-note-button";
+import EditNoteDialog from "@/components/(notes)/edit-note-button";
+import FavoriteButton from "@/components/utils/favorite-button";
+import NoteOptions from "@/components/(notes)/note-options";
+import RestoreNoteDialog from "@/components/(notes)/restore-note-button";
+import {
+  NoteCardMode,
+  NoteModePolicies,
+} from "@/components/(notes)/note-mode-policies";
 import { ExternalLinkIcon } from "lucide-react";
-import EditNoteDialog from "./edit-note-button";
-import FavoriteButton from "../utils/favorite-button";
-import NoteOptions from "./note-options";
-import { setNoteFavoriteAction } from "@/server/notes";
-import { NoteCardMode, NoteModePolicies } from "./note-mode-policies";
-import RestoreNoteDialog from "./restore-note-button";
-import { Note } from "@prisma/client";
-
-export type NoteScoped = Omit<Note, "content" | "updatedAt" | "userId">;
-export type NoteScopedWithNotebookName = NoteScoped & {
-  notebook?: { name: string };
-};
 
 export default function NoteCard({
   note,
   mode = "default",
 }: {
-  note: NoteScopedWithNotebookName;
+  note: NoteCardDefault & Partial<NoteCardTrashed>;
   mode?: NoteCardMode;
 }) {
   const policy = NoteModePolicies[mode];
