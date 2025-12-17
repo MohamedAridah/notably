@@ -6,15 +6,22 @@ type Props = {
   notebooks: NotebookWithCountAndNotes[];
   mode?: NotebookCardMode;
   allowFilter?: boolean;
+  showHeader?: boolean;
 };
 
-const DetailsView = ({ notebooks, mode = "default", allowFilter }: Props) => {
+const DetailsView = ({
+  notebooks,
+  mode = "default",
+  showHeader,
+  allowFilter,
+}: Props) => {
   return (
     <NotebookTable
       notebooks={notebooks}
       allowFilter={allowFilter}
       mode={mode}
-      />
+      showHeader={showHeader}
+    />
   );
 };
 

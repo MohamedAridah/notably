@@ -24,7 +24,7 @@ export default function NotebookTable({
   notebooks,
   mode,
   allowFilter,
-  showHeader,
+  showHeader = true,
 }: NotebookTableProps) {
   const policy = NotebookModePolicies[mode];
   const columns = [

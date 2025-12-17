@@ -109,6 +109,7 @@ export default function NoteTable({
                   notebookId: note.notebookId as string,
                   noteId: note.id,
                   noteTitle: note.title,
+                  isFavorite: note.isFavorite,
                 }}
                 alignStart
                 mode={mode}

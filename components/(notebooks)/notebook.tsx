@@ -33,7 +33,7 @@ export default function Notebook({
 }) {
   const policy = NotebookModePolicies[mode];
   const notebookURL = `/dashboard/notebook/${notebook.id}`;
-  const hasNestedNotes = notebook.notes.length > 0;
+  const hasNestedNotes = notebook.notes && notebook.notes.length > 0;
 
   return (
     <div>

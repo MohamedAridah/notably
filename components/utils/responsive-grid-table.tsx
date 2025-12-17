@@ -60,54 +60,56 @@ export function ResponsiveGridTable({
       )}
 
       {/* Rows */}
-      {data.map((row) => (
-        <div
-          key={rowKey(row)}
-          className="border-b last:border-b-0 whitespace-nowrap"
-        >
-          {/* Main row */}
+      {data.map((row) => {
+        const hasNestedNotes = row.notes && row.notes.length > 0;
+        return (
           <div
-            className={cn(
-              "grid grid-cols-12 items-center hover:bg-muted/50",
-              rowClassName
-            )}
+            key={rowKey(row)}
+            className="border-b last:border-b-0 whitespace-nowrap"
           >
-            {columns.map((col) => (
-              <div
-                key={col.key}
-                className={cn(
-                  col.span && `col-span-${col.span}`,
-                  "p-2",
-                  col.className
-                )}
-              >
-                {renderCell(row, col)}
-              </div>
-            ))}
-          </div>
-
-          {row.notes && allowFilter && (
-            <ul className="border-sidebar-border ms-8 flex flex-col gap-2 border-l ps-2.5 py-0.5 pt-4 mb-5">
-              {row.notes.map((note: NoteCardDefault & NoteCardTrashed) => (
-                <li className="relative ps-2" key={note.id}>
-                  <div className="absolute h-4 w-[19px] top-1/4 left-[-10px] border-b-2 border-b-sidebar-border rounded-bl-lg"></div>
-                  <NoteTable
-                    notes={[
-                      {
-                        ...note,
-                        notebookId: row.id,
-                        notebook: { name: row.name },
-                      },
-                    ]}
-                    mode="default"
-                    showHeader={showHeader}
-                  />
-                </li>
+            {/* Main row */}
+            <div
+              className={cn(
+                "grid grid-cols-12 items-center hover:bg-muted/50",
+                rowClassName
+              )}
+            >
+              {columns.map((col) => (
+                <div
+                  key={col.key}
+                  className={cn(
+                    col.span && `col-span-${col.span}`,
+                    "p-2",
+                    col.className
+                  )}
+                >
+                  {renderCell(row, col)}
+                </div>
               ))}
-            </ul>
-          )}
-        </div>
-      ))}
+            </div>
+
+            {hasNestedNotes && allowFilter && (
+              <ul className="border-sidebar-border ms-8 flex flex-col gap-2 border-l ps-2.5 py-0.5 mb-5">
+                {row.notes.map((note: NoteCardDefault & NoteCardTrashed) => (
+                  <li className="relative ps-2" key={note.id}>
+                    <div className="absolute h-4 w-[19px] top-1/4 left-[-10px] border-b-2 border-b-sidebar-border rounded-bl-lg"></div>
+                    <NoteTable
+                      notes={[
+                        {
+                          ...note,
+                          notebookId: row.id,
+                          notebook: { name: row.name },
+                        },
+                      ]}
+                      mode="default"
+                    />
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
