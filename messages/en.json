@@ -1,0 +1,686 @@
+{
+  "Pages": {
+    "dashboard": "Dashboard",
+    "trash": "Trash"
+  },
+  "HeadLines": {
+    "notebooks": "Notebooks",
+    "notes": "Notes"
+  },
+  "Header": {
+    "logoLinkAriaLabel": "Notably Logo. Click to go to homepage.",
+    "logoLinkText": "Go to HomePage"
+  },
+  "AuthHeader": {
+    "home": "Home"
+  },
+  "Footer": {
+    "logoLinkAriaLabel": "Go to HomePage",
+    "copyrights": "© 2025 Notably, All rights reserved"
+  },
+  "NavLinks": {
+    "features": "Features"
+  },
+  "Sidebar": {
+    "logoLinkText": "Go to Home Page",
+    "searchForm": {
+      "label": "Search",
+      "placeholder": "Search your notes...",
+      "clearAriaLabel": "Clear search input"
+    },
+    "searchIcon": {
+      "ariaLabel": "Search for notebooks and notes",
+      "tooltipText": "Search"
+    },
+    "quickActions": {
+      "label": "Quick Actions"
+    },
+    "navigation": {
+      "label": "Navigation",
+      "dashboard": "Dashboard",
+      "trash": "Trash"
+    },
+    "myNotebooks": {
+      "label": "My Notebooks",
+      "noResultsFound": "No results found",
+      "noNotebooksYet": "No notebooks yet."
+    }
+  },
+  "NotebookCard": {
+    "description": "This notebook contains {count,plural, one {# note.} other {# notes.}}"
+  },
+  "NotebookTable": {
+    "name": "Notebook Name",
+    "notes": "Sub Notes",
+    "date": {
+      "created": "Created",
+      "deleted": "Deleted"
+    },
+    "count": "{count,plural, one {# note} other {# notes}}"
+  },
+  "NoteCard": {
+    "default": "Click view to see note content.",
+    "trash": "Categorized under <NotebookName>{notebookName}</NotebookName> notebook.",
+    "restore": "Restore note to view or edit its content."
+  },
+  "NoteTable": {
+    "name": "Note Name",
+    "notebook": "Notebook",
+    "date": {
+      "created": "Created",
+      "deleted": "Deleted"
+    }
+  },
+  "CollapseNotebooksButton": {
+    "expand": "Expand notebooks",
+    "collapse": "Collapse notebooks"
+  },
+  "DeleteEmptyNotesButton": {
+    "label": "Delete Empty Notes",
+    "toasts": {
+      "errorAuth": "You must be signed in to delete notes.",
+      "loading": "Deleting empty notes...",
+      "errorDelete": "Failed to delete empty notes!"
+    }
+  },
+  "ViewController": {
+    "gridViewTooltip": "Grid view",
+    "tableViewTooltip": "Table view",
+    "gridViewAria": "Show as Grid view",
+    "tableViewAria": "Show as Table view"
+  },
+  "SearchForm": {
+    "placeholder": {
+      "notebooks": "Search your notebooks...",
+      "notes": "Search notes in this notebook...",
+      "trashed": "Search your trashed notebooks and notes..."
+    },
+    "state": {
+      "noMatchGeneral": "There are no data that matches ",
+      "withMatchMessage": "Showing {count,plural, one {# result} other {# results}} for ",
+      "noMatchMessage": "No {term} match your search.",
+      "notFoundMessage": "No {term} found.",
+      "empty": "{term} is empty."
+    }
+  },
+  "CreateNoteButton": {
+    "labelLong": "Create Note",
+    "labelShort": "Note",
+    "labelProcessing": "Creating...",
+    "toasts": {
+      "errorAuth": "You must be signed in to create a note.",
+      "loading": "Creating your new note — just a moment...",
+      "errorCreate": "Failed to create the note!",
+      "success": "Saved! Jumping to your note now... 🚀"
+    }
+  },
+  "UpdateNoteButton": {
+    "labelLong": "Update Note Title",
+    "labelShort": "Update",
+    "labelProcessing": "Updating...",
+    "description": "Edit the note below and save your changes.",
+    "toasts": {
+      "errorAuth": "You must be signed in to update note."
+    }
+  },
+  "DeleteNoteButton": {
+    "move-to-trash": {
+      "title": "Move note to Trash?",
+      "buttonText": "Move to Trash",
+      "processText": "Moving...",
+      "description": "This will move note to Trash. You can restore it later."
+    },
+    "delete-permanently": {
+      "title": "Delete note permanently?",
+      "buttonText": "Delete Forever",
+      "processText": "Deleting...",
+      "description": "This will permanently delete your note. This action cannot be undone."
+    },
+    "label": "Delete",
+    "toasts": {
+      "errorAuth": "You must be signed in to delete note."
+    }
+  },
+  "RestoreNoteButton": {
+    "labelLong": "Restore Note?",
+    "labelShort": "Restore",
+    "labelProcessing": "Restoring...",
+    "description": "This will restore your note from Trash back to your dashboard."
+  },
+  "MoveNoteButton": {
+    "labelLong": "Move Note",
+    "labelShort": "Move",
+    "labelProcessing": "Moving...",
+    "description": "Select a notebook to move the note to."
+  },
+  "MoveNoteList": {
+    "noEnoughNotebooks": "You need at least two notebooks to move this note.",
+    "loadingNotebooks": "Getting notebooks...",
+    "moveButtonAriaLabel": "Select this notebook to move the note to.",
+    "toasts": {
+      "loading": "Moving note...",
+      "success": "Note moved successfully!",
+      "successDescription": "Moved from <From>{from}</From> to <To>{to}</To>",
+      "error": "Failed to move note.",
+      "unexpected": "An unexpected error occurred while moving the note."
+    }
+  },
+  "CreateNotebookButton": {
+    "labelLong": "Create Notebook",
+    "labelShort": "Notebook",
+    "labelProcessing": "Creating...",
+    "description": "Create a new notebook to save your notes.",
+    "toasts": {
+      "errorAuth": "You must be signed in to create a notebook.",
+      "loading": "Creating your new notebook — Just a moment...",
+      "errorCreate": "Failed to create the notebook!",
+      "success": "Done! Jumping to your notebook now... 🚀"
+    }
+  },
+  "UpdateNotebookButton": {
+    "labelLong": "Update Notebook",
+    "labelShort": "Update",
+    "labelProcessing": "Updating...",
+    "description": "Edit the notebook below and save your changes.",
+    "toasts": {
+      "errorAuth": "You must be signed in to update notebook."
+    }
+  },
+  "DeleteNotebookButton": {
+    "move-to-trash": {
+      "title": "Move notebook to Trash?",
+      "buttonText": "Move to Trash",
+      "processText": "Moving...",
+      "description": "This will move <NotebookName>{notebookName}</NotebookName> and all its notes to Trash. You can restore it later."
+    },
+    "delete-permanently": {
+      "title": "Delete notebook permanently?",
+      "buttonText": "Delete Forever",
+      "processText": "Deleting...",
+      "description": "This will permanently delete <NotebookName>{notebookName}</NotebookName> and all its notes. This action cannot be undone."
+    },
+    "label": "Delete",
+    "toasts": {
+      "errorAuth": "You must be signed in to delete notebook."
+    }
+  },
+  "RestoreNotebookButton": {
+    "labelLong": "Restore Notebook?",
+    "labelShort": "Restore",
+    "labelProcessing": "Restoring...",
+    "description": "This will restore <NotebookName>{notebookName}</NotebookName> from Trash back to your notebooks."
+  },
+  "EmptyTrashButton": {
+    "labelLong": " Are you sure you want to permanently empty trash?",
+    "labelShort": "Empty Trash",
+    "labelProcessing": "Deleting...",
+    "description": "All items in the trash will be permanently deleted. This action cannot be undone.",
+    "toasts": {
+      "errorAuth": "You must be signed in clear trash.",
+      "loading": "Clearing the trash..."
+    }
+  },
+  "UserMenu": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "account": "Account",
+    "logout": "Logout"
+  },
+  "LocaleSwitcher": {
+    "ar": "Arabic",
+    "en": "English",
+    "label": "Language"
+  },
+  "NoteOptionsMenu": {
+    "triggerAriaLabel": "Open note options menu"
+  },
+  "NotebookOptionsMenu": {
+    "triggerAriaLabel": "Open notebook options menu"
+  },
+  "FavoriteButton": {
+    "toasts": {
+      "disabled": "Favorites are disabled in trash mode. Restore notebook or note first to enable."
+    },
+    "labels": {
+      "remove": "Remove from favorites",
+      "add": "Add to favorites"
+    }
+  },
+  "Common": {
+    "something__went__wrong": "Sorry, something went wrong.",
+    "actions": {
+      "details": "Details",
+      "view": "View",
+      "update": "Update",
+      "move__to__notebook": "Move to notebook",
+      "restore": "Restore",
+      "delete": "Delete",
+      "tryAgain": "Try again",
+      "cancel": "Cancel",
+      "signUp": "Sign Up",
+      "login": "Login",
+      "undo": "Undo"
+    },
+    "terms": {
+      "notebook": "{count, plural, one {Notebook} other {Notebooks}}",
+      "note": "{count, plural, one {Note} other {Notes}}",
+      "item": "{count, plural, one {item} other {items}}",
+      "favorites": "Favorites",
+      "others": "Others",
+      "createdAt": "Created at:",
+      "updatedAt": "Last updated at:",
+      "expireAt": "Expires at:",
+      "loading": "Loading..."
+    }
+  },
+  "LogoutButton": {
+    "label": "Logout",
+    "toasts": {
+      "success": "Signed out successfully",
+      "error": "Failed to sign out"
+    }
+  },
+  "Validations": {
+    "email": "Invalid email address",
+    "required": "This field is required",
+    "min": "Must be at least {count, plural, one {# character} other {# characters}}",
+    "passwordsMismatch": "Passwords do not match",
+    "emptyNotebook": "Notebook can not be empty.",
+    "emptyNote": "Note can not be empty."
+  },
+  "serverCodes": {
+    "AUTH": {
+      "SUCCESS_SIGNUP_CHECK_EMAIL": "Please check your email for verification.",
+      "SUCCESS_SIGNIN": "Signed in successfully",
+      "SUCCESS_PASSWORD_RESET_EMAIL_SENT": "Please check your email for a password reset link.",
+      "SUCCESS_PASSWORD_RESET": "Password reset successfully. You can now sign in.",
+
+      "ERROR_EMAIL_ALREADY_EXISTS": "Email already exists.",
+      "ERROR_INVALID_CREDENTIALS": "Invalid email or password.",
+      "ERROR_INVALID_TOKEN": "Invalid token.",
+      "ERROR_INVALID_USER_ID": "Invalid user ID provided",
+      "ERROR_NOT_AUTHENTICATED": "User not authenticated.",
+      "ERROR_DATABASE": "A database error occurred.",
+      "ERROR_SERVER_ERROR": "Internal Server Error",
+      "ERROR_UNKNOWN": "Something went wrong. Please try again."
+    },
+    "NOTEBOOKS": {
+      "SUCCESS_NOTEBOOK_CREATED": "Notebook created successfully",
+      "SUCCESS_QUICK_NOTEBOOK_CREATED": "Quick Notes notebook created",
+      "SUCCESS_NOTEBOOK_UPDATED": "Notebook updated successfully",
+      "SUCCESS_MOVE_NOTEBOOK_TO_TRASH": "Notebook moved to trash successfully.",
+      "SUCCESS_RESTORE_NOTEBOOK": "Notebook restored successfully.",
+      "SUCCESS_DELETE_NOTEBOOK": "Notebook deleted successfully",
+      "SUCCESS_ADD_NOTEBOOK_TO_FAVORITE": "Notebook added to your favorites successfully.",
+      "SUCCESS_REMOVE_NOTEBOOK_FROM_FAVORITE": "Notebook removed from your favorites successfully.",
+
+      "ERROR_FETCH_NOTEBOOKS": "Failed to fetch notebooks.",
+      "ERROR_FETCH_NOTEBOOK": "Failed to fetch notebook.",
+      "ERROR_FETCH_TRASH_NOTEBOOKS": "Failed to fetch trashed notebooks.",
+      "ERROR_NOTEBOOK_CREATION": "Failed to create notebook",
+      "ERROR_QUICK_NOTEBOOK_CREATION": "Failed to create Quick Notes notebook",
+      "ERROR_NOTEBOOK_UPDATE": "Failed to update notebook",
+      "ERROR_NOTEBOOK_TRASH": "Failed to restore notebook.",
+      "ERROR_DELETE_NOTEBOOK": "Failed to delete notebook",
+      "ERROR_NOTEBOOK_RESTORE": "Failed to trash notebook.",
+      "ERROR_ADD_NOTEBOOK_TO_FAVORITE": "Failed to add notebook to favorites.",
+      "ERROR_REMOVE_NOTEBOOK_FROM_FAVORITE": "Failed to remove notebook from favorites.",
+      "ERROR_NOTEBOOK_EMPTY": "Notebook not found or unauthorized.",
+      "ERROR_INVALID_NOTEBOOK_ID": "Invalid notebook ID or user ID",
+      "ERROR_NOTEBOOK_NOT_FOUND": "Notebook not found",
+      "ERROR_NOTEBOOK_NAME_REQUIRED": "Notebook name is required and cannot be empty"
+    },
+    "NOTES": {
+      "SUCCESS_NOTE_CREATED": "Note created successfully",
+      "SUCCESS_NOTE_UPDATED": "Note updated successfully",
+      "SUCCESS_MOVE_NOTE_TO_TRASH": "Note moved to trash successfully.",
+      "SUCCESS_RESTORE_NOTE": "Note restored successfully.",
+      "SUCCESS_DELETE_NOTE": "Note deleted successfully",
+      "SUCCESS_DELETE_EMPTY_NOTES": "Empty notes deleted successfully",
+      "SUCCESS_ADD_NOTE_TO_FAVORITE": "Note added to your favorites successfully.",
+      "SUCCESS_REMOVE_NOTE_FROM_FAVORITE": "Note removed from your favorites successfully.",
+
+      "ERROR_FETCH_TRASH_NOTES": "Failed to fetch trashed notes.",
+      "ERROR_FETCH_NOTE": "Failed to fetch note.",
+      "ERROR_NOTE_CREATION": "Failed to create note",
+      "ERROR_NOTE_UPDATE": "Failed to update note",
+      "ERROR_NOTE_TRASH": "Failed to restore note.",
+      "ERROR_DELETE_NOTE": "Failed to delete note",
+      "ERROR_DELETE_EMPTY_NOTES": "Failed to delete empty notes",
+      "ERROR_NOTE_RESTORE": "Failed to trash note.",
+      "ERROR_ADD_NOTE_TO_FAVORITE": "Failed to add note to favorites.",
+      "ERROR_REMOVE_NOTE_FROM_FAVORITE": "Failed to remove note from favorites.",
+      "ERROR_NOTE_EMPTY": "Note not found or unauthorized.",
+      "ERROR_INVALID_NOTE_ID": "Invalid note ID or user ID",
+      "ERROR_NOTE_NOT_FOUND": "Note not found",
+      "ERROR_NOTE_NAME_REQUIRED": "Note name is required and cannot be empty"
+    },
+    "TRASH": {
+      "SUCCESS_DELETE": "Success! Trash has been emptied.",
+      "ERROR_DELETE": "Failed to empty trash"
+    }
+  },
+  "LoginForm": {
+    "title": "Login to your account",
+    "description": "Enter your email below to login to your account.",
+    "toasts": {
+      "success": "Signed in successfully"
+    },
+    "inputs": {
+      "email": {
+        "label": "Email",
+        "placeholder": "someone@example.com"
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "********",
+        "forgotPassword": "Forgot Password?"
+      }
+    },
+    "actions": {
+      "normal": "Login",
+      "google": {
+        "label": "Login with Google",
+        "badge": "Soon"
+      }
+    },
+    "backToSignUp": "Don't have an account? <signUpLink>Sign up</signUpLink>"
+  },
+  "SignupForm": {
+    "title": "Create an account",
+    "description": "Join our community to get access to our features.",
+    "toasts": {
+      "success": "Signed up successfully"
+    },
+    "inputs": {
+      "email": {
+        "label": "Email",
+        "placeholder": "someone@example.com"
+      },
+      "name": {
+        "label": "Name",
+        "placeholder": "username"
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "********"
+      },
+      "confirmPassword": {
+        "label": "Confirm Password",
+        "placeholder": "********"
+      }
+    },
+    "actions": {
+      "normal": "Sign up",
+      "google": {
+        "label": "Login with Google",
+        "badge": "Soon"
+      }
+    },
+    "backToLogin": "Already have an account? <LogInLink>Login</LogInLink>"
+  },
+  "ForgotPasswordForm": {
+    "title": "Forgot your password?",
+    "description": "Enter your email below to reset your password.",
+    "toasts": {
+      "success": "If this email exists in our system, check your email for the reset link"
+    },
+    "inputs": {
+      "email": {
+        "label": "Email",
+        "placeholder": "someone@example.com"
+      }
+    },
+    "submitButton": "Reset Password",
+    "backToSignUp": "Don't have an account? <signUpLink>Sign up</signUpLink>"
+  },
+  "ResetPasswordForm": {
+    "title": "Reset your password",
+    "description": "Please enter your new password below. Make sure it meets the requirements.",
+    "tokenError": "No token provided. Please check the link or contact support.",
+    "redirect__home": "Back to HomePage",
+    "toasts": {
+      "error": "Failed to send reset password link."
+    },
+    "inputs": {
+      "newPassword": {
+        "label": "New Password",
+        "placeholder": "********"
+      },
+      "confirmPassword": {
+        "label": "Confirm Password",
+        "placeholder": "********"
+      }
+    },
+    "submitButton": "Reset Password",
+    "backToLogin": "Already have an account? <LogInLink>Login</LogInLink>"
+  },
+  "UpdateProfileForm": {
+    "title": "Update Your Profile",
+    "toasts": {
+      "success": "Profile updates successfully",
+      "error": "Failed to update profile."
+    },
+    "inputs": {
+      "username": {
+        "label": "Username",
+        "placeholder": "Updated username"
+      }
+    },
+    "submitButton": "Update Profile"
+  },
+  "ChangeEmailForm": {
+    "title": "Change Your Email",
+    "toasts": {
+      "success": "Email changed successfully",
+      "description": "Please verify your new email to complete the change.",
+      "warning": "Email is the same",
+      "error": "Failed to change your email."
+    },
+    "inputs": {
+      "email": {
+        "label": "Email",
+        "placeholder": "someone@example.com"
+      }
+    },
+    "submitButton": "Change Email"
+  },
+  "ChangePasswordForm": {
+    "title": "Change Paswword",
+    "description": "Update your password for improved security.",
+    "toasts": {
+      "success": "Password changed successfully",
+      "error": "Failed to change password."
+    },
+    "inputs": {
+      "currentPassword": {
+        "label": "Current Password",
+        "placeholder": "Current password..."
+      },
+      "newPassword": {
+        "label": "New Password",
+        "placeholder": "New password..."
+      },
+      "confirmPassword": {
+        "label": "Confirm Password",
+        "placeholder": "Confirm new password..."
+      },
+      "revokeSessions": {
+        "label": "Log out other sessions"
+      }
+    },
+    "submitButton": "Change Password"
+  },
+  "CreateNotebookForm": {
+    "inputs": {
+      "name": {
+        "label": "Name",
+        "placeholder": "Notebook name..."
+      },
+      "redirectTo": {
+        "labelCreate": " Redirect after creation",
+        "labelUpdate": " Redirect after update"
+      }
+    },
+    "submitButton": {
+      "label": "Save Notebook",
+      "loading": "Saving"
+    }
+  },
+  "UpdateNoteForm": {
+    "inputs": {
+      "name": {
+        "label": "Name",
+        "placeholder": "Note name..."
+      }
+    },
+    "submitButton": {
+      "label": "Save Note",
+      "loading": "Saving"
+    }
+  },
+  "TextEditor": {
+    "stateBar": {
+      "state": "You are up to date.",
+      "stateProcessing": "Saving your changes...",
+      "words": "{count} word",
+      "characters": "{count,plural, one {# character} other {# characters}}"
+    },
+    "saveButton": {
+      "labelShort": "Save",
+      "labelLong": "Save note",
+      "labelProcessing": "Saving..."
+    },
+    "editor": {
+      "placeholder": "Start writing your thoughts here…"
+    }
+  },
+  "HomePage": {
+    "HeroSection": {
+      "title": "Notably Smarter Notes. Think Better.",
+      "subTitle": "Supercharge your workflow with Notably — the smartest way to capture, organize, and link dev notes, code snippets, and technical insights.",
+      "buttonText": "Start Notably"
+    },
+    "Features": {
+      "title": "Crafted to cover your needs",
+      "subTitle": " Smart, flexible, and powerful — everything you need to build your second brain.",
+      "featuresList": {
+        "feature1": {
+          "title": "Quick Notes",
+          "description": "Capture ideas instantly with lightning-fast input and keyboard-first UX. No friction — just flow."
+        },
+        "feature2": {
+          "title": "Developer Friendly",
+          "description": "Markdown, code blocks, CLI shortcuts, and Git-style versioning. Feels like home.Markdown, code CLI shortcuts, and Git-style versioning. Feels like home"
+        },
+        "feature3": {
+          "title": "Secure by Design",
+          "description": "Your notes are private. Local-first architecture and optional end-to-end encryption mean full control."
+        }
+      }
+    },
+    "CallToAction": {
+      "title": "Take Your Notes to the Next Level",
+      "subTitle": "Fast, local-first, and built for code. Notes that work the way you think.",
+      "buttonText": "Get Started for Free"
+    }
+  },
+  "VerifyPage": {
+    "verify__error": {
+      "message": "Sorry, this verification link is invalid or missing required information."
+    },
+    "verify__email": {
+      "title": "Verify Email",
+      "message": "An email has been sent to <emailText>{email}</emailText> Please check your inbox for a verification link.",
+      "redirect__to": "Back to Login"
+    },
+    "verify__forgotPassword__sent": {
+      "title": "Reset Password link Sent",
+      "message": "An email has been sent to <emailText>{email}</emailText> Please check your inbox for a verification link.",
+      "redirect__to": "Back to Login"
+    }
+  },
+  "DashboardPage": {
+    "emptyNotebooksMessage": "No notebooks found. Go and create one!"
+  },
+  "NotebookDetailsPage": {
+    "notebookNotFound": "Notebook is not found",
+    "notebookDeleted": "This notebook is currently deleted. Restore it from the Trash to view its details or notes",
+    "goToTrash": "Go to Trash",
+    "loadingNotebookDetails": "Loading notebook details...",
+    "noNotesFound": "No notes yet. Create your first note now",
+    "notebookNoteTitle": "{notebookName} Notes:"
+  },
+  "NoteDetailsPage": {
+    "noteNotFound": "Note is not found",
+    "loadingNoteDetails": "Loading note details..."
+  },
+  "TrashPage": {
+    "emptyTrash": "Trash is empty. There are no items in the trash.",
+    "goToDashboard": "Back to Dashboard"
+  },
+  "ProfilePage": {
+    "title": "Public Profile",
+    "bioPanel": {
+      "emailIsVerified": "Email is verified."
+    },
+    "infoPanel": {
+      "title": "Personal Informations",
+      "info": {
+        "firstName": "First Name",
+        "memberSince": "Member Since",
+        "email": "Email",
+        "language": "Current Language"
+      },
+      "actions": {
+        "update": "Update",
+        "change": "Change"
+      }
+    }
+  },
+  "SecurityPage": {
+    "title": "Security",
+    "deleteUserPanel": {
+      "title": "Delete Account",
+      "description": "Once you delete your account, there is no going back. Please be certain."
+    }
+  },
+  "SessionsPage": {
+    "title": "Sessions",
+    "sessionManagement": {
+      "description": "This is a list of devices that have logged into your account. Revoke any sessions that you do not recognize.",
+      "otherSessionsTitle": "Other Active Sessions",
+      "noSessions": " No other active sessions"
+    },
+    "sessionCard": {
+      "currentSession": "Current Session"
+    }
+  },
+  "SettingsSidebar": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "profile": "Puplic Profile",
+    "security": "Security",
+    "sessions": "Sessions"
+  },
+  "RevokeSessionButton": {
+    "labelLong": "{count,plural, one {Revoke Session} other{Revoke Other Sessions}}",
+    "labelProcessing": "Revoking...",
+    "toasts": {
+      "error": "Failed to revoke {count,plural,one{the session} other{sessions}}",
+      "success": "{count,plural, one{Session} other {Sessions}} revoked successfully"
+    }
+  },
+  "DeleteAccountButton": {
+    "triggerLabel": "Delete your account",
+    "labelLong": "Delete Account",
+    "labelShort": "Yes, Delete",
+    "labelProcessing": "Deleting...",
+    "description": "This action cannot be undone. This will permanently delete your account and remove all your data from our servers.",
+    "toasts": {
+      "error": "Something went wrong. Can't delete account now.",
+      "success": "Delete account initiated",
+      "successDescription": "Please check you email to confirm account deletion"
+    }
+  }
+}

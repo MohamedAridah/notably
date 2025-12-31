@@ -1,6 +1,7 @@
 "use client";
 
 import z from "zod";
+import { Note } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { NoteSchema } from "@/validations/zod/note-schemas";
@@ -14,8 +15,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { Note } from "@prisma/client";
+import LoadingSwap from "@/components/utils/loading-swap";
+import { useTranslations } from "next-intl";
 
 type FormProps = {
   note?: Partial<Note>;
@@ -23,6 +24,7 @@ type FormProps = {
 };
 
 export default function NoteForm({ onSubmit, note }: FormProps) {
+  const t = useTranslations("UpdateNoteForm");
   const form = useForm<z.infer<typeof NoteSchema>>({
     resolver: zodResolver(NoteSchema),
     defaultValues: {
@@ -39,10 +41,10 @@ export default function NoteForm({ onSubmit, note }: FormProps) {
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>{t("inputs.name.label")}</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Note name..."
+                  placeholder={t("inputs.name.placeholder")}
                   className="placeholder:text-sm"
                   {...field}
                 />
@@ -53,13 +55,12 @@ export default function NoteForm({ onSubmit, note }: FormProps) {
         />
 
         <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? (
-            <>
-              <Loader2 className="animate-spin" /> Saving...
-            </>
-          ) : (
-            "Save Note"
-          )}
+          <LoadingSwap
+            isLoading={isLoading}
+            loadingText={t("submitButton.loading")}
+          >
+            {t("submitButton.label")}
+          </LoadingSwap>
         </Button>
       </form>
     </Form>

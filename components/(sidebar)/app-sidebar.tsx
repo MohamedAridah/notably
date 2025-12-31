@@ -10,7 +10,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { UserForNav } from "@/components/user";
-import { Logo } from "@/components/utils/logo";
+import { Logo, LogoIcon } from "@/components/utils/logo";
 import { Search } from "@/components/utils/search";
 import SidebarData from "@/components/(sidebar)/sidebar-data";
 import SearchIcon from "@/components/(sidebar)/search-icon";
@@ -18,9 +18,14 @@ import SidebarSkeleton from "@/components/(sidebar)/sidebar-skeleton";
 import SidebarNavigation from "@/components/(sidebar)/sidebar-navigation";
 import SidebarQuickActions from "@/components/(sidebar)/sidebar-quick-actions";
 import { HomeIcon } from "lucide-react";
+import { getLocale, getTranslations } from "next-intl/server";
+import { isLocaleRtl } from "@/i18n/routing";
 
 export async function AppSidebar() {
   const notebooks = await getCachedNotebooksAction();
+  const t = await getTranslations("Sidebar");
+  const locale = await getLocale();
+  const isRtl = isLocaleRtl(locale);
 
   const data = {
     navMain:
@@ -41,17 +46,21 @@ export async function AppSidebar() {
   };
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" side={isRtl ? "right" : "left"}>
       <SidebarHeader>
         <SidebarMenu className="gap-1.5">
-          <SidebarMenuItem className="overflow-x-hidden group-data-[collapsible=icon]:-ml-1">
+          <SidebarMenuItem className="overflow-x-hidden group-data-[collapsible=icon]:-ms-1">
             <Link
               href="/"
               className="w-fit block"
-              aria-label="notably logo. click to go to homepage."
+              aria-label={t("logoLinkText")}
             >
-              <span className="sr-only">Go to Home Page</span>
-              <Logo />
+              <span className="sr-only">{t("logoLinkText")}</span>
+              <Logo className="group-data-[collapsible=icon]:h-0! rtl:-mr-6" />
+
+              {isRtl && (
+                <LogoIcon className="group-data-[collapsible=icon]:block hidden" />
+              )}
             </Link>
           </SidebarMenuItem>
 
@@ -61,7 +70,7 @@ export async function AppSidebar() {
 
           <Suspense fallback={<SidebarSkeleton length={1} />}>
             <SidebarMenuItem className="group-data-[collapsible=icon]:hidden block mt-2 mb-4">
-              <Search placeholder="Search your notes..." />
+              <Search placeholder={t("searchForm.placeholder")} />
             </SidebarMenuItem>
           </Suspense>
         </SidebarMenu>
@@ -79,7 +88,7 @@ export async function AppSidebar() {
 
       <SidebarFooter>
         <UserForNav
-          links={[{ href: "/", label: "Home", icon: <HomeIcon /> }]}
+          links={[{ href: "/", label: "home", icon: <HomeIcon /> }]}
         />
       </SidebarFooter>
     </Sidebar>

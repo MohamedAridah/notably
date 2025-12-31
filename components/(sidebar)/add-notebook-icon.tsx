@@ -9,8 +9,11 @@ import {
 import { sidebarMenuButtonVariants } from "@/components/ui/sidebar";
 import CreateNotebookDialog from "../(notebooks)/create-notebook-button";
 import { NotebookIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function AddNotebookIcon() {
+  const t = useTranslations("CreateNotebookButton");
+
   const trigger = (
     <div className="group-data-[collapsible=icon]:inline-flex hidden hover:cursor-pointer">
       <CreateNotebookDialog
@@ -26,7 +29,7 @@ export default function AddNotebookIcon() {
     <Tooltip>
       <TooltipTrigger asChild>{trigger}</TooltipTrigger>
       <TooltipContent side="right" align="center">
-        Create Notebook
+        {t("labelLong")}
       </TooltipContent>
     </Tooltip>
   );

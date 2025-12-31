@@ -13,9 +13,10 @@ export default function ThemeToggler() {
 
   return (
     <Button
+      type="button"
       variant="ghost"
       size="icon"
-      className="hover: cursor-pointer"
+      className="hover:cursor-pointer"
       onClick={toggleTheme}
     >
       <SunIcon className="hidden [html.dark_&]:block" />

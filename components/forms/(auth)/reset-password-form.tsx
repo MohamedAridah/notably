@@ -23,12 +23,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2, ShieldAlert } from "lucide-react";
+import PasswordInput from "@/components/utils/password-input";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { ArrowLeft, Loader2, ShieldAlert } from "lucide-react";
 
 export default function ResetPasswordForm() {
+  const t = useTranslations("ResetPasswordForm");
+  const tServerCodes = useTranslations("serverCodes.AUTH");
   const searchParams = useSearchParams();
   const { replace } = useRouter();
   const token = searchParams.get("token");
@@ -44,39 +47,44 @@ export default function ResetPasswordForm() {
 
   if (!token)
     return (
-      <Card className="w-full max-w-md mx-auto">
+      <Card className="w-full max-w-md mx-auto gap-4">
         <CardHeader>
           <ShieldAlert className="text-center size-10 mx-auto mb-3 text-orange-400" />
-          <CardDescription>
-            No token provided. Please check the URL or contact support.
+          <CardDescription className="text-center">
+            {t("tokenError")}
           </CardDescription>
         </CardHeader>
+        <CardContent className="text-center">
+          <Button variant="outline" asChild>
+            <Link href="/" className="rtl:flex-row-reverse">
+              <ArrowLeft />
+              {t("redirect__home")}
+            </Link>
+          </Button>
+        </CardContent>
       </Card>
     );
 
   const onSubmit = async (data: z.infer<typeof ResetPasswordSchema>) => {
-    const { success, message } = await ResetUserPassword({
+    const { success, code } = await ResetUserPassword({
       newPassword: data.password,
       token,
     });
 
     if (success) {
       form.reset();
-      toast.success(message);
+      toast.success(tServerCodes(code));
       replace("/auth/sign-in");
       return;
     }
-    toast.error(message || "Failed to send reset password link.");
+    toast.error(tServerCodes(code) || t("toasts.error"));
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Reset your password</CardTitle>
-        <CardDescription>
-          Please enter your new password below. Make sure it meets the
-          requirements.
-        </CardDescription>
+        <CardTitle>{t("title")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -86,9 +94,13 @@ export default function ResetPasswordForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>New Password</FormLabel>
+                  <FormLabel>{t("inputs.newPassword.label")}</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="********" {...field} />
+                    <PasswordInput
+                      placeholder={t("inputs.newPassword.placeholder")}
+                      autoComplete="off"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -99,9 +111,13 @@ export default function ResetPasswordForm() {
               name="password__confirm"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Confirm Password</FormLabel>
+                  <FormLabel>{t("inputs.confirmPassword.label")}</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="********" {...field} />
+                    <PasswordInput
+                      placeholder={t("inputs.confirmPassword.placeholder")}
+                      autoComplete="off"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -111,7 +127,7 @@ export default function ResetPasswordForm() {
               {isLoading ? (
                 <Loader2 className="animate-spin" />
               ) : (
-                "Reset Password"
+                <>{t("submitButton")}</>
               )}
             </Button>
           </form>
@@ -119,10 +135,13 @@ export default function ResetPasswordForm() {
       </CardContent>
       <CardFooter>
         <p className="w-full text-center text-[15px]">
-          Already have an account?{" "}
-          <Link href="/auth/sign-in" className="underline">
-            Login
-          </Link>
+          {t.rich("backToLogin", {
+            LogInLink: (chunks) => (
+              <Link href="/auth/sign-in" className="underline">
+                {chunks}
+              </Link>
+            ),
+          })}
         </p>
       </CardFooter>
     </Card>

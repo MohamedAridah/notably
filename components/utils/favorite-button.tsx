@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useCallback, useEffect, useState, useTransition } from "react";
+import { cn } from "@/lib/utils";
+import IconMenu from "@/components/utils/icon-menu";
 import { toast } from "sonner";
 import { StarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-import IconMenu from "./icon-menu";
+import { useTranslations } from "next-intl";
 
 type FavoriteButtonProps = {
   id: string;
@@ -12,7 +13,12 @@ type FavoriteButtonProps = {
   onToggle: (
     id: string,
     newValue: boolean
-  ) => Promise<{ message: string; success: boolean }>;
+  ) => Promise<{
+    code: string;
+    success: boolean;
+    manualCode?: true;
+    type?: string;
+  }>;
   withText?: boolean;
   iconStyles?: string;
   className?: string;
@@ -23,11 +29,14 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({
   id,
   isFavorite,
   onToggle,
-  withText = false,
   iconStyles = "",
   className = "",
+  withText = false,
   disabled = false,
 }) => {
+  const t = useTranslations("FavoriteButton");
+  const common = useTranslations("Common");
+  const tServerCodes = useTranslations("serverCodes");
   const [isPending, startTransition] = useTransition();
   const [localFavorite, setLocalFavorite] = useState(isFavorite);
 
@@ -42,31 +51,29 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({
 
     startTransition(async () => {
       try {
-        const { success, message } = !disabled
+        const { success, code, type, manualCode } = !disabled
           ? await onToggle(id, optimisticValue)
           : {
               success: false,
-              message:
-                "Favorites are disabled in trash mode. Restore notebook or note first to enable.",
+              code: t("toasts.disabled"),
+              manualCode: true,
             };
 
         if (success) {
-          toast.success(message);
+          toast.success(tServerCodes(`${type}.${code}`));
         } else {
           setLocalFavorite(!optimisticValue); // Rollback
-          toast.error(message);
+          toast.error(!manualCode ? tServerCodes(`${type}.${code}`) : code);
         }
       } catch (error) {
         setLocalFavorite(!optimisticValue); // Rollback
-        toast.error("Something went wrong.");
+        toast.error(common("somethink__went__wrong"));
         console.error("Favorite toggle error:", error);
       }
     });
   }, [id, localFavorite, onToggle]);
 
-  const labelText = localFavorite
-    ? "Remove from favorites"
-    : "Add to favorites";
+  const labelText = localFavorite ? t("labels.remove") : t("labels.add");
 
   const icon = (
     <FavoriteButtonIcon isFavorite={localFavorite} className={iconStyles} />

@@ -2,9 +2,10 @@
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import errorMessage from "@/helpers/errorMessage";
+import { auth } from "@/lib/auth";
+import { mapErrorToCode } from "@/helpers/map-error-to-code";
+import { ServerErrorCodes } from "@/helpers/server-error-codes";
 
 interface SignUpUserParams {
   email: string;
@@ -17,41 +18,58 @@ interface SignInUserParams {
   password: string;
 }
 
+interface ForgotUserPasswordParams {
+  email: string;
+  redirectTo: string;
+}
+
+interface ResetUserPasswordParams {
+  newPassword: string;
+  token: string;
+}
+
 export const SignUpUser = async (data: SignUpUserParams) => {
   try {
     await auth.api.signUpEmail({
       body: { callbackURL: "/auth/sign-in", ...data },
     });
+
     return {
       success: true,
-      message: "Please check your email for verification.",
+      code: ServerErrorCodes.AUTH.SUCCESS_SIGNUP_CHECK_EMAIL,
     };
   } catch (error) {
+    console.log("Sign up Error: ", error);
+
     return {
       success: false,
-      message: errorMessage(error),
+      code: mapErrorToCode(error),
     };
   }
 };
 
 export const SignInUser = async (data: SignInUserParams) => {
   try {
-    await auth.api.signInEmail({ body: data, headers: await headers() });
-    return { success: true, message: "Signed in successfully" };
+    await auth.api.signInEmail({
+      body: data,
+      headers: await headers(),
+    });
+
+    return {
+      success: true,
+      code: ServerErrorCodes.AUTH.SUCCESS_SIGNIN,
+    };
   } catch (error) {
+    console.log("Log in Error: ", error);
+
     return {
       success: false,
-      message: errorMessage(error),
+      code: mapErrorToCode(error),
     };
   }
 };
 
-interface ForgrotUserPasswordParams {
-  email: string;
-  redirectTo: string;
-}
-
-export const ForgotUserPassword = async (data: ForgrotUserPasswordParams) => {
+export const ForgotUserPassword = async (data: ForgotUserPasswordParams) => {
   try {
     await auth.api.requestPasswordReset({
       body: {
@@ -59,22 +77,19 @@ export const ForgotUserPassword = async (data: ForgrotUserPasswordParams) => {
         redirectTo: data.redirectTo,
       },
     });
+
     return {
       success: true,
-      message: "Please check your email for a password reset link.",
+      code: ServerErrorCodes.AUTH.SUCCESS_PASSWORD_RESET_EMAIL_SENT,
     };
   } catch (error) {
+    console.log("Forgot Password Error: ", error);
     return {
       success: false,
-      message: errorMessage(error),
+      code: mapErrorToCode(error),
     };
   }
 };
-
-interface ResetUserPasswordParams {
-  newPassword: string;
-  token: string;
-}
 
 export const ResetUserPassword = async (data: ResetUserPasswordParams) => {
   try {
@@ -84,14 +99,17 @@ export const ResetUserPassword = async (data: ResetUserPasswordParams) => {
         token: data.token,
       },
     });
+
     return {
       success: true,
-      message: "Password reset successfully. You can now sign in.",
+      code: ServerErrorCodes.AUTH.SUCCESS_PASSWORD_RESET,
     };
   } catch (error) {
+    console.log("Reset Password Error: ", error);
+
     return {
       success: false,
-      message: errorMessage(error),
+      code: mapErrorToCode(error),
     };
   }
 };
@@ -111,7 +129,7 @@ export const isUserAuthed = async () => {
   });
 
   if (!user) {
-    throw new Error("User not authenticated");
+    throw new Error("ERROR_NOT_AUTHENTICATED");
   }
 
   return user.id;

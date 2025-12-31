@@ -1,19 +1,21 @@
 import { ReactNode } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Code, NotebookPen, ShieldCheck } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function Features() {
+  const t = useTranslations("HomePage.Features");
   return (
-    <section className="bg-zinc-50 py-16 md:py-32 dark:bg-transparent" id="features">
+    <section
+      className="bg-zinc-50 py-16 md:py-32 dark:bg-transparent"
+      id="features"
+    >
       <div className="@container mx-auto max-w-5xl px-6">
         <div className="text-center">
           <h2 className="text-balance text-4xl font-semibold lg:text-5xl">
-           Crafted to cover your needs
+            {t("title")}
           </h2>
-          <p className="mt-4">
-            Smart, flexible, and powerful — everything you need to build your
-            second brain.
-          </p>
+          <p className="mt-4">{t("subTitle")}</p>
         </div>
         <div className="@min-4xl:max-w-full @min-4xl:grid-cols-3 mx-auto mt-8 grid max-w-sm gap-6 *:text-center md:mt-16">
           <Card className="group bg-background">
@@ -21,13 +23,14 @@ export default function Features() {
               <CardDecorator>
                 <NotebookPen className="size-8" aria-hidden />
               </CardDecorator>
-              <h3 className="mt-6 font-medium">Quick Notes</h3>
+              <h3 className="mt-6 font-medium">
+                {t("featuresList.feature1.title")}
+              </h3>
             </CardHeader>
 
             <CardContent>
               <p className="text-sm">
-                Capture ideas instantly with lightning-fast input and
-                keyboard-first UX. No friction — just flow.
+                {t("featuresList.feature1.description")}
               </p>
             </CardContent>
           </Card>
@@ -37,14 +40,15 @@ export default function Features() {
               <CardDecorator>
                 <Code className="size-8" aria-hidden />
               </CardDecorator>
-              <h3 className="mt-6 font-medium">Developer Friendly</h3>
+              <h3 className="mt-6 font-medium">
+                {" "}
+                {t("featuresList.feature2.title")}
+              </h3>
             </CardHeader>
 
             <CardContent>
               <p className="mt-3 text-sm">
-                Markdown, code blocks, CLI shortcuts, and Git-style versioning.
-                Feels like home.Markdown, code blocks, CLI shortcuts, and
-                Git-style versioning. Feels like home
+                {t("featuresList.feature2.description")}
               </p>
             </CardContent>
           </Card>
@@ -54,13 +58,15 @@ export default function Features() {
               <CardDecorator>
                 <ShieldCheck className="size-8" aria-hidden />
               </CardDecorator>
-              <h3 className="mt-6 font-medium">Secure by Design</h3>
+              <h3 className="mt-6 font-medium">
+                {" "}
+                {t("featuresList.feature3.title")}
+              </h3>
             </CardHeader>
 
             <CardContent>
               <p className="mt-3 text-sm">
-                Your notes are private. Local-first architecture and optional
-                end-to-end encryption mean full control.
+                {t("featuresList.feature3.description")}
               </p>
             </CardContent>
           </Card>

@@ -17,13 +17,13 @@ export default function IconMenu({
   return (
     <div
       className={cn(
-        "flex flex-row items-center gap-2 w-full h-full hover:cursor-pointer",
+        "flex flex-row rtl:flex-row-reverse items-center gap-2 w-full h-full hover:cursor-pointer",
         className
       )}
       {...props}
     >
       {icon}
-      <span className="text-sm flex-1">{text}</span>
+      <span className="text-sm flex-1 rtl:text-end">{text}</span>
     </div>
   );
 }

@@ -1,13 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionCookie } from "better-auth/cookies";
+import createMiddleware from "next-intl/middleware";
+import { routing } from "@/i18n/routing";
 
-export async function middleware(request: NextRequest) {
+const intlMiddleware = createMiddleware(routing);
+
+export default async function middleware(request: NextRequest) {
   const session = getSessionCookie(request);
   const { pathname } = request.nextUrl;
-  const isAuthPage = pathname.startsWith("/auth");
+
+  const locale = routing.locales.find((loc) => pathname.startsWith(`/${loc}`));
+  const pathWithoutLocale = locale
+    ? pathname.slice(locale.length + 1)
+    : pathname;
+
+  const isAuthPage = pathWithoutLocale.startsWith("/auth");
+  const isPublicRoute = process.env.PUBLICROUTES!.includes(pathWithoutLocale);
+
+  if (isPublicRoute) {
+    return intlMiddleware(request);
+  }
 
   if (!session) {
-    if (isAuthPage) return NextResponse.next();
+    if (isAuthPage) return intlMiddleware(request);
     return NextResponse.redirect(new URL("/auth/sign-in", request.url));
   }
 
@@ -15,9 +30,9 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  return NextResponse.next();
+  return intlMiddleware(request);
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/settings/:path*", "/auth/:path*"],
+  matcher: "/((?!api|trpc|_next|_vercel|.*\\..*).*)",
 };

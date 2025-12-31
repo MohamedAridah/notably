@@ -1,18 +1,13 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
-import { updateNoteAction } from "@/server/notes";
+import { useEffect, useMemo, useState, useTransition } from "react";
+import { useQueryState } from "nuqs";
 import { getNotebooks } from "@/helpers/get-notebooks-client";
-import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
-import CreateNotebookDialog from "../(notebooks)/create-notebook-button";
-import { toast } from "sonner";
-import {
-  Loader2Icon,
-  NotebookIcon,
-  ShieldAlertIcon,
-  TriangleAlertIcon,
-} from "lucide-react";
+import CreateNotebookDialog from "@/components/(notebooks)/create-notebook-button";
+import { Search } from "@/components/utils/search";
+import { NotebookButton, NotebookButtonProps } from "@/components/(notebooks)/notebook-button";
+import { _Translator, useTranslations } from "next-intl";
+import { Loader2Icon, ShieldAlertIcon, TriangleAlertIcon } from "lucide-react";
 
 interface NotebooksListProps {
   currentNotebookId: string;
@@ -20,74 +15,127 @@ interface NotebooksListProps {
   handleClose?: () => void;
 }
 
+export type NotebookType = { id: string; name: string };
+
+interface GetNotebooksResponse {
+  success: boolean;
+  notebooks: NotebookType[];
+  code: string;
+}
+
+type NotebookDisplayState = {
+  isSearching: boolean;
+  data: GetNotebooksResponse | NotebookType[];
+  isEmpty: boolean;
+  resultCount: number;
+};
+
+const filterNotebooks = (
+  notebooks: { id: string; name: string }[],
+  searchTerm: string
+): { id: string; name: string }[] => {
+  if (!searchTerm.trim()) return notebooks;
+
+  const searchLower = searchTerm.toLowerCase();
+  return notebooks.filter((notebook) =>
+    notebook.name.toLowerCase().includes(searchLower)
+  );
+};
+
+const getDisplayState = (
+  notebooks: NotebookType[],
+  searchTerm: string
+): NotebookDisplayState => {
+  const isSearching = searchTerm.trim().length > 0;
+
+  if (isSearching) {
+    const filteredNotebooks = filterNotebooks(notebooks, searchTerm);
+    return {
+      isSearching: true,
+      data: filteredNotebooks,
+      isEmpty: filteredNotebooks.length === 0,
+      resultCount: filteredNotebooks.length,
+    };
+  }
+
+  return {
+    isSearching: false,
+    data: notebooks,
+    isEmpty: notebooks.length === 0,
+    resultCount: notebooks.length,
+  };
+};
+
+const renderContent = (
+  displayState: NotebookDisplayState,
+  props: Omit<NotebookButtonProps, "notebook" | "notebooks">
+): React.ReactNode => {
+  if (displayState.isEmpty) {
+    return null;
+  }
+
+  if (displayState.isSearching) {
+    const data = displayState.data as NotebookType[];
+    return (
+      <div className="w-full grid md:grid-cols-[repeat(auto-fill,_minmax(10rem,_1fr))] gap-4 items-start pb-3">
+        {data.map((notebook) => (
+          <NotebookButton
+            key={notebook.id}
+            {...props}
+            notebook={notebook}
+            notebooks={data}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  const data = displayState.data as NotebookType[];
+  return (
+    <div className="w-full grid md:grid-cols-[repeat(auto-fill,_minmax(10rem,_1fr))] gap-4 items-start pb-3">
+      {data.map((notebook) => (
+        <NotebookButton
+          key={notebook.id}
+          {...props}
+          notebook={notebook}
+          notebooks={data}
+        />
+      ))}
+    </div>
+  );
+};
+
 const NotebooksList = ({
   noteId,
-  handleClose,
   currentNotebookId,
+  handleClose,
 }: NotebooksListProps) => {
-  console.log("NotebooksList Rendered");
-
+  const t = useTranslations("MoveNoteList");
+  const tSForm = useTranslations("SearchForm");
+  const tCommon = useTranslations("Common.terms");
+  const [term] = useQueryState("filter", { defaultValue: "" });
   const [isLoading, startTransition] = useTransition();
-  const [isMoving, setIsMoving] = useState(false);
+  const [notebooks, setNotebooks] = useState<NotebookType[]>([]);
   const [error, setError] = useState<null | string>(null);
-  const [notebooks, setNotebooks] = useState<{ id: string; name: string }[]>(
-    []
-  );
   const [isNewNotebookCreated, setIsNewNotebookCreated] = useState<
     boolean | number
   >(false);
 
   useEffect(() => {
     startTransition(async () => {
-      try {
-        const { success, error, notebooks } = await getNotebooks();
-        if (success) {
-          setNotebooks(notebooks);
-        } else {
-          setError(error);
-        }
-      } catch (error) {
-        const e = error as Error;
-        setError(e.message || "Failed to fetch notebooks.");
+      const { success, code, notebooks } = await getNotebooks();
+      if (success) {
+        setNotebooks(notebooks);
+      } else {
+        setError(code);
       }
     });
   }, [isNewNotebookCreated]);
 
-  const handleMoveNote = async (newNotebookId: string) => {
-    const position = "top-center";
-    setIsMoving(true);
-    const toastId = toast.loading("Moving note...", { position });
-    const notebookFrom = getNotebookName(currentNotebookId);
-    const notebookTo = getNotebookName(newNotebookId);
-
-    try {
-      const { success } = await updateNoteAction(noteId, {
-        notebookId: newNotebookId,
-      });
-      if (success) {
-        toast.success("Note moved successfully!", {
-          id: toastId,
-          position,
-          duration: 6000,
-          description: <ToastDescription from={notebookFrom} to={notebookTo} />,
-        });
-        handleClose && handleClose();
-      } else {
-        toast.error("Failed to move note.", { position, id: toastId });
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("An unexpected error occurred while moving the note.", {
-        id: toastId,
-        position,
-      });
-    } finally {
-      setIsMoving(false);
-    }
-  };
-
-  const getNotebookName = (id: string) =>
-    notebooks.find((nb) => nb.id === id)?.name || "Unknown Notebook";
+  const displayState = useMemo(
+    () => getDisplayState(notebooks, term),
+    [term, notebooks]
+  );
 
   if (error) {
     return (
@@ -103,64 +151,67 @@ const NotebooksList = ({
       <div className="flex flex-col items-center gap-1 mt-4 py-5">
         <Loader2Icon className="size-5 animate-spin" />
         <span className="text-sm text-muted-foreground">
-          Getting notebooks...
+          {t("loadingNotebooks")}
         </span>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-4 items-end">
-      <div className="flex items-center justify-between gap-2 w-full">
+    <>
+      <div className="flex items-center justify-between gap-2 mb-1">
         {notebooks.length <= 1 && (
-          <p className="flex items-center gap-1text-sm text-orange-500">
-            <TriangleAlertIcon className="size-4" /> You need at least two
-            notebooks to move this note.
+          <p className="flex items-center gap-1 text-sm text-orange-500">
+            <TriangleAlertIcon className="size-4" /> {t("noEnoughNotebooks")}
           </p>
         )}
         <CreateNotebookDialog
           size="sm"
-          className="ml-auto"
+          className="ms-auto"
           cb={() => setIsNewNotebookCreated((prev) => +prev + 1)}
         />
       </div>
-      <div className="w-full grid md:grid-cols-[repeat(auto-fill,_minmax(10rem,_1fr))] gap-4 items-start mt-4 py-5">
-        {notebooks.map((notebook) => (
-          <button
-            key={notebook.id}
-            role="button"
-            disabled={notebook.id == currentNotebookId || isMoving}
-            aria-label="Select this notebook to move the note to."
-            className={cn(
-              buttonVariants({
-                variant: "outline",
-                className:
-                  "flex-col justify-between gap-4 h-auto py-4 !whitespace-normal active:scale-95",
-              }),
 
-              notebook.id == currentNotebookId &&
-                "disabled:bg-[repeating-linear-gradient(45deg,#ff8904,#ff8904_10px,transparent_10px,transparent_20px)] disabled:opacity-80"
-            )}
-            onClick={() => handleMoveNote(notebook.id)}
-          >
-            <NotebookIcon className="size-6 text-primary" />
-            <span className="font-medium text-sm text-center">
-              {notebook.name}
-            </span>
-          </button>
-        ))}
+      <div className={`${displayState.isSearching ? "" : "mb-4"}`}>
+        <Search
+          query="filter"
+          id="search-move-note"
+          className_input="h-8.5"
+          aria-label={tSForm("placeholder.notebooks")}
+          placeholder={tSForm("placeholder.notebooks")}
+        />
       </div>
-    </div>
+
+      {displayState.isSearching && (
+        <p className="mb-4">
+          {displayState.isEmpty
+            ? tSForm("state.noMatchGeneral")
+            : tSForm("state.withMatchMessage", {
+                count: displayState.resultCount,
+              })}
+          <span className="font-bold">&quot;{term}&quot;</span>
+        </p>
+      )}
+
+      {displayState.isEmpty ? (
+        <p className="text-muted-foreground text-center py-8">
+          {displayState.isSearching
+            ? tSForm("state.noMatchMessage", {
+                term: tCommon("notebook", { count: 2 }),
+              })
+            : tSForm("state.notFoundMessage", {
+                term: tCommon("notebook", { count: 2 }),
+              })}
+        </p>
+      ) : (
+        renderContent(displayState, {
+          noteId,
+          currentNotebookId,
+          handleClose,
+        })
+      )}
+    </>
   );
 };
 
 export default NotebooksList;
-
-const ToastDescription = ({ from, to }: { from: string; to: string }) => {
-  return (
-    <div>
-      Moved from <span className="font-bold">{from}</span> to{" "}
-      <span className="font-bold">{to}</span>
-    </div>
-  );
-};

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import z from "zod";
 import { useRouter } from "next/navigation";
-import { SignInUser } from "@/server/auth";
+import { authClient } from "@/lib/auth-client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignInSchema } from "@/validations/zod/auth-schemas";
@@ -26,11 +26,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
-import { Loader2, StarsIcon } from "lucide-react";
 import PasswordInput from "@/components/utils/password-input";
+import { toast } from "sonner";
+import { useTranslations } from "next-intl";
+import { Loader2, StarsIcon } from "lucide-react";
+import { mapBetterAuthError } from "@/helpers/map-better-auth-error";
 
 export default function SignInForm() {
+  const t = useTranslations("LoginForm");
+  const tServerCodes = useTranslations("serverCodes.AUTH");
   const form = useForm<z.infer<typeof SignInSchema>>({
     resolver: zodResolver(SignInSchema),
     defaultValues: {
@@ -42,23 +46,27 @@ export default function SignInForm() {
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (data: z.infer<typeof SignInSchema>) => {
-    const { success, message } = await SignInUser(data);
-    if (success) {
-      toast.success(message);
-      router.replace("/dashboard");
-      router.refresh();
-    } else {
-      toast.error(message);
-    }
+    await authClient.signIn.email({
+      ...data,
+      fetchOptions: {
+        onError: ({ error }) => {
+          const code = mapBetterAuthError(error);
+          toast.error(code ? tServerCodes(code) : code);
+        },
+        onSuccess: () => {
+          toast.success(t("toasts.success"));
+          router.replace("/");
+          router.refresh();
+        },
+      },
+    });
   };
 
   return (
     <Card className="shadow-xs">
       <CardHeader>
-        <CardTitle>Login to your account</CardTitle>
-        <CardDescription>
-          Enter your email below to login to your account
-        </CardDescription>
+        <CardTitle>{t("title")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -68,11 +76,11 @@ export default function SignInForm() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>{t("inputs.email.label")}</FormLabel>
                   <FormControl>
                     <Input
                       type="email"
-                      placeholder="someone@example.com"
+                      placeholder={t("inputs.email.placeholder")}
                       {...field}
                     />
                   </FormControl>
@@ -86,17 +94,17 @@ export default function SignInForm() {
               render={({ field }) => (
                 <FormItem>
                   <div className="flex items-center justify-between gap-2">
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>{t("inputs.password.label")}</FormLabel>
                     <Link
                       href="/forgot-password"
                       className="hover:underline text-sm"
                     >
-                      Forgot your password?
+                      {t("inputs.password.forgotPassword")}
                     </Link>
                   </div>
                   <FormControl>
                     <PasswordInput
-                      placeholder="********"
+                      placeholder={t("inputs.password.placeholder")}
                       autoComplete="off"
                       {...field}
                     />
@@ -107,7 +115,11 @@ export default function SignInForm() {
             />
             <div className="flex flex-col gap-3">
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? <Loader2 className="animate-spin" /> : "Login"}
+                {isLoading ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  <>{t("actions.normal")}</>
+                )}
               </Button>
               <Button
                 variant="outline"
@@ -116,9 +128,9 @@ export default function SignInForm() {
                 // disabled={isLoading}
                 disabled={true}
               >
-                Login with Google
+                {t("actions.google.label")}
                 <Badge variant="outline" className="flex items-center">
-                  <StarsIcon /> soon
+                  <StarsIcon /> {t("actions.google.badge")}
                 </Badge>
               </Button>
             </div>
@@ -127,10 +139,13 @@ export default function SignInForm() {
       </CardContent>
       <CardFooter>
         <p className="w-full text-center text-[15px]">
-          Don&apos;t have an account?{" "}
-          <Link href="/auth/sign-up" className="underline">
-            Sign up
-          </Link>
+          {t.rich("backToSignUp", {
+            signUpLink: (chunks) => (
+              <Link href="/auth/sign-up" className="underline">
+                {chunks}
+              </Link>
+            ),
+          })}
         </p>
       </CardFooter>
     </Card>

@@ -1,0 +1,203 @@
+import { Suspense } from "react";
+import { Metadata } from "next";
+import Link from "next/link";
+import {
+  getCachedNotebookByIdAction,
+  setNotebookFavoriteAction,
+} from "@/server/notebooks";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import CreateNoteDialog from "@/components/(notes)/create-note-button";
+import BreadCrumbUI from "@/components/utils/breadcrumb";
+import Message from "@/components/utils/message";
+import EditNotebookDialog from "@/components/(notebooks)/edit-notebook-button";
+import DeleteNotebookDialog from "@/components/(notebooks)/delete-notebook-button";
+import NotebookNotes from "./_components/notebook-notes";
+import DocumentDetails from "../../_components/document-details";
+import FavoriteButton from "@/components/utils/favorite-button";
+import NotebookOptions from "@/components/(notebooks)/notebook-options";
+import { getTranslations } from "next-intl/server";
+import {
+  ArrowLeftIcon,
+  Loader2,
+  NotebookText,
+  ShieldAlert,
+  Trash2Icon,
+} from "lucide-react";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Params;
+}): Promise<Metadata> {
+  const notebookId = (await params).notebookId;
+  const { notebook } = await getCachedNotebookByIdAction(notebookId);
+
+  return {
+    title: notebook?.name,
+    description:
+      "Manage and view notes in the notebook named " +
+      (notebook?.name || "Notebook") +
+      ". Easily create, edit, and organize your notes within this notebook.",
+  };
+}
+
+type Params = Promise<{
+  notebookId: string;
+}>;
+
+export default async function NotebookPage({ params }: { params: Params }) {
+  const notebookId = (await params).notebookId;
+  const { success, notebook, code } =
+    await getCachedNotebookByIdAction(notebookId);
+  const tPages = await getTranslations("Pages");
+  const tCommon = await getTranslations("Common");
+  const tServerCodes = await getTranslations("serverCodes.NOTEBOOKS");
+  const t = await getTranslations("NotebookDetailsPage");
+
+  const breadCrumbs = [
+    { label: tPages("dashboard"), href: "/dashboard" },
+    {
+      label: notebook?.name || tCommon("terms.notebook", { count: 1 }),
+      href: `/dashboard/notebook/${notebookId}`,
+      className: "max-w-40 truncate lg:max-w-none",
+    },
+  ];
+
+  if (!success) {
+    return (
+      <>
+        <BreadCrumbUI breadCrumbs={breadCrumbs} />
+
+        <Message
+          Icon={
+            <ShieldAlert className="text-center size-10 mx-auto mb-3 text-orange-400" />
+          }
+          description={
+            <>
+              <p className="text-lg font-semibold">
+                {tServerCodes(code as string)}
+              </p>
+              <p>{tCommon("something__went__wrong")}</p>
+            </>
+          }
+        />
+      </>
+    );
+  }
+
+  if (!notebook) {
+    return (
+      <>
+        <BreadCrumbUI breadCrumbs={breadCrumbs} />
+        <Message
+          Icon={
+            <ShieldAlert className="text-center size-10 mx-auto mb-3 text-orange-400" />
+          }
+          description={t("notebookNotFound")}
+        />
+      </>
+    );
+  }
+
+  if (notebook.deletedAt) {
+    return (
+      <>
+        <BreadCrumbUI breadCrumbs={breadCrumbs} />
+
+        <Message
+          Icon={
+            <Trash2Icon className="text-center size-10 mx-auto mb-3 text-destructive" />
+          }
+          description={
+            <>
+              <p>{t("notebookDeleted")}</p>
+
+              <Button variant="outline" className="mt-3" asChild>
+                <Link href="/dashboard/trash">
+                  <ArrowLeftIcon /> {t("goToTrash")}
+                </Link>
+              </Button>
+            </>
+          }
+        />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <BreadCrumbUI breadCrumbs={breadCrumbs} />
+
+      <div className="flex items-center justify-between group-hover/notebook-buttons:opacity-100">
+        <div className="flex items-center gap-2 group/notebook-buttons">
+          <div className="flex items-center gap-1.5">
+            <h1 className="text-xl font-semibold">{notebook.name}</h1>
+            <FavoriteButton
+              isFavorite={notebook.isFavorite}
+              id={notebook.id}
+              onToggle={setNotebookFavoriteAction}
+            />
+          </div>
+          {!notebook.isDefault && (
+            <div className="flex items-center gap-1">
+              <EditNotebookDialog
+                notebookId={notebookId}
+                notebook={notebook}
+                trigger={{ asIcon: true, asIconHidden: true }}
+              />
+              <div className="flex -items-center gap-2">
+                <DeleteNotebookDialog
+                  notebookId={notebookId}
+                  notebookName={notebook.name}
+                  callbackURL={"/dashboard"}
+                  trigger={{ asIcon: true, asIconHidden: true }}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="flex -items-center gap-3">
+          <NotebookOptions
+            notebook={{
+              id: notebook.id,
+              isFavorite: notebook.isFavorite,
+              name: notebook.name,
+            }}
+          />
+          <CreateNoteDialog notebookId={notebookId} />
+        </div>
+      </div>
+
+      <Suspense
+        fallback={
+          <div className="flex items-center gap-2">
+            <Loader2 className="text-center size-5 mb-2 animate-spin" />
+            <p>{t("loadingNotebookDetails")}</p>
+          </div>
+        }
+      >
+        <DocumentDetails document={notebook} />
+      </Suspense>
+
+      <section className="flex flex-col flex-1 w-full gap-4 my-10">
+        {notebook._count.notes === 0 ? (
+          <Message
+            Icon={<NotebookText className="text-center size-10 mx-auto mb-3" />}
+            description={t("noNotesFound")}
+          />
+        ) : (
+          <>
+            <h2 className="text-xl font-semibold flex items-center gap-2">
+              {t("notebookNoteTitle", { notebookName: notebook.name })}{" "}
+              <Badge>{notebook._count.notes}</Badge>
+            </h2>
+
+            <NotebookNotes notes={notebook.notes} />
+          </>
+        )}
+      </section>
+    </>
+  );
+}

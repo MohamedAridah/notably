@@ -26,6 +26,7 @@ import {
 import { setNoteFavoriteAction } from "@/server/notes";
 import { NoteCardMode, NoteModePolicies } from "./note-mode-policies";
 import RestoreNoteDialog from "./restore-note-button";
+import { useTranslations } from "next-intl";
 
 interface NoteOptionsProps {
   note: {
@@ -50,6 +51,8 @@ export default function NoteOptions({
   mode = "default",
   ...props
 }: NoteOptionsProps) {
+  const t = useTranslations("NoteOptionsMenu");
+  const actions = useTranslations("Common.actions");
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isMoveDialogOpen, setIsMoveDialogOpen] = useState(false);
@@ -64,16 +67,16 @@ export default function NoteOptions({
           className={cn("hover:cursor-pointer", props.className)}
         >
           <MoreHorizontalIcon className="size-4" />
-          <span className="sr-only">Open note options menu</span>
+          <span className="sr-only">{t("triggerAriaLabel")}</span>
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          className={`pointer-events-auto ${alignStart ? "mr-3" : ""}`}
+          className={`pointer-events-auto ${alignStart ? "me-3" : ""}`}
         >
           {policy.canView && (
             <DropdownMenuItem>
-              <Link href={note.note_url}>
+              <Link href={note.note_url} className="w-full">
                 <IconMenu
-                  text="Details"
+                  text={actions("details")}
                   icon={<ExternalLinkIcon className="size-4" />}
                 />
               </Link>
@@ -95,7 +98,7 @@ export default function NoteOptions({
           {policy.canEdit && (
             <DropdownMenuItem onSelect={() => setIsEditDialogOpen(true)}>
               <IconMenu
-                text="Update"
+                text={actions("update")}
                 icon={<PenSquareIcon className="size-4" />}
               />
             </DropdownMenuItem>
@@ -104,7 +107,7 @@ export default function NoteOptions({
           {policy.canEdit && (
             <DropdownMenuItem onSelect={() => setIsMoveDialogOpen(true)}>
               <IconMenu
-                text="Move to notebook"
+                text={actions("move__to__notebook")}
                 icon={<ReplaceIcon className="size-4" />}
               />
             </DropdownMenuItem>
@@ -113,7 +116,7 @@ export default function NoteOptions({
           {policy.canRestore && (
             <DropdownMenuItem onSelect={() => setIsRestoreDialogOpen(true)}>
               <IconMenu
-                text="Restore"
+                text={actions("restore")}
                 icon={<RotateCwIcon className="size-4" />}
               />
             </DropdownMenuItem>
@@ -124,7 +127,7 @@ export default function NoteOptions({
           <DropdownMenuItem onSelect={() => setIsDeleteDialogOpen(true)}>
             <IconMenu
               className="text-red-500"
-              text="Delete"
+              text={actions("delete")}
               icon={<Trash2 className="size-4 text-red-500" />}
             />
           </DropdownMenuItem>

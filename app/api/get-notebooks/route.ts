@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCachedNotebooksAction } from "@/server/notebooks";
 import { isUserAuthed } from "@/server/auth";
+import { ServerErrorCodes } from "@/helpers/server-error-codes";
 
 export async function GET() {
   try {
@@ -16,6 +17,9 @@ export async function GET() {
   } catch (error) {
     console.log({ error });
 
-    return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
+    return NextResponse.json(
+      { code: ServerErrorCodes.AUTH.NOT_AUTHENTICATED },
+      { status: 401 }
+    );
   }
 }

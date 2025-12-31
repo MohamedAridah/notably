@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
 import { CopyMinusIcon, CopyPlusIcon } from "lucide-react";
 
 const ToggleCollapseButton = ({
@@ -8,12 +9,13 @@ const ToggleCollapseButton = ({
   isExpanded: boolean;
   handler: (value: boolean) => void;
 }) => {
+  const t = useTranslations("CollapseNotebooksButton");
   return (
     <Button
       variant="ghost"
       size="sm"
       onClick={() => handler(!isExpanded)}
-      title={`${isExpanded ? "Expand" : "Collapse"} Notebooks`}
+      title={isExpanded ? t("expand") : t("collapse")}
     >
       {!isExpanded ? (
         <CopyMinusIcon className="size-3.5" />
@@ -21,7 +23,7 @@ const ToggleCollapseButton = ({
         <CopyPlusIcon className="size-3.5" />
       )}
       <span className="sr-only">
-        {!isExpanded ? "Expand" : "Collapse"} sidebar notebooks
+        {!isExpanded ? t("expand") : t("collapse")}
       </span>
     </Button>
   );

@@ -2,9 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
 import { restoreNotebookAction } from "@/server/notebooks";
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,14 +14,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-
 import { buttonVariants } from "@/components/ui/button";
-import { RotateCwIcon } from "lucide-react";
-import { toast } from "sonner";
-
 import DialogTriggerButton, {
   TriggerAppearance,
 } from "@/components/utils/dialog-trigger-button";
+import { useTranslations } from "next-intl";
+import { toast } from "sonner";
+import { RotateCwIcon } from "lucide-react";
 
 interface RestoreNotebookDialogProps {
   notebookId: string;
@@ -42,6 +39,8 @@ export default function RestoreNotebookDialog({
   withTrigger = true,
   trigger,
 }: RestoreNotebookDialogProps & TriggerAppearance) {
+  const t = useTranslations("RestoreNotebookButton");
+  const tServerCodes = useTranslations("serverCodes.NOTEBOOKS");
   const router = useRouter();
   const [dialogState, setDialogState] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false);
@@ -49,12 +48,12 @@ export default function RestoreNotebookDialog({
   const handleRestore = async () => {
     try {
       setIsRestoring(true);
-      const { success, message } = await restoreNotebookAction(notebookId);
+      const { success, code } = await restoreNotebookAction(notebookId);
 
       if (success) {
-        toast.success(message);
+        toast.success(tServerCodes(code));
         if (callbackURL) router.push(callbackURL);
-      } else toast.error(message);
+      } else toast.error(tServerCodes(code));
     } catch (error) {
       toast.error((error as Error).message);
     } finally {
@@ -77,8 +76,8 @@ export default function RestoreNotebookDialog({
             variant="secondary"
             size="sm"
             state={isRestoring}
-            idleText="Restore"
-            processText="Restoring..."
+            idleText={t("labelShort")}
+            processText={t("labelProcessing")}
             icon={RotateCwIcon}
             className="group-hover/notebook-buttons:opacity-100"
           />
@@ -87,21 +86,23 @@ export default function RestoreNotebookDialog({
 
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Restore Notebook?</AlertDialogTitle>
+          <AlertDialogTitle>{t("labelLong")}</AlertDialogTitle>
           <AlertDialogDescription>
-            This will restore{" "}
-            <span className="font-semibold text-primary">{notebookName}</span>{" "}
-            from Trash back to your notebooks.
+            {t.rich("description", {
+              notebookName,
+              NotebookName: (chunks) => (
+                <span className="font-semibold text-primary">{chunks}</span>
+              ),
+            })}
           </AlertDialogDescription>
         </AlertDialogHeader>
-
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel />
           <AlertDialogAction
             className={buttonVariants({ variant: "secondary" })}
             onClick={handleRestore}
           >
-            Restore
+            {t("labelShort")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

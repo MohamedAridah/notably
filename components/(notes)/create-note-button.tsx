@@ -9,6 +9,7 @@ import DialogTriggerButton, {
 } from "@/components/utils/dialog-trigger-button";
 import { toast } from "sonner";
 import { NotepadTextIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface DialogProps {
   notebookId?: string;
@@ -18,6 +19,7 @@ export default function CreateNoteDialog({
   notebookId,
   ...trigger
 }: DialogProps & Partial<TriggerProps>) {
+  const t = useTranslations("CreateNoteButton");
   const router = useRouter();
   const isMobile = useMediaQuery("(max-width:640px)");
 
@@ -26,16 +28,16 @@ export default function CreateNoteDialog({
     const userId = session?.user.id;
 
     if (!userId) {
-      toast.error("You must be signed in to create a note.");
+      toast.error(t("toasts.errorAuth"));
       return;
     }
 
     try {
       toast.promise(createNoteAction(notebookId), {
-        loading: "Creating your new note — just a moment...",
+        loading: t("toasts.loading"),
         success: ({ noteId, notebookId }) => {
           router.push(`/dashboard/notebook/${notebookId}/note/${noteId}`);
-          return { message: "Saved! Jumping to your note now... 🚀" };
+          return { message: t("toasts.success") };
         },
         error: ({ message }) => {
           return { message };
@@ -44,7 +46,7 @@ export default function CreateNoteDialog({
       });
     } catch (error) {
       console.error(error);
-      toast.error("Failed to create the note!");
+      toast.error(t("toasts.error"));
     }
   };
 
@@ -54,8 +56,8 @@ export default function CreateNoteDialog({
       asIconHidden={trigger?.asIconHidden}
       asLabel={trigger?.asLabel}
       icon={NotepadTextIcon}
-      idleText={!isMobile ? "Create Note" : "Note"}
-      processText="Creating..."
+      idleText={!isMobile ? t("labelLong") : t("labelShort")}
+      processText={t("labelProcessing")}
       className="group-hover/note-buttons:opacity-100 group-hover/notebook-buttons:opacity-100"
       classNameAsIocn="hover:text-cyan-500"
       onClick={handleCreateNote}

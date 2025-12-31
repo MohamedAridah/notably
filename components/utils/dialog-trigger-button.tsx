@@ -1,10 +1,10 @@
 import React from "react";
 import clsx from "clsx";
 import { cn } from "@/lib/utils";
-import { LucideIcon } from "lucide-react";
 import { Button, ButtonVariants } from "@/components/ui/button";
 import IconMenu from "@/components/utils/icon-menu";
-import LoadingSwap from "./loading-swap";
+import LoadingSwap from "@/components/utils/loading-swap";
+import { LucideIcon } from "lucide-react";
 
 type Appearance = {
   asLabel?: boolean;
@@ -90,7 +90,11 @@ const DialogTriggerButton = React.forwardRef<HTMLButtonElement, TriggerProps>(
 
     if (asLabel) {
       return (
-        <button onClick={rest.onClick} className="w-full text-start" disabled={state}>
+        <button
+          onClick={rest.onClick}
+          className="w-full text-start"
+          disabled={state}
+        >
           <IconMenu text={idleText} icon={<Icon className="size-4" />} />
         </button>
       );

@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/tiptap-ui-primitive/button";
 import { Plus } from "lucide-react";
 import LoadingSwap from "@/components/utils/loading-swap";
+import { useTranslations } from "next-intl";
 
 export interface SaveNoteButtonProps {
   noteId: string;
@@ -22,19 +23,21 @@ const SaveNoteButton = ({
   setIsThereNewContent,
   ...props
 }: SaveNoteButtonProps & React.ComponentProps<typeof Button>) => {
+  const tServerCode = useTranslations("serverCodes.NOTES");
+  const t = useTranslations("TextEditor.saveButton");
   const [isSaving, setIsSaving] = React.useState(false);
 
   const handleSaveNoteUpdates = async () => {
     try {
       setIsSaving(true);
       const content = editor.getJSON();
-      const { success, message } = await updateNoteAction(noteId, { content });
+      const { success, code } = await updateNoteAction(noteId, { content });
       if (success) {
-        toast.success(message);
+        toast.success(tServerCode(code));
         setIsThereNewContent(false);
       } else {
         toast.error("Unable to save new updates!", {
-          description: message,
+          description: tServerCode(code),
         });
       }
     } finally {
@@ -46,15 +49,15 @@ const SaveNoteButton = ({
     <Button
       disabled={isSaving || !isThereNewContent}
       data-style="ghost"
-      tooltip="Save note"
+      tooltip={t("labelLong")}
       className="hover:cursor-pointer"
       data-disabled={isSaving || !isThereNewContent}
-      aria-label={"save note"}
+      aria-label={t("labelLong")}
       onClick={handleSaveNoteUpdates}
       {...props}
     >
-      <LoadingSwap isLoading={isSaving} loadingText="Saving...">
-        <Plus className="size-4" /> Save
+      <LoadingSwap isLoading={isSaving} loadingText={t("labelProcessing")}>
+        <Plus className="size-4" /> {t("labelShort")}
       </LoadingSwap>
     </Button>
   );

@@ -20,6 +20,7 @@ import DialogTriggerButton, {
 } from "@/components/utils/dialog-trigger-button";
 import { PenSquareIcon } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 interface DialogProps {
   noteId: string;
@@ -36,6 +37,8 @@ export default function EditNoteDialog({
   trigger,
   withTrigger = true,
 }: DialogProps & TriggerAppearance) {
+  const t = useTranslations("UpdateNoteButton");
+  const tServerCodes = useTranslations("serverCodes.NOTES");
   const [dialogState, setDialogState] = useState(false);
 
   const onSubmit = async (data: z.infer<typeof NoteSchema>) => {
@@ -43,19 +46,19 @@ export default function EditNoteDialog({
     const userId = session?.user.id;
 
     if (!userId) {
-      toast.error("You must be signed in to create a note.");
+      toast.error(t("toasts.errorAuth"));
       return;
     }
 
     try {
-      const { success, message } = await updateNoteAction(noteId, {
+      const { success, code } = await updateNoteAction(noteId, {
         title: data.title,
       });
       if (success) {
-        toast.success(message);
+        toast.success(tServerCodes(code));
         setIsOpen ? setIsOpen(false) : setDialogState(false);
       } else {
-        toast.error(message);
+        toast.error(tServerCodes(code));
       }
     } catch (error) {
       console.error(error);
@@ -73,8 +76,8 @@ export default function EditNoteDialog({
             asIcon={trigger?.asIcon}
             asIconHidden={trigger?.asIconHidden}
             asLabel={trigger?.asLabel}
-            idleText="Update"
-            processText="Updating"
+            idleText={t("labelShort")}
+            processText={t("labelProcessing")}
             icon={PenSquareIcon}
             size="sm"
             className="group-hover/note-buttons:opacity-100"
@@ -87,10 +90,8 @@ export default function EditNoteDialog({
         onKeyDown={(e) => e.stopPropagation()}
       >
         <DialogHeader>
-          <DialogTitle>Update Note Title</DialogTitle>
-          <DialogDescription>
-            Edit the note below and save your changes.
-          </DialogDescription>
+          <DialogTitle>{t("labelLong")}</DialogTitle>
+          <DialogDescription>{t("description")}</DialogDescription>
         </DialogHeader>
 
         <NoteForm onSubmit={onSubmit} note={note} />

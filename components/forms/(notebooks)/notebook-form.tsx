@@ -16,7 +16,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Loader2 } from "lucide-react";
+import LoadingSwap from "@/components/utils/loading-swap";
+import { useTranslations } from "next-intl";
 
 export type FormMode = "create" | "update";
 
@@ -31,6 +32,7 @@ export default function NotebookForm({
   mode = "create",
   onSubmit,
 }: FormProps) {
+  const t = useTranslations("CreateNotebookForm");
   const form = useForm<z.infer<typeof NotebookSchema>>({
     resolver: zodResolver(NotebookSchema),
     defaultValues: {
@@ -48,10 +50,10 @@ export default function NotebookForm({
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>{t("inputs.name.label")}</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Notebook name..."
+                  placeholder={t("inputs.name.placeholder")}
                   className="placeholder:text-sm"
                   {...field}
                 />
@@ -80,7 +82,9 @@ export default function NotebookForm({
                 />
               </FormControl>
               <FormLabel className="cursor-pointer">
-                Redirect after {mode === "create" ? "creation" : "update"}
+                {mode === "create"
+                  ? t("inputs.redirectTo.labelCreate")
+                  : t("inputs.redirectTo.labelUpdate")}
               </FormLabel>
               <FormMessage />
             </FormItem>
@@ -88,13 +92,12 @@ export default function NotebookForm({
         />
 
         <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? (
-            <>
-              <Loader2 className="animate-spin" /> Saving...
-            </>
-          ) : (
-            "Save Notebook"
-          )}
+          <LoadingSwap
+            isLoading={isLoading}
+            loadingText={t("submitButton.loading")}
+          >
+            {t("submitButton.label")}
+          </LoadingSwap>
         </Button>
       </form>
     </Form>

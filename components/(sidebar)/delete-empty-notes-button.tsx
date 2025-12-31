@@ -1,11 +1,14 @@
-import { Button } from "../ui/button";
-import { FileXIcon } from "lucide-react";
-import { deleteEmptyNotesAction } from "@/server/notes";
-import { authClient } from "@/lib/auth-client";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
+import { deleteEmptyNotesAction } from "@/server/notes";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { FileXIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function DeleteEmptyNotes() {
+  const t = useTranslations("DeleteEmptyNotesButton");
+  const tServerCode = useTranslations("serverCodes.NOTES");
   const router = useRouter();
 
   const handleDeleteEmptyNotes = async () => {
@@ -13,25 +16,25 @@ export default function DeleteEmptyNotes() {
     const userId = session?.user.id;
 
     if (!userId) {
-      toast.error("You must be signed in to create a note.");
+      toast.error(t("toasts.errorAuth"));
       return;
     }
 
     try {
       toast.promise(deleteEmptyNotesAction, {
-        loading: "Deleting empty notes...",
-        success: ({ message }) => {
+        loading: t("toasts.loading"),
+        success: ({ code }) => {
           router.push("/dashboard");
-          return { message };
+          return { message: tServerCode(code) };
         },
-        error: ({ message }) => {
-          return { message };
+        error: ({ code }) => {
+          return { message: tServerCode(code) };
         },
         position: "top-center",
       });
     } catch (error) {
       console.error(error);
-      toast.error("Failed to delete empty notes!");
+      toast.error(t("toasts.errorDelete"));
     }
   };
 
@@ -40,7 +43,7 @@ export default function DeleteEmptyNotes() {
       variant="ghost"
       size="sm"
       onClick={handleDeleteEmptyNotes}
-      title="Delete Empty Notes."
+      title={t("label")}
     >
       <FileXIcon />
     </Button>

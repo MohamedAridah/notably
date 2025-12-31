@@ -31,6 +31,6 @@ export default async function sendEmail({
 
     return { success: true, message: "Email sent successfully", data };
   } catch (error) {
-    return { success: false, message: errorMessage(error) };
+    return { success: false, message: await errorMessage(error) };
   }
 }

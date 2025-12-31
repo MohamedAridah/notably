@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
+import { restoreNoteAction } from "@/server/notes";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,15 +14,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-
 import { buttonVariants } from "@/components/ui/button";
-import { RotateCwIcon } from "lucide-react";
-import { toast } from "sonner";
-
 import DialogTriggerButton, {
   TriggerAppearance,
 } from "@/components/utils/dialog-trigger-button";
-import { restoreNoteAction } from "@/server/notes";
+import { toast } from "sonner";
+import { RotateCwIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface RestoreNoteDialogProps {
   noteId: string;
@@ -39,6 +37,8 @@ export default function RestoreNoteDialog({
   withTrigger = true,
   trigger,
 }: RestoreNoteDialogProps & TriggerAppearance) {
+  const t = useTranslations("RestoreNoteButton");
+  const tServerCodes = useTranslations("serverCodes.NOTES");
   const router = useRouter();
   const [dialogState, setDialogState] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false);
@@ -46,12 +46,12 @@ export default function RestoreNoteDialog({
   const handleRestore = async () => {
     try {
       setIsRestoring(true);
-      const { success, message } = await restoreNoteAction(noteId);
+      const { success, code } = await restoreNoteAction(noteId);
 
       if (success) {
-        toast.success(message);
+        toast.success(tServerCodes(code));
         if (callbackURL) router.push(callbackURL);
-      } else toast.error(message);
+      } else toast.error(tServerCodes(code));
     } catch (error) {
       toast.error((error as Error).message);
     } finally {
@@ -74,8 +74,8 @@ export default function RestoreNoteDialog({
             variant="secondary"
             size="sm"
             state={isRestoring}
-            idleText="Restore"
-            processText="Restoring..."
+            idleText={t("labelShort")}
+            processText={t("labelProcessing")}
             icon={RotateCwIcon}
             className="group-hover/note-buttons:opacity-100"
           />
@@ -84,19 +84,17 @@ export default function RestoreNoteDialog({
 
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Restore Note?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This will restore your note from Trash back to your dashboard.
-          </AlertDialogDescription>
+          <AlertDialogTitle>{t("labelLong")}</AlertDialogTitle>
+          <AlertDialogDescription>{t("description")}</AlertDialogDescription>
         </AlertDialogHeader>
 
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel />
           <AlertDialogAction
             className={buttonVariants({ variant: "secondary" })}
             onClick={handleRestore}
           >
-            Restore
+            {t("labelShort")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

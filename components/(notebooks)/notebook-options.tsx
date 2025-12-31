@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { type Notebook } from "@prisma/client";
+import { setNotebookFavoriteAction } from "@/server/notebooks";
+import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +16,12 @@ import IconMenu from "@/components/utils/icon-menu";
 import DeleteNotebookDialog from "@/components/(notebooks)/delete-notebook-button";
 import EditNotebookDialog from "@/components/(notebooks)/edit-notebook-button";
 import CreateNoteDialog from "@/components/(notes)/create-note-button";
+import FavoriteButton from "@/components/utils/favorite-button";
+import RestoreNotebookDialog from "@/components/(notebooks)/restore-notebook-button";
+import {
+  NotebookCardMode,
+  NotebookModePolicies,
+} from "@/components/(notebooks)/notebook-mode-policies";
 import {
   MoreHorizontal,
   ExternalLinkIcon,
@@ -21,14 +29,7 @@ import {
   Trash2,
   RotateCwIcon,
 } from "lucide-react";
-import FavoriteButton from "../utils/favorite-button";
-import { cn } from "@/lib/utils";
-import { setNotebookFavoriteAction } from "@/server/notebooks";
-import {
-  NotebookCardMode,
-  NotebookModePolicies,
-} from "../(notebooks)/notebook-mode-policies";
-import RestoreNotebookDialog from "./restore-notebook-button";
+import { useTranslations } from "next-intl";
 
 interface NotebookOptionsProps extends React.ComponentProps<"div"> {
   notebook: Pick<Notebook, "id" | "name" | "isFavorite">;
@@ -42,6 +43,8 @@ export default function NotebookOptions({
   mode = "default",
   ...props
 }: NotebookOptionsProps) {
+  const t = useTranslations("NotebookOptionsMenu");
+  const actions = useTranslations("Common.actions");
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isRestoreDialogOpen, setIsRestoreDialogOpen] = useState(false);
@@ -56,16 +59,19 @@ export default function NotebookOptions({
           onClick={(e) => e.stopPropagation()}
         >
           <MoreHorizontal className="size-4" />
-          <span className="sr-only">Open note options menu</span>
+          <span className="sr-only">{t("triggerAriaLabel")}</span>
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          className={`pointer-events-auto ${alignStart ? "mr-3" : ""}`}
+          className={`pointer-events-auto ${alignStart ? "me-3" : ""}`}
         >
           {canView && (
             <DropdownMenuItem>
-              <Link href={`/dashboard/notebook/${notebook.id}`}>
+              <Link
+                href={`/dashboard/notebook/${notebook.id}`}
+                className="w-full"
+              >
                 <IconMenu
-                  text="Details"
+                  text={actions("details")}
                   icon={<ExternalLinkIcon className="size-4" />}
                 />
               </Link>
@@ -93,14 +99,17 @@ export default function NotebookOptions({
 
           {canEdit && (
             <DropdownMenuItem onSelect={() => setIsEditDialogOpen(true)}>
-              <IconMenu text="Update" icon={<PenSquare className="size-4" />} />
+              <IconMenu
+                text={actions("update")}
+                icon={<PenSquare className="size-4" />}
+              />
             </DropdownMenuItem>
           )}
 
           {canRestore && (
             <DropdownMenuItem onSelect={() => setIsRestoreDialogOpen(true)}>
               <IconMenu
-                text="Restore"
+                text={actions("restore")}
                 icon={<RotateCwIcon className="size-4" />}
               />
             </DropdownMenuItem>
@@ -111,7 +120,7 @@ export default function NotebookOptions({
           <DropdownMenuItem onSelect={() => setIsDeleteDialogOpen(true)}>
             <IconMenu
               className="text-red-500"
-              text="Delete"
+              text={actions("delete")}
               icon={<Trash2 className="size-4 text-red-500" />}
             />
           </DropdownMenuItem>
