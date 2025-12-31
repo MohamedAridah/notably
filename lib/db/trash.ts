@@ -1,5 +1,6 @@
 "use server";
 
+import { ServerErrorCodes } from "@/helpers/server-error-codes";
 import prisma from "@/lib/prisma";
 
 /**
@@ -9,7 +10,7 @@ export const emptyUserTrash = async (userId: string) => {
   if (!userId) {
     return {
       success: false,
-      message: "Invalid user ID provided",
+      code: ServerErrorCodes.AUTH.INVALID_USER_ID,
     };
   }
 
@@ -30,14 +31,14 @@ export const emptyUserTrash = async (userId: string) => {
     await prisma.$transaction([deleteNotebooksPromise, deleteNotesPromise]);
     return {
       success: true,
-      message: "Success! Trash has been emptied.",
+      code: ServerErrorCodes.TRASH.SUCCESS_DELETE,
     };
   } catch (error) {
     console.error("DB Error in emptyUserTrash:", error);
 
     return {
       success: false,
-      message: "Failed to empty trash",
+      code: ServerErrorCodes.TRASH.ERROR_DELETE,
     };
   }
 };

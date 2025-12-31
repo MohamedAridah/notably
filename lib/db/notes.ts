@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import { Note, Prisma } from "@prisma/client";
+import { ServerErrorCodes } from "@/helpers/server-error-codes";
 
 /**
  * Get note by ID for a specific user
@@ -10,7 +11,7 @@ export async function getNoteByIdFromDB(id: string, userId: string) {
   if (!id || !userId) {
     return {
       success: false,
-      message: "Invalid note ID or user ID provided",
+      code: ServerErrorCodes.NOTES.ERROR_INVALID_ID,
       note: null,
     };
   }
@@ -42,7 +43,7 @@ export async function getNoteByIdFromDB(id: string, userId: string) {
     if (!note) {
       return {
         success: false,
-        message: "Note not found",
+        code: ServerErrorCodes.NOTES.ERROR_NOT_FOUND,
         note: null,
       };
     }
@@ -52,7 +53,7 @@ export async function getNoteByIdFromDB(id: string, userId: string) {
     console.error("DB Error in getNoteByIdFromDB:", error);
     return {
       success: false,
-      message: "Failed to fetch note",
+      code: ServerErrorCodes.NOTES.ERROR_FETCH_NOTE,
       note: null,
     };
   }
@@ -65,7 +66,7 @@ export async function getTrashedNotesFromDB(userId: string) {
   if (!userId) {
     return {
       success: false,
-      message: "Invalid user ID provided",
+      code: ServerErrorCodes.AUTH.INVALID_USER_ID,
       notes: null,
     };
   }
@@ -101,7 +102,7 @@ export async function getTrashedNotesFromDB(userId: string) {
     console.error("DB Error in getTrashedNotesFromDB:", error);
     return {
       success: false,
-      message: "Failed to fetch trashed notes",
+      code: ServerErrorCodes.NOTES.ERROR_FETCH_TRASH_NOTES,
       notes: null,
     };
   }
@@ -119,7 +120,7 @@ export async function createNoteInDB(
   if (!userId) {
     return {
       success: false,
-      message: "Invalid user ID provided",
+      code: ServerErrorCodes.AUTH.INVALID_USER_ID,
     };
   }
 
@@ -162,7 +163,7 @@ export async function createNoteInDB(
 
     return {
       success: true,
-      message: "Note created successfully",
+      code: ServerErrorCodes.NOTES.SUCCESS_CREATED,
       noteId: note.id,
       notebookId: note.notebookId,
     };
@@ -170,7 +171,7 @@ export async function createNoteInDB(
     console.error("DB Error in createNoteInDB:", error);
     return {
       success: false,
-      message: "Failed to create note",
+      code: ServerErrorCodes.NOTES.ERROR_CREATION,
     };
   }
 }
@@ -186,7 +187,7 @@ export async function updateNoteInDB(
   if (!id || !userId) {
     return {
       success: false,
-      message: "Invalid note ID or user ID provided",
+      code: ServerErrorCodes.NOTES.ERROR_INVALID_ID,
     };
   }
 
@@ -207,7 +208,7 @@ export async function updateNoteInDB(
 
     return {
       success: true,
-      message: "Note updated successfully",
+      code: ServerErrorCodes.NOTES.SUCCESS_UPDATED,
       noteId: updatedNote.id,
       notebookId: updatedNote.notebookId,
     };
@@ -215,7 +216,7 @@ export async function updateNoteInDB(
     console.error("DB Error in updateNoteInDB:", error);
     return {
       success: false,
-      message: "Failed to update note",
+      code: ServerErrorCodes.NOTES.ERROR_UPDATE,
     };
   }
 }
@@ -227,7 +228,7 @@ export async function trashNoteInDB(noteId: string, userId: string) {
   if (!noteId || !userId) {
     return {
       success: false,
-      message: "Invalid note ID or user ID provided",
+      code: ServerErrorCodes.NOTES.ERROR_INVALID_ID,
     };
   }
 
@@ -249,14 +250,14 @@ export async function trashNoteInDB(noteId: string, userId: string) {
 
     return {
       success: true,
-      message: "Note moved to trash successfully",
+      code: ServerErrorCodes.NOTES.SUCCESS_MOVE_TO_TRASH,
       notebookId: deletedNote.notebookId,
     };
   } catch (error) {
     console.error("DB Error in moveNoteToTrashInDB:", error);
     return {
       success: false,
-      message: "Failed to move note to trash",
+      code: ServerErrorCodes.NOTES.ERROR_TRASH,
     };
   }
 }
@@ -268,7 +269,7 @@ export async function restoreNoteInDB(noteId: string, userId: string) {
   if (!noteId || !userId) {
     return {
       success: false,
-      message: "Invalid note ID or user ID provided",
+      code: ServerErrorCodes.NOTES.ERROR_INVALID_ID,
     };
   }
 
@@ -290,14 +291,14 @@ export async function restoreNoteInDB(noteId: string, userId: string) {
 
     return {
       success: true,
-      message: "Note restored successfully",
+      code: ServerErrorCodes.NOTES.SUCCESS_RESTORE,
       notebookId: restoredNote.notebookId,
     };
   } catch (error) {
     console.error("DB Error in restoreNoteFromTrashInDB:", error);
     return {
       success: false,
-      message: "Failed to restore note",
+      code: ServerErrorCodes.NOTES.ERROR_RESTORE,
     };
   }
 }
@@ -309,7 +310,7 @@ export async function deleteNoteFromDB(noteId: string, userId: string) {
   if (!noteId || !userId) {
     return {
       success: false,
-      message: "Invalid note ID or user ID provided",
+      code: ServerErrorCodes.NOTES.ERROR_INVALID_ID,
     };
   }
 
@@ -328,14 +329,14 @@ export async function deleteNoteFromDB(noteId: string, userId: string) {
 
     return {
       success: true,
-      message: "Note deleted permanently",
+      code: ServerErrorCodes.NOTES.SUCCESS_DELETE,
       notebookId: deletedNote.notebookId,
     };
   } catch (error) {
     console.error("DB Error in deleteNotePermanentlyFromDB:", error);
     return {
       success: false,
-      message: "Failed to permanently delete note",
+      code: ServerErrorCodes.NOTES.ERROR_DELETE,
     };
   }
 }
@@ -351,7 +352,7 @@ export async function setNoteFavoriteInDB(
   if (!id || !userId) {
     return {
       success: false,
-      message: "Invalid note ID or user ID provided",
+      code: ServerErrorCodes.NOTES.ERROR_INVALID_ID,
     };
   }
 
@@ -368,16 +369,20 @@ export async function setNoteFavoriteInDB(
 
     return {
       success: true,
-      message: isFavorite
-        ? "Note added to your favorites successfully."
-        : "Note removed from your favorites successfully.",
+      type: "NOTES",
+      code: isFavorite
+        ? ServerErrorCodes.NOTES.SUCCESS_ADD_TO_FAVORITE
+        : ServerErrorCodes.NOTES.SUCCESS_REMOVE_FROM_FAVORITE,
       notebookId: note.notebookId,
     };
   } catch (error) {
     console.error("DB Error in setNoteFavoriteInDB:", error);
     return {
       success: false,
-      message: `Failed to ${isFavorite ? "add" : "remove"} note from favorites`,
+      type: "NOTES",
+      code: isFavorite
+        ? ServerErrorCodes.NOTES.ERROR_ADD_TO_FAVORITE
+        : ServerErrorCodes.NOTES.ERROR_REMOVE_FROM_FAVORITE,
     };
   }
 }
@@ -389,7 +394,7 @@ export async function deleteEmptyNotesFromDB(userId: string) {
   if (!userId) {
     return {
       success: false,
-      message: "Invalid user ID provided",
+      code: ServerErrorCodes.AUTH.INVALID_USER_ID,
     };
   }
 
@@ -402,13 +407,13 @@ export async function deleteEmptyNotesFromDB(userId: string) {
 
     return {
       success: true,
-      message: "Empty notes deleted successfully",
+      code: ServerErrorCodes.NOTES.SUCCESS_DELETE_EMPTY,
     };
   } catch (error) {
     console.error("DB Error in deleteEmptyNotesFromDB:", error);
     return {
       success: false,
-      message: "Failed to delete empty notes",
+      code: ServerErrorCodes.NOTES.ERROR_DELETE_EMPTY,
     };
   }
 }

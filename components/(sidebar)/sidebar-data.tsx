@@ -31,6 +31,7 @@ import {
   LibraryIcon,
   NotebookTextIcon,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 const NoteOptions = dynamic(() => import("@/components/(notes)/note-options"), {
   ssr: false,
 });
@@ -63,6 +64,8 @@ type SidebarDataProps = {
 };
 
 export default function SidebarData({ data }: SidebarDataProps) {
+  const t = useTranslations("Sidebar.myNotebooks");
+  const tResults = useTranslations("Sidebar.myNotebooks");
   const [search] = useQueryState("search", { defaultValue: "" });
 
   const { isMobile, setOpenMobile } = useSidebar();
@@ -101,7 +104,7 @@ export default function SidebarData({ data }: SidebarDataProps) {
   if (filteredData.length === 0 && search) {
     return (
       <p className="flex items-center gap-2 px-4 mt-2 text-sm">
-        <InfoIcon className="size-4" /> No results found
+        <InfoIcon className="size-4" /> {tResults("noResultsFound")}
       </p>
     );
   }
@@ -126,7 +129,7 @@ export default function SidebarData({ data }: SidebarDataProps) {
   return (
     <SidebarGroup>
       <SidebarGroupLabel className="justify-between items-center">
-        My Notebooks
+        {t("label")}
         {data.navMain.length !== 0 && (
           <SidebarOptions>
             <DeleteEmptyNotes />
@@ -167,9 +170,9 @@ export default function SidebarData({ data }: SidebarDataProps) {
                           if (!isMobile) return;
                           setOpenMobile(false);
                         }}
-                        className="flex items-center gap-2 flex-1 hover:underline underline-offset-3"
+                        className="flex items-center gap-2 flex-1 hover:underline underline-offset-3 text-start"
                       >
-                        <FolderClosedIcon className="size-4" />
+                        <FolderClosedIcon className="size-4 shrink-0" />
                         <span
                           className="inline-block truncate w-[131px]"
                           title={notebook.title}
@@ -196,7 +199,7 @@ export default function SidebarData({ data }: SidebarDataProps) {
                       )}
 
                       {notebook.items.length > 0 && (
-                        <ChevronRight className="size-4 transition-transform group-data-[state=open]/collapsible:rotate-90" />
+                        <ChevronRight className="size-4 transition-transform group-data-[state=open]/collapsible:rotate-90 rtl:rotate-180" />
                       )}
                     </div>
                   </SidebarMenuButton>
@@ -204,7 +207,7 @@ export default function SidebarData({ data }: SidebarDataProps) {
 
                 {notebook.items?.length ? (
                   <CollapsibleContent>
-                    <SidebarMenuSub className="pr-0 mr-0">
+                    <SidebarMenuSub className="pe-0 me-0">
                       {notebook.items.map((note, noteIndex) => (
                         <SidebarMenuSubItem key={note.id}>
                           <SidebarMenuSubButton
@@ -258,7 +261,7 @@ export default function SidebarData({ data }: SidebarDataProps) {
 
           {filteredData.length === 0 ? (
             <SidebarMenuItem className="flex items-center gap-2 text-xs pl-2 grougroup-data-[collapsible=icon]:hidden">
-              <LibraryIcon className="size-5" /> No notebooks yet.
+              <LibraryIcon className="size-5" /> {tResults("noNotebooksYet")}
             </SidebarMenuItem>
           ) : null}
         </SidebarMenu>

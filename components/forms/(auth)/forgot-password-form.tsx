@@ -25,10 +25,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 export default function ForgotPasswordForm() {
+  const t = useTranslations("ForgotPasswordForm");
+  const tServerCodes = useTranslations("serverCodes.AUTH");
   const form = useForm<z.infer<typeof ForgotPasswordSchema>>({
     resolver: zodResolver(ForgotPasswordSchema),
     defaultValues: {
@@ -39,30 +42,27 @@ export default function ForgotPasswordForm() {
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (data: z.infer<typeof ForgotPasswordSchema>) => {
-    const { success, message } = await ForgotUserPassword({
+    const { success, code } = await ForgotUserPassword({
       email: data.email,
       redirectTo: "/reset-password",
     });
 
     if (success) {
       form.reset();
-      toast.success(message, {
-        description:
-          "If this email exists in our system, check your email for the reset link",
+      toast.success(tServerCodes(code), {
+        description: t("toasts.success"),
       });
       replace("/verify?process=forgot-password&value=" + data.email);
       return;
     }
-    toast.error(message);
+    toast.error(tServerCodes(code));
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Forgot your password?</CardTitle>
-        <CardDescription>
-          Enter your email below to reset your password
-        </CardDescription>
+        <CardTitle>{t("title")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -72,11 +72,11 @@ export default function ForgotPasswordForm() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>{t("inputs.email.label")}</FormLabel>
                   <FormControl>
                     <Input
                       type="email"
-                      placeholder="someone@example.com"
+                      placeholder={t("inputs.email.placeholder")}
                       {...field}
                     />
                   </FormControl>
@@ -88,7 +88,7 @@ export default function ForgotPasswordForm() {
               {isLoading ? (
                 <Loader2 className="animate-spin" />
               ) : (
-                "Reset Password"
+                <>{t("submitButton")}</>
               )}
             </Button>
           </form>
@@ -96,10 +96,13 @@ export default function ForgotPasswordForm() {
       </CardContent>
       <CardFooter>
         <p className="w-full text-center text-[15px]">
-          Don&apos;t have an account?{" "}
-          <Link href="/auth/sign-up" className="underline">
-            Sign up
-          </Link>
+          {t.rich("backToSignUp", {
+            signUpLink: (chunks) => (
+              <Link href="/auth/sign-up" className="underline">
+                {chunks}
+              </Link>
+            ),
+          })}
         </p>
       </CardFooter>
     </Card>

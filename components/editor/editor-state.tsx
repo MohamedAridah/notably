@@ -1,6 +1,8 @@
 import { Loader2Icon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 const EditorState = ({ state, text }: { state: boolean; text: string }) => {
+  const t = useTranslations("TextEditor.stateBar");
   const words = text.trim().split(/\s+/).filter(Boolean).length;
   const characters = text.trim().length;
 
@@ -12,14 +14,14 @@ const EditorState = ({ state, text }: { state: boolean; text: string }) => {
           <div className="flex items-center gap-1 animate-pulse">
             <Loader2Icon className="animate-spin size-4" />
             <span className="text-xs font-medium text-muted-foreground">
-              Saving your changes...
+              {t("stateProcessing")}
             </span>
           </div>
         ) : (
           <div className="flex items-center gap-1">
             <span className="size-2.5 rounded-full animate-caret-blink bg-green-400" />
             <span className="text-xs font-medium text-muted-foreground">
-              You are up to date
+              {t("state")}
             </span>
           </div>
         )}
@@ -28,8 +30,8 @@ const EditorState = ({ state, text }: { state: boolean; text: string }) => {
           aria-live="polite"
           className="flex items-center text-[13px] text-muted-foreground font-medium"
         >
-          {words} words <span className="mx-1.5">|</span> {characters}{" "}
-          characters
+          {t("words", { count: words })} <span className="mx-1.5">|</span>{" "}
+          {t("characters", { count: characters })}
         </span>
       </div>
     </div>

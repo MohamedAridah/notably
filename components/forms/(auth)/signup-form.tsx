@@ -26,11 +26,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import PasswordInput from "@/components/utils/password-input";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Loader2, StarsIcon } from "lucide-react";
-import PasswordInput from "@/components/utils/password-input";
 
 export default function SignUpForm() {
+  const t = useTranslations("SignupForm");
+  const tServerCodes = useTranslations("serverCodes.AUTH");
   const form = useForm<z.infer<typeof SignUpSchema>>({
     resolver: zodResolver(SignUpSchema),
     defaultValues: {
@@ -44,24 +47,22 @@ export default function SignUpForm() {
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (data: z.infer<typeof SignUpSchema>) => {
-    const { success, message } = await SignUpUser(data);
+    const { success, code } = await SignUpUser(data);
     if (success) {
       form.reset();
-      toast.success("Signed up successfully", {
-        description: message,
+      toast.success(t("toasts.success"), {
+        description: tServerCodes(code),
       });
       replace("/verify?process=email-verification&value=" + data.email);
       return;
     }
-    toast.error(message);
+    toast.error(tServerCodes(code));
   };
   return (
     <Card className="shadow-xs">
       <CardHeader>
-        <CardTitle>Create an account</CardTitle>
-        <CardDescription>
-          Join our community to get access to our features.
-        </CardDescription>
+        <CardTitle>{t("title")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -71,11 +72,11 @@ export default function SignUpForm() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>{t("inputs.email.label")}</FormLabel>
                   <FormControl>
                     <Input
                       type="email"
-                      placeholder="someone@example.com"
+                      placeholder={t("inputs.email.placeholder")}
                       {...field}
                     />
                   </FormControl>
@@ -88,10 +89,10 @@ export default function SignUpForm() {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>{t("inputs.name.label")}</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="username"
+                      placeholder={t("inputs.name.placeholder")}
                       autoComplete="off"
                       {...field}
                     />
@@ -105,11 +106,11 @@ export default function SignUpForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>{t("inputs.password.label")}</FormLabel>
                   <FormControl>
                     <PasswordInput
                       type="password"
-                      placeholder="********"
+                      placeholder={t("inputs.password.placeholder")}
                       autoComplete="off"
                       {...field}
                     />
@@ -123,11 +124,11 @@ export default function SignUpForm() {
               name="password__confirm"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Confirm Password</FormLabel>
+                  <FormLabel>{t("inputs.confirmPassword.label")}</FormLabel>
                   <FormControl>
                     <PasswordInput
                       type="password"
-                      placeholder="********"
+                      placeholder={t("inputs.confirmPassword.placeholder")}
                       autoComplete="off"
                       {...field}
                     />
@@ -138,7 +139,11 @@ export default function SignUpForm() {
             />
             <div className="flex flex-col gap-3">
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? <Loader2 className="animate-spin" /> : "Sign up"}
+                {isLoading ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  <>{t("actions.normal")}</>
+                )}
               </Button>
               <Button
                 variant="outline"
@@ -146,9 +151,9 @@ export default function SignUpForm() {
                 type="button"
                 disabled={true}
               >
-                Login with Google
+                {t("actions.google.label")}
                 <Badge variant="outline" className="flex items-center">
-                  <StarsIcon /> soon
+                  <StarsIcon /> {t("actions.google.badge")}
                 </Badge>
               </Button>
             </div>
@@ -157,10 +162,13 @@ export default function SignUpForm() {
       </CardContent>
       <CardFooter>
         <p className="w-full text-center text-[15px]">
-          Already have an account?{" "}
-          <Link href="/auth/sign-in" className="underline">
-            Login
-          </Link>
+          {t.rich("backToLogin", {
+            LogInLink: (chunks) => (
+              <Link href="/auth/sign-in" className="underline">
+                {chunks}
+              </Link>
+            ),
+          })}
         </p>
       </CardFooter>
     </Card>

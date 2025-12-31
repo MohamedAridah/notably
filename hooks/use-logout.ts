@@ -1,11 +1,13 @@
 "use client";
 
-import { authClient } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 export default function useLogout() {
+  const t = useTranslations("LogoutButton");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -16,11 +18,11 @@ export default function useLogout() {
         fetchOptions: {
           onSuccess: () => {
             router.push("/");
-            toast.success("Signed out successfully");
+            toast.success(t("toasts.success"));
             router.refresh();
           },
           onError: (ctx) => {
-            toast.error(ctx.error.message || "Failed to sign out");
+            toast.error(ctx.error.message || t("toasts.error"));
           },
         },
       });
@@ -33,5 +35,3 @@ export default function useLogout() {
 
   return { isLoading, handleLogout };
 }
-
-

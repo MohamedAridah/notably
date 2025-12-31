@@ -9,11 +9,13 @@ import CreateNoteDialog from "@/components/(notes)/create-note-button";
 import CreateNotebookDialog from "@/components/(notebooks)/create-notebook-button";
 import AddNoteIcon from "@/components/(sidebar)/add-note-icon";
 import AddNotebookIcon from "@/components/(sidebar)/add-notebook-icon";
+import { useTranslations } from "next-intl";
 
 export default function SidebarQuickActions() {
+  const t = useTranslations("Sidebar.quickActions");
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Quick Actions</SidebarGroupLabel>
+      <SidebarGroupLabel>{t("label")}</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
           <SidebarMenuItem>

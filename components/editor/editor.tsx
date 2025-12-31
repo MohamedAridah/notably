@@ -33,6 +33,8 @@ import { toast } from "sonner";
 import { saveNote } from "@/helpers/save-note-client";
 import { useRouter } from "next/navigation";
 import EditorState from "./editor-state";
+import { useTranslations } from "next-intl";
+import { DEFAULT_CONTENT } from "./content-default";
 
 const MobileToolbarContent = dynamic(
   () =>
@@ -61,6 +63,8 @@ export default function RichTextEditor({
   const [mobileView, setMobileView] = React.useState<MobileViewsType>("main");
   const toolbarRef = React.useRef<HTMLDivElement>(null);
   const editorRef = React.useRef<HTMLDivElement>(null);
+  const tServerCodes = useTranslations("serverCodes.NOTES");
+  const tEditor = useTranslations("TextEditor.editor");
 
   const [isThereNewContent, setIsThereNewContent] = React.useState(false);
   const [contentText, setContentText] = React.useState("");
@@ -69,10 +73,10 @@ export default function RichTextEditor({
     const res = await saveNote(id, content);
     if (res.success) {
       toast.dismiss();
-      toast.success(res.message);
+      toast.success(tServerCodes(res.code));
       router.refresh();
     } else {
-      toast.error(res.message);
+      toast.error(tServerCodes(res.code));
     }
     setIsThereNewContent(false);
   }, DEBOUNCE_TIME);
@@ -122,8 +126,7 @@ export default function RichTextEditor({
       setContentText(contentAsText);
       debouncedSave(noteId, content);
     },
-
-    content,
+    content: content ?? DEFAULT_CONTENT(tEditor("placeholder")),
   });
 
   const handleBeforeClose = (e: BeforeUnloadEvent) => {

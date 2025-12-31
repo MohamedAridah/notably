@@ -21,6 +21,7 @@ import DialogTriggerButton, {
 } from "@/components/utils/dialog-trigger-button";
 import { PenSquareIcon } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 interface DialogProps {
   notebookId: string;
@@ -37,6 +38,8 @@ export default function EditNotebookDialog({
   trigger,
   withTrigger = true,
 }: DialogProps & TriggerAppearance) {
+  const t = useTranslations("UpdateNotebookButton");
+  const tServerCodes = useTranslations("serverCodes.NOTEBOOKS");
   const router = useRouter();
   const [dialogState, setDialogState] = useState(false);
 
@@ -45,12 +48,12 @@ export default function EditNotebookDialog({
     const userId = session?.user.id;
 
     if (!userId) {
-      toast.error("You must be signed in to create a notebook.");
+      toast.error(t("toasts.errorAuth"));
       return;
     }
 
     try {
-      const { success, message } = await updateNotebookAction(notebookId, {
+      const { success, code } = await updateNotebookAction(notebookId, {
         name: data.name,
       });
 
@@ -58,10 +61,10 @@ export default function EditNotebookDialog({
         if (data.redirectTo) {
           router.push(`/dashboard/notebook/${notebookId}`);
         }
-        toast.success(message);
+        toast.success(tServerCodes(code));
         setIsOpen ? setIsOpen(false) : setDialogState(false);
       } else {
-        toast.error(message);
+        toast.error(tServerCodes(code));
       }
     } catch (error) {
       console.error(error);
@@ -80,8 +83,8 @@ export default function EditNotebookDialog({
             asIconHidden={trigger?.asIconHidden}
             asLabel={trigger?.asLabel}
             icon={PenSquareIcon}
-            idleText="Update"
-            processText="Updating"
+            idleText={t("labelShort")}
+            processText={t("labelProcessing")}
             size="sm"
             className="group-hover/notebook-buttons:opacity-100"
             classNameAsIocn="hover:text-green-500"
@@ -90,13 +93,11 @@ export default function EditNotebookDialog({
       )}
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Update Notebook</DialogTitle>
-          <DialogDescription>
-            Edit the notebook below and save your changes.
-          </DialogDescription>
+          <DialogTitle>{t("labelLong")}</DialogTitle>
+          <DialogDescription>{t("description")}</DialogDescription>
         </DialogHeader>
 
-        <NotebookForm onSubmit={onSubmit} notebook={notebook} mode="update"/>
+        <NotebookForm onSubmit={onSubmit} notebook={notebook} mode="update" />
       </DialogContent>
     </Dialog>
   );

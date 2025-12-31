@@ -9,8 +9,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { NotepadTextIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function AddNoteIcon() {
+  const t = useTranslations("CreateNoteButton");
+
   const trigger = (
     <div className="group-data-[collapsible=icon]:inline-flex hidden hover:cursor-pointer">
       <CreateNoteDialog
@@ -26,7 +29,7 @@ export default function AddNoteIcon() {
     <Tooltip>
       <TooltipTrigger asChild>{trigger}</TooltipTrigger>
       <TooltipContent side="right" align="center">
-        Create Note
+        {t("labelLong")}
       </TooltipContent>
     </Tooltip>
   );

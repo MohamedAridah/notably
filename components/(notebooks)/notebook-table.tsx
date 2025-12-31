@@ -2,12 +2,14 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { NotebookWithCountAndNotes } from "@/types/types";
 import { setNotebookFavoriteAction } from "@/server/notebooks";
+import { formatDate } from "@/helpers/format-date";
 import { ResponsiveGridTable } from "@/components/utils/responsive-grid-table";
 import {
   NotebookCardMode,
   NotebookModePolicies,
 } from "@/components/(notebooks)/notebook-mode-policies";
 import FavoriteButton from "@/components/utils/favorite-button";
+import { useLocale, useTranslations } from "next-intl";
 const NotebookOptions = dynamic(
   () => import("@/components/(notebooks)/notebook-options"),
   { ssr: false }
@@ -26,28 +28,30 @@ export default function NotebookTable({
   allowFilter,
   showHeader = true,
 }: NotebookTableProps) {
+  const t = useTranslations("NotebookTable");
+  const locale = useLocale();
   const policy = NotebookModePolicies[mode];
   const columns = [
     {
       key: "name",
-      label: "Notebook Name",
+      label: t("name"),
       className: "col-span-5 max-md:col-span-4",
     },
     {
       key: "notes",
-      label: "Sub Notes",
-      className: "col-span-3",
+      label: t("notes"),
+      className: "col-span-3 pr-0!",
     },
     {
       key: "date",
-      label: mode === "default" ? "Created" : "Deleted",
+      label: mode === "default" ? t("date.created") : t("date.deleted"),
       className: "col-span-3 max-md:col-span-2",
     },
     {
       key: "options",
       label: "",
       span: 1,
-      className: "text-right col-span-1 max-md:col-span-3",
+      className: "text-end col-span-1 max-md:col-span-3",
     },
   ];
 
@@ -76,23 +80,25 @@ export default function NotebookTable({
                 {policy.canView ? (
                   <Link
                     href={`/dashboard/notebook/${notebook.id}`}
-                    className="truncate pr-3 hover:underline underline-offset-3"
+                    className="truncate pe-3 hover:underline underline-offset-3"
                   >
                     {notebook.name}
                   </Link>
                 ) : (
-                  <span className="truncate pr-3">{notebook.name}</span>
+                  <span className="truncate pe-3">{notebook.name}</span>
                 )}
               </div>
             );
 
           case "notes":
-            return `${notebook._count.notes} notes`;
+            return `${t("count", { count: notebook._count.notes })}`;
 
           case "date":
-            return new Date(
-              notebook.deletedAt ?? notebook.createdAt
-            ).toDateString();
+            return formatDate({
+              date: notebook.deletedAt ?? notebook.createdAt,
+              locale,
+              dateOnly: true,
+            });
 
           case "options":
             return (

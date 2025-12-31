@@ -14,11 +14,15 @@ import DialogTriggerButton, {
   TriggerAppearance,
 } from "@/components/utils/dialog-trigger-button";
 import NotebooksListSkeleton from "@/components/(skeletons)/notebooks-list";
-const NotebooksList = dynamic(() => import("./move-to-list"), {
-  ssr: false,
-  loading: () => <NotebooksListSkeleton />,
-});
+const NotebooksList = dynamic(
+  () => import("@/components/(notes)/move-to-list"),
+  {
+    ssr: false,
+    loading: () => <NotebooksListSkeleton />,
+  }
+);
 import { ReplaceIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface DialogProps {
   noteId: string;
@@ -35,6 +39,7 @@ export default function MoveNoteDialog({
   trigger,
   withTrigger = true,
 }: DialogProps & TriggerAppearance) {
+  const t = useTranslations("MoveNoteButton");
   const [dialogState, setDialogState] = useState(false);
 
   return (
@@ -48,8 +53,8 @@ export default function MoveNoteDialog({
             asIcon={trigger?.asIcon}
             asIconHidden={trigger?.asIconHidden}
             asLabel={trigger?.asLabel}
-            idleText="Move"
-            processText="Moving"
+            idleText={t("labelShort")}
+            processText={t("labelProcessing")}
             icon={ReplaceIcon}
             size="sm"
             className="group-hover/note-buttons:opacity-100"
@@ -59,10 +64,8 @@ export default function MoveNoteDialog({
       )}
       <DialogContent className="sm:max-w-xl max-h-[75dvh] overflow-x-auto  custom-scrollbar">
         <DialogHeader>
-          <DialogTitle>Move Note</DialogTitle>
-          <DialogDescription>
-            Select a notebook to move the note to.
-          </DialogDescription>
+          <DialogTitle>{t("labelLong")}</DialogTitle>
+          <DialogDescription>{t("description")}</DialogDescription>
         </DialogHeader>
         <NotebooksList
           noteId={noteId}

@@ -2,7 +2,8 @@ import Image from "next/image";
 import { TextEffect } from "@/components/ui/text-effect";
 import { AnimatedGroup } from "@/components/ui/animated-group";
 import { AnimationGeneratorType } from "motion";
-import CtaButton from "@/app/_components/cta-button";
+import CtaButton from "@/components/utils/cta-button";
+import { useTranslations } from "next-intl";
 
 const transitionVariants = {
   item: {
@@ -25,6 +26,7 @@ const transitionVariants = {
 };
 
 export default function HeroSection() {
+  const t = useTranslations("HomePage.HeroSection");
   return (
     <main className="overflow-hidden">
       <div
@@ -46,7 +48,7 @@ export default function HeroSection() {
                 as="h1"
                 className="mt-8 max-w-2xl text-balance text-5xl font-medium md:text-6xl lg:mt-16"
               >
-                Notably Smarter Notes. Think Better.
+                {t("title")}
               </TextEffect>
               <TextEffect
                 per="line"
@@ -56,9 +58,7 @@ export default function HeroSection() {
                 as="p"
                 className="mt-8 max-w-2xl text-pretty text-lg"
               >
-                Supercharge your workflow with Notably — the smartest way to
-                capture, organize, and link dev notes, code snippets, and
-                technical insights.
+                {t("subTitle")}
               </TextEffect>
 
               <AnimatedGroup
@@ -106,14 +106,14 @@ export default function HeroSection() {
               <div className="inset-shadow-2xs ring-background dark:inset-shadow-white/20 bg-background relative mx-auto max-w-5xl overflow-hidden rounded-2xl border p-4 shadow-lg shadow-zinc-950/15 ring-1">
                 <Image
                   className="bg-background aspect-15/8 relative hidden rounded-2xl dark:block"
-                  src="/screenshots/dark.png"
+                  src="/screenshots/dark102.png"
                   alt="app screen"
                   width="2700"
                   height="1440"
                 />
                 <Image
                   className="z-2 border-border/25 aspect-15/8 relative rounded-2xl border dark:hidden"
-                  src="/screenshots/light.png"
+                  src="/screenshots/light102.png"
                   alt="app screen"
                   width="2700"
                   height="1440"

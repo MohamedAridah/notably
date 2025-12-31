@@ -27,6 +27,7 @@ import { DeleteNotebookAction as DeleteNoteAction } from "../(notebooks)/delete-
 import LoadingSwap from "@/components/utils/loading-swap";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 interface DialogProps {
   noteId: string;
@@ -35,19 +36,6 @@ interface DialogProps {
   isOpen?: boolean;
   setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
 }
-
-export const dialogTexts = {
-  "move-to-trash": {
-    title: "Move note to Trash?",
-    button: "Move to Trash",
-    processText: "Moving...",
-  },
-  "delete-permanently": {
-    title: "Delete note permanently?",
-    button: "Delete Forever",
-    processText: "Deleting...",
-  },
-} as const;
 
 export default function DeleteNoteDialog({
   noteId,
@@ -58,6 +46,9 @@ export default function DeleteNoteDialog({
   trigger,
   withTrigger = true,
 }: DialogProps & TriggerAppearance) {
+  const t = useTranslations("DeleteNoteButton");
+  const tServerCodes = useTranslations("serverCodes.NOTES");
+  const tCommon = useTranslations("Common.actions");
   const router = useRouter();
   const [dialogState, setDialogState] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -65,7 +56,7 @@ export default function DeleteNoteDialog({
   const toastAction =
     mode === "move-to-trash"
       ? {
-          label: "Undo",
+          label: tCommon('undo'),
           onClick: async () => restoreNoteAction(noteId),
         }
       : undefined;
@@ -75,7 +66,7 @@ export default function DeleteNoteDialog({
     const userId = session?.user.id;
 
     if (!userId) {
-      toast.error("You must be signed in to create a notebook.");
+      toast.error(t("toasts.errorAuth"));
       return;
     }
 
@@ -85,12 +76,12 @@ export default function DeleteNoteDialog({
       const action =
         mode === "move-to-trash" ? trashNoteAction : deleteNoteAction;
 
-      const { success, message } = await action(noteId);
+      const { success, code } = await action(noteId);
 
       if (success) {
-        toast.success(message, { action: toastAction });
+        toast.success(tServerCodes(code), { action: toastAction });
         if (callbackURL) router.push(callbackURL);
-      } else toast.error(message);
+      } else toast.error(tServerCodes(code));
     } catch (error) {
       toast.error((error as Error).message);
     } finally {
@@ -98,8 +89,6 @@ export default function DeleteNoteDialog({
       setIsOpen ? setIsOpen(false) : setDialogState(false);
     }
   };
-
-  const text = dialogTexts[mode];
 
   return (
     <AlertDialog
@@ -113,8 +102,8 @@ export default function DeleteNoteDialog({
             asIconHidden={trigger?.asIconHidden}
             asLabel={trigger?.asLabel}
             state={isDeleting}
-            processText={text.processText}
-            idleText="Delete"
+            processText={t(`${mode}.processText`)}
+            idleText={t("label")}
             icon={Trash2}
             variant="destructive"
             size="sm"
@@ -126,29 +115,23 @@ export default function DeleteNoteDialog({
 
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{text.title}</AlertDialogTitle>
+          <AlertDialogTitle>{t(`${mode}.title`)}</AlertDialogTitle>
           <AlertDialogDescription>
-            <AlertDialogDescriptionText mode={mode} />
+            {t(`${mode}.description`)}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel />
           <AlertDialogAction
             className={buttonVariants({ variant: "destructive" })}
             onClick={handleDeleteNote}
           >
-            <LoadingSwap isLoading={isDeleting}>{text.button}</LoadingSwap>
+            <LoadingSwap isLoading={isDeleting}>
+              {t(`${mode}.buttonText`)}
+            </LoadingSwap>
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
   );
 }
-
-const AlertDialogDescriptionText = ({ mode }: { mode: DeleteNoteAction }) => {
-  return mode === "move-to-trash" ? (
-    <>This will move note to Trash. You can restore it later.</>
-  ) : (
-    <>This will permanently delete your note. This action cannot be undone.</>
-  );
-};

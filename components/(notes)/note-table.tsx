@@ -2,10 +2,12 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { NoteCardDefault, NoteCardTrashed } from "@/types/types";
 import { setNoteFavoriteAction } from "@/server/notes";
+import { formatDate } from "@/helpers/format-date";
 import { ResponsiveGridTable } from "@/components/utils/responsive-grid-table";
 import { NotebookCardMode } from "@/components/(notebooks)/notebook-mode-policies";
 import FavoriteButton from "@/components/utils/favorite-button";
 import { NoteModePolicies } from "@/components/(notes)/note-mode-policies";
+import { useLocale, useTranslations } from "next-intl";
 const NoteOptions = dynamic(() => import("@/components/(notes)/note-options"), {
   ssr: false,
 });
@@ -21,32 +23,34 @@ export default function NoteTable({
   mode,
   showHeader = false,
 }: NotebookTableProps) {
+  const t = useTranslations("NoteTable");
+  const locale = useLocale();
   const policy = NoteModePolicies[mode];
   const isTrashMode = mode === "trash";
   const columns = [
     {
       key: "name",
-      label: "Note Name",
+      label: t("name"),
       className: `${isTrashMode ? "col-span-5 max-md:col-span-4" : "col-span-6"}`,
     },
     ...(isTrashMode
       ? [
           {
             key: "notebook",
-            label: "Notebook",
+            label: t("notebook"),
             className: "col-span-3",
           },
         ]
       : []),
     {
       key: "date",
-      label: isTrashMode ? "Deleted" : "Created",
+      label: isTrashMode ? t("date.deleted") : t("date.created"),
       className: `${isTrashMode ? "col-span-3" : "col-span-4"}`,
     },
     {
       key: "options",
       label: "",
-      className: `text-right ${isTrashMode ? "col-span-1 max-md:col-span-2" : "col-span-2"}`,
+      className: `text-end ${isTrashMode ? "col-span-1 max-md:col-span-2" : "col-span-2"}`,
     },
   ];
 
@@ -74,12 +78,12 @@ export default function NoteTable({
                 {policy.canView ? (
                   <Link
                     href={`/dashboard/notebook/${note.notebookId}/note/${note.id}`}
-                    className="truncate pr-3 hover:underline underline-offset-3"
+                    className="truncate pe-3 hover:underline underline-offset-3"
                   >
                     {note.title || "Untitled Note"}
                   </Link>
                 ) : (
-                  <span className="truncate pr-3">
+                  <span className="truncate pe-3">
                     {note.title || "Untitled Note"}
                   </span>
                 )}
@@ -90,7 +94,7 @@ export default function NoteTable({
             return isTrashMode ? (
               <Link
                 href={`/dashboard/notebook/${note.notebookId}`}
-                className="hover:underline underline-offset-3 truncate pr-3"
+                className="hover:underline underline-offset-3 truncate pe-3"
                 title={note.notebook?.name}
               >
                 {note.notebook?.name}
@@ -98,7 +102,11 @@ export default function NoteTable({
             ) : null;
 
           case "date":
-            return new Date(note.deletedAt ?? note.createdAt).toDateString();
+            return formatDate({
+              date: note.deletedAt ?? note.createdAt,
+              locale,
+              dateOnly: true,
+            });
 
           case "options":
             return (

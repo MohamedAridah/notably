@@ -11,12 +11,12 @@ const GridView = ({
   notebookMode?: NotebookCardMode;
   allowFilter?: boolean;
 }) => {
-  const cardWidth = allowFilter ? "22rem" : "21rem";
+  const cardWidth = allowFilter
+    ? "[repeat(1,1fr)] gap-6"
+    : "[repeat(auto-fill,_minmax(21rem,_1fr))] gap-4";
 
   return (
-    <div
-      className={`grid md:grid-cols-[repeat(auto-fill,_minmax(${cardWidth},_1fr))] gap-4`}
-    >
+    <div className={`grid md:grid-cols-${cardWidth}`}>
       {notebooks?.map((notebook) => (
         <Notebook
           key={notebook.id}

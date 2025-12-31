@@ -14,6 +14,7 @@ import {
 import { LucideIcon } from "lucide-react";
 import { LayoutDashboardIcon, Trash2Icon } from "lucide-react";
 import { is } from "zod/v4/locales";
+import { useTranslations } from "next-intl";
 
 export interface LinkType {
   href: string;
@@ -28,20 +29,21 @@ interface SidebarNavigationProps {
 const defaultLinks: LinkType[] = [
   {
     href: "/dashboard",
-    label: "Dashboard",
+    label: "dashboard",
     icon: LayoutDashboardIcon,
   },
-  { href: "/dashboard/trash", label: "Trash", icon: Trash2Icon },
+  { href: "/dashboard/trash", label: "trash", icon: Trash2Icon },
 ];
 
 export default function SidebarNavigation({
   navigationLinks = defaultLinks,
 }: SidebarNavigationProps) {
+  const t = useTranslations("Sidebar.navigation");
   const { isMobile, setOpenMobile } = useSidebar();
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+      <SidebarGroupLabel>{t("label")}</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
           {navigationLinks.map((link) => (
@@ -54,7 +56,7 @@ export default function SidebarNavigation({
             >
               <SidebarMenuButton
                 asChild
-                tooltip={link.label}
+                tooltip={t(link.label)}
                 onClick={() => {
                   if (!isMobile) return;
                   setOpenMobile(false);
@@ -62,7 +64,7 @@ export default function SidebarNavigation({
               >
                 <Link href={link.href}>
                   {createElement(link.icon, { className: "size-4" })}
-                  {link.label}
+                  {t(link.label)}
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

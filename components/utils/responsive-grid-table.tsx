@@ -89,10 +89,10 @@ export function ResponsiveGridTable({
             </div>
 
             {hasNestedNotes && allowFilter && (
-              <ul className="border-sidebar-border ms-8 flex flex-col gap-2 border-l ps-2.5 py-0.5 mb-5">
+              <ul className="border-sidebar-border ms-8 flex flex-col gap-2 border-s ps-2.5 py-0.5 mb-5">
                 {row.notes.map((note: NoteCardDefault & NoteCardTrashed) => (
                   <li className="relative ps-2" key={note.id}>
-                    <div className="absolute h-4 w-[19px] top-1/4 left-[-10px] border-b-2 border-b-sidebar-border rounded-bl-lg"></div>
+                    <div className="absolute h-4 w-[19px] top-1/4 start-[-10px] border-b-2 border-b-sidebar-border ltr:rounded-bl-lg rtl:rounded-br-lg"></div>
                     <NoteTable
                       notes={[
                         {

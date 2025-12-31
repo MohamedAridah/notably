@@ -21,6 +21,7 @@ import {
   NotebookModePolicies,
 } from "@/components/(notebooks)/notebook-mode-policies";
 import { ExternalLinkIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function Notebook({
   notebook,
@@ -31,6 +32,8 @@ export default function Notebook({
   mode?: NotebookCardMode;
   allowFilter?: boolean;
 }) {
+  const t = useTranslations("NotebookCard");
+  const tCommon = useTranslations("Common.actions");
   const policy = NotebookModePolicies[mode];
   const notebookURL = `/dashboard/notebook/${notebook.id}`;
   const hasNestedNotes = notebook.notes && notebook.notes.length > 0;
@@ -86,7 +89,7 @@ export default function Notebook({
           </CardTitle>
 
           <CardDescription>
-            <p>This notebook contains {notebook._count.notes} notes.</p>
+            <p>{t("description", { count: notebook._count.notes })}</p>
           </CardDescription>
         </CardHeader>
 
@@ -96,7 +99,7 @@ export default function Notebook({
               href={notebookURL}
               className={buttonVariants({ variant: "outline", size: "sm" })}
             >
-              <ExternalLinkIcon /> View
+              <ExternalLinkIcon /> {tCommon("view")}
             </Link>
           )}
 

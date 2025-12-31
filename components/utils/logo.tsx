@@ -13,6 +13,7 @@ export const Logo = ({
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={cn("text-foreground h-8 w-auto select-none", className)}
+      direction="ltr"
     >
       <g>
         <circle cx="20" cy="16" r="12" fill="transparent" stroke="none" />

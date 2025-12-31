@@ -1,30 +1,29 @@
+import React from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
-export const menuItems: Array<{ name: string; path: string }> = [
-  { name: "Features", path: "#features" },
-  // { name: "Solution", path: "#link" },
-  // { name: "Pricing", path: "#link" },
-  // { name: "About", path: "#link" },
-];
+interface NavLink {
+  name: string;
+  path: string;
+}
 
-type NavLinksProps = {
-  className?: string;
-};
+const menuItems: NavLink[] = [{ name: "features", path: "#features" }];
 
-export default function NavLinks({ className }: NavLinksProps) {
+export default function NavLinks({ ...props }: React.ComponentProps<"ul">) {
+  const t = useTranslations("NavLinks");
   if (menuItems.length === 0) {
     return null;
   }
 
   return (
-    <ul className={className}>
+    <ul className={props.className}>
       {menuItems.map((item, index) => (
         <li key={index}>
           <Link
             href={item.path}
-            className="text-muted-foreground hover:text-accent-foreground block duration-150"
+            className="text-muted-foreground hover:text-accent-foreground block duration-150 capitalize"
           >
-            <span>{item.name}</span>
+            <span>{t(item.name)}</span>
           </Link>
         </li>
       ))}

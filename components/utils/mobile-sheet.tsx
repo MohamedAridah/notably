@@ -5,27 +5,21 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import SocialLinks from "@/components/utils/social-links";
 import { Menu } from "lucide-react";
-import SocialLinks from "./social-links";
 
 interface MobileSheetProps {
   children: React.ReactNode;
-  state?: boolean;
 }
 
-export default function MobileSheet({
-  children,
-  state: menuState,
-}: MobileSheetProps) {
+export default function MobileSheet({ children }: MobileSheetProps) {
   return (
     <Sheet>
-      <SheetTrigger asChild>
-        <button
-          className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden"
-          aria-label={menuState == true ? "Close Menu" : "Open Menu"}
-        >
-          <Menu />
-        </button>
+      <SheetTrigger
+        className={`relative z-20 block cursor-pointer lg:hidden `}
+        aria-label="Open Menu"
+      >
+        <Menu />
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>

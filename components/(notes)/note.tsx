@@ -19,6 +19,7 @@ import {
   NoteModePolicies,
 } from "@/components/(notes)/note-mode-policies";
 import { ExternalLinkIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function NoteCard({
   note,
@@ -27,6 +28,8 @@ export default function NoteCard({
   note: NoteCardDefault & Partial<NoteCardTrashed>;
   mode?: NoteCardMode;
 }) {
+  const t = useTranslations("NoteCard");
+  const tCommon = useTranslations("Common.actions");
   const policy = NoteModePolicies[mode];
   const notebookURL = `/dashboard/notebook/${note.notebookId}`;
   const noteURL = `/dashboard/notebook/${note.notebookId}/note/${note.id}`;
@@ -84,20 +87,23 @@ export default function NoteCard({
         </CardTitle>
         <CardDescription>
           {mode === "default" ? (
-            "Click view to see note content."
+            t(`${mode}`)
           ) : (
             <>
               <p className="mt-1">
-                Categorized under{" "}
-                <Link
-                  href={notebookURL}
-                  className="font-semibold hover:underline underline-offset-3"
-                >
-                  {note.notebook?.name}
-                </Link>{" "}
-                notebook.
+                {t.rich("trash", {
+                  notebookName: note.notebook!.name,
+                  NotebookName: (chunks) => (
+                    <Link
+                      href={notebookURL}
+                      className="font-semibold hover:underline underline-offset-3"
+                    >
+                      {chunks}
+                    </Link>
+                  ),
+                })}
               </p>
-              <p className="mt-1">Restore note to view or edit its content.</p>
+              <p className="mt-1">{t("restore")}</p>
             </>
           )}
         </CardDescription>
@@ -109,7 +115,7 @@ export default function NoteCard({
             href={noteURL}
             className={buttonVariants({ variant: "outline", size: "sm" })}
           >
-            <ExternalLinkIcon /> View
+            <ExternalLinkIcon /> {tCommon("view")}
           </Link>
         )}
 

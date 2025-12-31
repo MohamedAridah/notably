@@ -1,5 +1,6 @@
 "use server";
 
+import { ServerErrorCodes } from "@/helpers/server-error-codes";
 import prisma from "@/lib/prisma";
 import { Notebook } from "@prisma/client";
 
@@ -8,7 +9,7 @@ import { Notebook } from "@prisma/client";
  */
 type NotebookWithNotesResponse = {
   success: boolean;
-  message?: string;
+  code?: string;
   notebooks:
     | (Notebook & {
         notes: Array<{ id: string; title: string | null; isFavorite: boolean }>;
@@ -19,7 +20,7 @@ type NotebookWithNotesResponse = {
 
 type TrashedNotebooksResponse = {
   success: boolean;
-  message?: string;
+  code?: string;
   notebooks: (Notebook & { _count: { notes: number } })[] | null;
 };
 
@@ -29,7 +30,7 @@ export async function getNotebooksFromDB(
   if (!userId) {
     return {
       success: false,
-      message: "Invalid user ID provided",
+      code: ServerErrorCodes.AUTH.INVALID_USER_ID,
       notebooks: null,
     };
   }
@@ -79,7 +80,7 @@ export async function getNotebooksFromDB(
     console.error("DB Error in getNotebooksFromDB:", error);
     return {
       success: false,
-      message: "Failed to fetch notebooks.",
+      code: ServerErrorCodes.NOTEBOOKS.ERROR_FETCH_NOTEBOOKS,
       notebooks: null,
     };
   }
@@ -96,7 +97,7 @@ export async function getTrashedNotebooksFromDB(
   if (!userId) {
     return {
       success: false,
-      message: "Invalid user ID provided",
+      code: ServerErrorCodes.AUTH.INVALID_USER_ID,
       notebooks: null,
     };
   }
@@ -135,7 +136,7 @@ export async function getTrashedNotebooksFromDB(
     console.error("DB Error in getTrashedNotebooksFromDB:", error);
     return {
       success: false,
-      message: "Failed to fetch trashed notebooks.",
+      code: ServerErrorCodes.NOTEBOOKS.ERROR_FETCH_TRASH_NOTEBOOKS,
       notebooks: null,
     };
   }
@@ -149,7 +150,7 @@ export async function getNotebookByIdFromDB(id: string, userId: string) {
   if (!id || !userId) {
     return {
       success: false,
-      message: "Invalid notebook ID or user ID",
+      code: ServerErrorCodes.NOTEBOOKS.ERROR_INVALID_ID,
       notebook: null,
     };
   }
@@ -194,7 +195,7 @@ export async function getNotebookByIdFromDB(id: string, userId: string) {
     if (!notebook) {
       return {
         success: false,
-        message: "Notebook not found",
+        code: ServerErrorCodes.NOTEBOOKS.ERROR_NOT_FOUND,
         notebook: null,
       };
     }
@@ -207,7 +208,7 @@ export async function getNotebookByIdFromDB(id: string, userId: string) {
     console.error("DB Error in getNotebookByIdFromDB:", error);
     return {
       success: false,
-      message: "Failed to fetch notebook.",
+      code: ServerErrorCodes.NOTEBOOKS.ERROR_FETCH_NOTEBOOK,
       notebook: null,
     };
   }
@@ -223,14 +224,14 @@ export const createNotebookInDB = async (
   if (!name || name.trim().length === 0) {
     return {
       success: false,
-      message: "Notebook name is required and cannot be empty",
+      code: ServerErrorCodes.NOTEBOOKS.ERROR_NOT_FOUND,
     };
   }
 
   if (!userId) {
     return {
       success: false,
-      message: "Invalid user ID provided",
+      code: ServerErrorCodes.AUTH.INVALID_USER_ID,
     };
   }
 
@@ -247,14 +248,14 @@ export const createNotebookInDB = async (
     return {
       success: true,
       notebookId: notebook.id,
-      message: "Notebook created successfully",
+      code: ServerErrorCodes.NOTEBOOKS.SUCCESS_CREATED,
     };
   } catch (error) {
     console.error("DB Error in createNotebook:", error);
 
     return {
       success: false,
-      message: "Failed to create notebook",
+      code: ServerErrorCodes.NOTEBOOKS.ERROR_CREATION,
     };
   }
 };
@@ -266,7 +267,7 @@ export const createDefaultNotebook = async (userId: string) => {
   if (!userId) {
     return {
       success: false,
-      message: "Invalid user ID provided",
+      code: ServerErrorCodes.AUTH.INVALID_USER_ID,
     };
   }
 
@@ -283,13 +284,13 @@ export const createDefaultNotebook = async (userId: string) => {
 
     return {
       success: true,
-      message: "Quick Notes notebook created",
+      code: ServerErrorCodes.NOTEBOOKS.SUCCESS_QUICK_CREATED,
     };
   } catch (error) {
     console.error("DB Error in createDefaultNotebook:", error);
     return {
       success: false,
-      message: "Failed to create Quick Notes notebook",
+      code: ServerErrorCodes.NOTEBOOKS.ERROR_QUICK_CREATION,
     };
   }
 };
@@ -305,14 +306,14 @@ export const updateNotebookInDB = async (
   if (!id) {
     return {
       success: false,
-      message: "Invalid notebook ID provided",
+      code: ServerErrorCodes.NOTEBOOKS.ERROR_INVALID_ID,
     };
   }
 
   if (!userId) {
     return {
       success: false,
-      message: "Invalid user ID provided",
+      code: ServerErrorCodes.AUTH.INVALID_USER_ID,
     };
   }
 
@@ -329,14 +330,14 @@ export const updateNotebookInDB = async (
 
     return {
       success: true,
-      message: "Notebook updated successfully",
+      code: ServerErrorCodes.NOTEBOOKS.SUCCESS_UPDATED,
     };
   } catch (error) {
     console.error("DB Error in updateNotebookInDB:", error);
 
     return {
       success: false,
-      message: "Failed to update notebook",
+      code: ServerErrorCodes.NOTEBOOKS.ERROR_UPDATE,
     };
   }
 };
@@ -354,12 +355,12 @@ export async function updateNotebookDeletedAt(
   if (!notebookId) {
     return {
       success: false,
-      message: "Invalid notebook ID provided",
+      code: ServerErrorCodes.NOTEBOOKS.ERROR_INVALID_ID,
     };
   }
 
   if (!userId) {
-    return { success: false, message: "Invalid user ID provided" };
+    return { success: false, code: ServerErrorCodes.AUTH.INVALID_USER_ID };
   }
 
   console.log("DB Query: updateNotebookDeletedAt:", { userId });
@@ -377,21 +378,23 @@ export async function updateNotebookDeletedAt(
     ]);
 
     if (notebookResult.count === 0) {
-      return { success: false, message: "Notebook not found or unauthorized." };
+      return { success: false, code: ServerErrorCodes.NOTEBOOKS.ERROR_EMPTY };
     }
 
     return {
       success: true,
-      message: deletedAt
-        ? "Notebook moved to trash successfully."
-        : "Notebook restored successfully.",
+      code: deletedAt
+        ? ServerErrorCodes.NOTEBOOKS.SUCCESS_MOVE_TO_TRASH
+        : ServerErrorCodes.NOTEBOOKS.SUCCESS_RESTORE,
     };
   } catch (error) {
     console.error("DB Error in updateNotebookDeletedAt:", error);
 
     return {
       success: false,
-      message: `Failed to ${deletedAt ? "trash" : "restore"} notebook.`,
+      code: deletedAt
+        ? ServerErrorCodes.NOTEBOOKS.ERROR_TRASH
+        : ServerErrorCodes.NOTEBOOKS.ERROR_RESTORE,
     };
   }
 }
@@ -403,14 +406,14 @@ export const deleteNotebookFromDB = async (id: string, userId: string) => {
   if (!id) {
     return {
       success: false,
-      message: "Invalid notebook ID provided",
+      code: ServerErrorCodes.NOTEBOOKS.ERROR_INVALID_ID,
     };
   }
 
   if (!userId) {
     return {
       success: false,
-      message: "Invalid user ID provided",
+      code: ServerErrorCodes.AUTH.INVALID_USER_ID,
     };
   }
   console.log("DB Query: deleteNotebookFromDB:", { userId });
@@ -424,14 +427,14 @@ export const deleteNotebookFromDB = async (id: string, userId: string) => {
 
     return {
       success: true,
-      message: "Notebook deleted successfully",
+      code: ServerErrorCodes.NOTEBOOKS.SUCCESS_DELETE,
     };
   } catch (error) {
     console.error("DB Error in deleteNotebokkInDB:", error);
 
     return {
       success: false,
-      message: "Failed to delete notebook",
+      code: ServerErrorCodes.NOTEBOOKS.ERROR_DELETE,
     };
   }
 };
@@ -447,14 +450,14 @@ export const setNotebookFavoriteInDB = async (
   if (!id) {
     return {
       success: false,
-      message: "Invalid notebook ID provided",
+      code: ServerErrorCodes.NOTEBOOKS.ERROR_INVALID_ID,
     };
   }
 
   if (!userId) {
     return {
       success: false,
-      message: "Invalid user ID provided",
+      code: ServerErrorCodes.AUTH.INVALID_USER_ID,
     };
   }
 
@@ -468,16 +471,20 @@ export const setNotebookFavoriteInDB = async (
 
     return {
       success: true,
-      message: isFavorite
-        ? "Notebook added to your favorites successfully."
-        : "Notebook removed from your favorites successfully.",
+      type: "NOTEBOOKS",
+      code: isFavorite
+        ? ServerErrorCodes.NOTEBOOKS.SUCCESS_ADD_TO_FAVORITE
+        : ServerErrorCodes.NOTEBOOKS.SUCCESS_REMOVE_FROM_FAVORITE,
     };
   } catch (error) {
     console.error("Error in setNotebookFavoriteInDB:", error);
 
     return {
       success: false,
-      message: `Failed to ${isFavorite ? "add" : "remove"} notebook from favorites`,
+      type: "NOTEBOOKS",
+      code: isFavorite
+        ? ServerErrorCodes.NOTEBOOKS.ERROR_ADD_TO_FAVORITE
+        : ServerErrorCodes.NOTEBOOKS.ERROR_REMOVE_FROM_FAVORITE,
     };
   }
 };

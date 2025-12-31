@@ -1,4 +1,4 @@
-import DashboardHeader from "@/app/dashboard/_components/dashboard-header";
+import DashboardHeader from "@/app/[locale]/dashboard/_components/dashboard-header";
 
 interface PageWrapperProps {
   children: React.ReactNode;

@@ -5,6 +5,8 @@ import Link from "next/link";
 import { type User } from "better-auth";
 import { authClient } from "@/lib/auth-client";
 import useLogout from "@/hooks/use-logout";
+import { useLocale, useTranslations } from "next-intl";
+import { isLocaleRtl } from "@/i18n/routing";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -28,26 +30,39 @@ import {
   Loader2,
   LogOut,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 type UserType = {
   user: Pick<User, "name" | "email" | "image">;
 };
-type UserLinkType = { href: string; label: string; icon: React.ReactNode };
 
-export function UserForNav({ links }: { links?: UserLinkType[] }) {
+interface UserMenuLink {
+  href: string;
+  label: string;
+  icon: React.ReactNode;
+}
+
+const DefaulytUserMenuLinks: UserMenuLink[] = [
+  {
+    href: "/dashboard",
+    label: "dashboard",
+    icon: <LayoutDashboardIcon />,
+  },
+  {
+    href: "/settings/profile",
+    label: "account",
+    icon: <BadgeCheck />,
+  },
+];
+
+export function UserForNav({ links }: { links?: UserMenuLink[] }) {
   const { isMobile } = useSidebar();
   const { data: session, isPending } = authClient.useSession();
+  const locale = useLocale();
+  const isRtl = isLocaleRtl(locale);
 
   if (isPending) {
-    return (
-      <div className="flex items-center space-x-2">
-        <Skeleton className="size-10 rounded-full" />
-        <div className="space-y-2">
-          <Skeleton className="h-3 w-[100px]" />
-          <Skeleton className="h-3 w-[150px]" />
-        </div>
-      </div>
-    );
+    return <UserForNavSkeleton />;
   }
 
   if (!session?.session.userId) {
@@ -59,7 +74,7 @@ export function UserForNav({ links }: { links?: UserLinkType[] }) {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <DropdownMenu>
+        <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
@@ -73,13 +88,13 @@ export function UserForNav({ links }: { links?: UserLinkType[] }) {
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
             side={isMobile ? "bottom" : "right"}
-            align="end"
+            align={isRtl ? "start" : "end"}
             sideOffset={4}
           >
             <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+              <div className="flex rtl:flex-row-reverse items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <UserAvarat user={user} />
-                <UserInfo user={user} />
+                <UserInfo user={user} className="text-end"/>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
@@ -92,8 +107,16 @@ export function UserForNav({ links }: { links?: UserLinkType[] }) {
   );
 }
 
-export function UserAsIcon({ links }: { links?: UserLinkType[] }) {
+export function UserAsIcon({
+  links,
+  asModal = false,
+}: {
+  links?: UserMenuLink[];
+  asModal?: boolean;
+}) {
   const { data: session, isPending } = authClient.useSession();
+  const locale = useLocale();
+  const isRtl = isLocaleRtl(locale);
 
   if (isPending) {
     return <Skeleton className="size-8 rounded-full" />;
@@ -106,13 +129,13 @@ export function UserAsIcon({ links }: { links?: UserLinkType[] }) {
   const user = session.user;
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={asModal}>
       <DropdownMenuTrigger className="hover:cursor-pointer">
         <UserAvarat user={user} />
       </DropdownMenuTrigger>
       <DropdownMenuContent
         className="w-(--radix-dropdown-menu-trigger-width) min-w-40 rounded-lg"
-        align="end"
+        align={isRtl ? "start" : "end"}
         sideOffset={4}
       >
         <UserMenu links={links} />
@@ -121,6 +144,51 @@ export function UserAsIcon({ links }: { links?: UserLinkType[] }) {
   );
 }
 
+/*
+  User menu component.
+  return user menu items.
+*/
+const UserMenu = ({ links }: { links?: UserMenuLink[] }) => {
+  const { handleLogout, isLoading: isLoggingout } = useLogout();
+  const t = useTranslations("UserMenu");
+
+  const hasExtraLinks = links && links.length > 0;
+
+  return (
+    <>
+      {hasExtraLinks &&
+        links.map((link) => (
+          <DropdownMenuItem key={link.href} asChild>
+            <Link href={link.href} className="rtl:flex-row-reverse">
+              {link.icon}
+              {t(link.label)}
+            </Link>
+          </DropdownMenuItem>
+        ))}
+
+      {DefaulytUserMenuLinks.map((link) => (
+        <DropdownMenuItem key={link.href} asChild>
+          <Link href={link.href} className="rtl:flex-row-reverse">
+            {link.icon}
+            {t(link.label)}
+          </Link>
+        </DropdownMenuItem>
+      ))}
+
+      <DropdownMenuSeparator />
+
+      <DropdownMenuItem onClick={handleLogout} className="rtl:flex-row-reverse">
+        {isLoggingout ? <Loader2 className="animate-spin" /> : <LogOut />}
+        {t("logout")}
+      </DropdownMenuItem>
+    </>
+  );
+};
+
+/*
+  User Avatar component.
+  return user's Image or First Letter of name.
+*/
 const UserAvarat = ({ user }: UserType) => {
   return (
     <Avatar className="h-8 w-8 rounded-lg">
@@ -132,49 +200,39 @@ const UserAvarat = ({ user }: UserType) => {
   );
 };
 
-const UserInfo = ({ user }: UserType) => {
+/*
+  User information component.
+  return user's name and email.
+*/
+const UserInfo = ({
+  user,
+  ...props
+}: React.ComponentProps<"div"> & UserType) => {
   return (
-    <div className="grid flex-1 text-left text-sm leading-tight">
+    <div
+      className={cn(
+        "grid flex-1 text-start text-sm leading-tight",
+        props.className
+      )}
+    >
       <span className="truncate font-medium">{user.name}</span>
       <span className="truncate text-xs">{user.email}</span>
     </div>
   );
 };
 
-const UserMenu = ({ links }: { links?: UserLinkType[] }) => {
-  const { handleLogout, isLoading: isLoggingout } = useLogout();
-
+/*
+  User skeleton component.
+  renders skeleton for user avatar and name.
+*/
+const UserForNavSkeleton = () => {
   return (
-    <>
-      {links &&
-        links.length > 0 &&
-        links.map((link) => (
-          <DropdownMenuItem asChild key={link.href}>
-            <Link href={link.href}>
-              {link.icon}
-              {link.label}
-            </Link>
-          </DropdownMenuItem>
-        ))}
-      <DropdownMenuItem asChild>
-        <Link href="/dashboard">
-          <LayoutDashboardIcon />
-          Dashboard
-        </Link>
-      </DropdownMenuItem>
-      <DropdownMenuItem asChild>
-        <Link href="/settings/profile">
-          <BadgeCheck />
-          Account
-        </Link>
-      </DropdownMenuItem>
-
-      <DropdownMenuSeparator />
-
-      <DropdownMenuItem onClick={handleLogout}>
-        {isLoggingout ? <Loader2 className="animate-spin" /> : <LogOut />}
-        Log out
-      </DropdownMenuItem>
-    </>
+    <div className="flex items-center space-x-2">
+      <Skeleton className="size-10 rounded-full" />
+      <div className="space-y-2">
+        <Skeleton className="h-3 w-[100px]" />
+        <Skeleton className="h-3 w-[150px]" />
+      </div>
+    </div>
   );
 };
