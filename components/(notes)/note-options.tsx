@@ -3,6 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { setNoteFavoriteAction } from "@/server/notes";
+import { copyToClipboard } from "@/helpers/copy-to-clipboard";
+import {
+  NoteCardMode,
+  NoteModePolicies,
+} from "@/components/(notes)/note-mode-policies";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,19 +20,19 @@ import EditNoteDialog from "@/components/(notes)/edit-note-button";
 import DeleteNoteDialog from "@/components/(notes)/delete-note-button";
 import IconMenu from "@/components/utils/icon-menu";
 import FavoriteButton from "@/components/utils/favorite-button";
-import MoveNoteDialog from "./move-note-button";
+import MoveNoteDialog from "@/components/(notes)/move-note-button";
+import RestoreNoteDialog from "@/components/(notes)/restore-note-button";
+import DuplicateNoteButton from "@/components/(notes)/duplicate-note-button";
+import { useTranslations } from "next-intl";
 import {
   MoreHorizontalIcon,
-  ExternalLinkIcon,
+  MoveUpRightIcon,
   PenSquareIcon,
   Trash2,
-  ReplaceIcon,
-  RotateCwIcon,
+  Undo2,
+  CornerUpRightIcon,
+  LinkIcon,
 } from "lucide-react";
-import { setNoteFavoriteAction } from "@/server/notes";
-import { NoteCardMode, NoteModePolicies } from "./note-mode-policies";
-import RestoreNoteDialog from "./restore-note-button";
-import { useTranslations } from "next-intl";
 
 interface NoteOptionsProps {
   note: {
@@ -41,18 +47,16 @@ interface NoteOptionsProps {
 
 interface NoteOptionsProps extends React.ComponentProps<"div"> {
   note: NoteOptionsProps["note"];
-  alignStart?: boolean;
   mode?: NoteCardMode;
 }
 
 export default function NoteOptions({
   note,
-  alignStart = false,
   mode = "default",
   ...props
 }: NoteOptionsProps) {
   const t = useTranslations("NoteOptionsMenu");
-  const actions = useTranslations("Common.actions");
+  const tActions = useTranslations("Common.actions");
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isMoveDialogOpen, setIsMoveDialogOpen] = useState(false);
@@ -69,17 +73,38 @@ export default function NoteOptions({
           <MoreHorizontalIcon className="size-4" />
           <span className="sr-only">{t("triggerAriaLabel")}</span>
         </DropdownMenuTrigger>
-        <DropdownMenuContent
-          className={`pointer-events-auto ${alignStart ? "me-3" : ""}`}
-        >
+        <DropdownMenuContent className={`pointer-events-auto min-w-50`}>
           {policy.canView && (
             <DropdownMenuItem>
               <Link href={note.note_url} className="w-full">
                 <IconMenu
-                  text={actions("details")}
-                  icon={<ExternalLinkIcon className="size-4" />}
+                  text={tActions("details")}
+                  icon={<MoveUpRightIcon className="size-4" />}
                 />
               </Link>
+            </DropdownMenuItem>
+          )}
+
+          {policy.canCopyLink && (
+            <DropdownMenuItem>
+              <IconMenu
+                text={tActions("copy-link")}
+                icon={<LinkIcon className="size-4" />}
+                onClick={async () =>
+                  await copyToClipboard(
+                    process.env.NEXT_PUBLIC_BASE_URL + note.note_url
+                  )
+                }
+              />
+            </DropdownMenuItem>
+          )}
+
+          {policy.canDuplicate && (
+            <DropdownMenuItem>
+              <DuplicateNoteButton
+                noteId={note.noteId}
+                notebook_url={note.notebook_url}
+              />
             </DropdownMenuItem>
           )}
 
@@ -98,7 +123,7 @@ export default function NoteOptions({
           {policy.canEdit && (
             <DropdownMenuItem onSelect={() => setIsEditDialogOpen(true)}>
               <IconMenu
-                text={actions("update")}
+                text={tActions("rename")}
                 icon={<PenSquareIcon className="size-4" />}
               />
             </DropdownMenuItem>
@@ -107,8 +132,8 @@ export default function NoteOptions({
           {policy.canEdit && (
             <DropdownMenuItem onSelect={() => setIsMoveDialogOpen(true)}>
               <IconMenu
-                text={actions("move__to__notebook")}
-                icon={<ReplaceIcon className="size-4" />}
+                text={tActions("move__to__notebook")}
+                icon={<CornerUpRightIcon className="size-4" />}
               />
             </DropdownMenuItem>
           )}
@@ -116,8 +141,8 @@ export default function NoteOptions({
           {policy.canRestore && (
             <DropdownMenuItem onSelect={() => setIsRestoreDialogOpen(true)}>
               <IconMenu
-                text={actions("restore")}
-                icon={<RotateCwIcon className="size-4" />}
+                text={tActions("restore")}
+                icon={<Undo2 className="size-4" />}
               />
             </DropdownMenuItem>
           )}
@@ -127,7 +152,7 @@ export default function NoteOptions({
           <DropdownMenuItem onSelect={() => setIsDeleteDialogOpen(true)}>
             <IconMenu
               className="text-red-500"
-              text={actions("delete")}
+              text={tActions("delete")}
               icon={<Trash2 className="size-4 text-red-500" />}
             />
           </DropdownMenuItem>

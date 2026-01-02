@@ -24,7 +24,7 @@ export default function DeleteEmptyNotes() {
       toast.promise(deleteEmptyNotesAction, {
         loading: t("toasts.loading"),
         success: ({ code }) => {
-          router.push("/dashboard");
+          // router.push("/dashboard");
           return { message: tServerCode(code) };
         },
         error: ({ code }) => {

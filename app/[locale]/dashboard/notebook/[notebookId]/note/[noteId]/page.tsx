@@ -8,8 +8,8 @@ import DeleteNoteDialog from "@/components/(notes)/delete-note-button";
 import EditNoteDialog from "@/components/(notes)/edit-note-button";
 import DocumentDetails from "@/app/[locale]/dashboard/_components/document-details";
 import FavoriteButton from "@/components/utils/favorite-button";
-import { type JSONContent } from "@tiptap/react";
 import NoteOptions from "@/components/(notes)/note-options";
+import { Button } from "@/components/ui/button";
 import { getTranslations } from "next-intl/server";
 import { Loader2, ShieldAlert } from "lucide-react";
 
@@ -119,16 +119,18 @@ export default async function NotePage({ params }: { params: Params }) {
             </div>
           </div>
           <div className="flex -items-center gap-3">
-            <NoteOptions
-              note={{
-                note_url: `/dashboard/notebook/${note?.notebookId}/note/${note?.id}`,
-                notebook_url: `/dashboard/notebook/${note?.notebookId}`,
-                notebookId: note.notebookId as string,
-                noteId: note.id,
-                isFavorite: note.isFavorite,
-                noteTitle: note.title,
-              }}
-            />
+            <Button variant="ghost" size="icon" asChild>
+              <NoteOptions
+                note={{
+                  note_url: `/dashboard/notebook/${note?.notebookId}/note/${note?.id}`,
+                  notebook_url: `/dashboard/notebook/${note?.notebookId}`,
+                  notebookId: note.notebookId as string,
+                  noteId: note.id,
+                  isFavorite: note.isFavorite,
+                  noteTitle: note.title,
+                }}
+              />
+            </Button>
             <DeleteNoteDialog
               noteId={noteId}
               callbackURL={`/dashboard/notebook/${note.notebookId}`}

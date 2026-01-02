@@ -1,6 +1,7 @@
-import { HeroHeader } from "@/components/header";
 import Footer from "@/components/footer";
 import SettingsSidebar from "./_components/settings-sidebar";
+import SettingsHeader from "./_components/settings-header";
+import ScrollToTop from "@/components/utils/scroll-top-button";
 
 export const metadata = {
   title: {
@@ -14,10 +15,11 @@ export const metadata = {
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <HeroHeader className="static" />
+      <SettingsHeader />
       <main className="max-w-5xl mx-auto p-4 sm:p-6 flex flex-col sm:flex-row gap-3">
         <SettingsSidebar />
         <section className="sm:flex-9/12 w-full">{children}</section>
+        <ScrollToTop />
       </main>
       <Footer />
     </>

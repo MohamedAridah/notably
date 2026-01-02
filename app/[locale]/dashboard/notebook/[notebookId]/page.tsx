@@ -159,13 +159,15 @@ export default async function NotebookPage({ params }: { params: Params }) {
         </div>
 
         <div className="flex -items-center gap-3">
-          <NotebookOptions
-            notebook={{
-              id: notebook.id,
-              isFavorite: notebook.isFavorite,
-              name: notebook.name,
-            }}
-          />
+          <Button variant="ghost" size="icon" asChild>
+            <NotebookOptions
+              notebook={{
+                id: notebook.id,
+                isFavorite: notebook.isFavorite,
+                name: notebook.name,
+              }}
+            />
+          </Button>
           <CreateNoteDialog notebookId={notebookId} />
         </div>
       </div>

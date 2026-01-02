@@ -44,7 +44,7 @@ export default async function SettingsSidebar() {
         {LINKS.map((link) => (
           <li
             key={link.name}
-            className="focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring hover:bg-input/30 text-muted-foreground rounded-md px-2.5 py-1.5 text-sm font-medium whitespace-nowrap transition-[color] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4.5 flex-1 max-sm:justify-centerhover:cursor-pointer "
+            className="focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring hover:bg-input/30 text-muted-foreground rounded-md px-2.5 py-1.5 text-sm font-medium whitespace-nowrap transition-[color] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4.5 flex-1 max-sm:justify-centerhover:cursor-pointer"
           >
             <Link href={link.href} className="flex items-center gap-1.5 ">
               <link.icon />

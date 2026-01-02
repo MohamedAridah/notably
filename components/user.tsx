@@ -36,7 +36,7 @@ type UserType = {
   user: Pick<User, "name" | "email" | "image">;
 };
 
-interface UserMenuLink {
+export interface UserMenuLink {
   href: string;
   label: string;
   icon: React.ReactNode;
@@ -94,7 +94,7 @@ export function UserForNav({ links }: { links?: UserMenuLink[] }) {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex rtl:flex-row-reverse items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <UserAvarat user={user} />
-                <UserInfo user={user} className="text-end"/>
+                <UserInfo user={user} className="text-end" />
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
@@ -159,7 +159,10 @@ const UserMenu = ({ links }: { links?: UserMenuLink[] }) => {
       {hasExtraLinks &&
         links.map((link) => (
           <DropdownMenuItem key={link.href} asChild>
-            <Link href={link.href} className="rtl:flex-row-reverse">
+            <Link
+              href={link.href}
+              className="rtl:flex-row-reverse hover:cursor-pointer"
+            >
               {link.icon}
               {t(link.label)}
             </Link>
@@ -168,7 +171,10 @@ const UserMenu = ({ links }: { links?: UserMenuLink[] }) => {
 
       {DefaulytUserMenuLinks.map((link) => (
         <DropdownMenuItem key={link.href} asChild>
-          <Link href={link.href} className="rtl:flex-row-reverse">
+          <Link
+            href={link.href}
+            className="rtl:flex-row-reverse hover:cursor-pointer"
+          >
             {link.icon}
             {t(link.label)}
           </Link>
@@ -177,7 +183,10 @@ const UserMenu = ({ links }: { links?: UserMenuLink[] }) => {
 
       <DropdownMenuSeparator />
 
-      <DropdownMenuItem onClick={handleLogout} className="rtl:flex-row-reverse">
+      <DropdownMenuItem
+        onClick={handleLogout}
+        className="rtl:flex-row-reverse hover:cursor-pointer"
+      >
         {isLoggingout ? <Loader2 className="animate-spin" /> : <LogOut />}
         {t("logout")}
       </DropdownMenuItem>

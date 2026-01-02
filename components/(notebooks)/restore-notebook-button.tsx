@@ -20,7 +20,7 @@ import DialogTriggerButton, {
 } from "@/components/utils/dialog-trigger-button";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { RotateCwIcon } from "lucide-react";
+import { Undo2 } from "lucide-react";
 
 interface RestoreNotebookDialogProps {
   notebookId: string;
@@ -78,7 +78,7 @@ export default function RestoreNotebookDialog({
             state={isRestoring}
             idleText={t("labelShort")}
             processText={t("labelProcessing")}
-            icon={RotateCwIcon}
+            icon={Undo2}
             className="group-hover/notebook-buttons:opacity-100"
           />
         </AlertDialogTrigger>

@@ -56,7 +56,7 @@ export const auth = betterAuth({
             subject: "Welcome to Notably!",
             template: WelcomeEmail({
               username: user.name,
-              homeUrl: `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL}`,
+              homeUrl: `${process.env.NEXT_PUBLIC_BASE_URL}`,
             }),
           });
         }

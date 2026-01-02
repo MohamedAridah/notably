@@ -20,7 +20,7 @@ import {
   NotebookCardMode,
   NotebookModePolicies,
 } from "@/components/(notebooks)/notebook-mode-policies";
-import { ExternalLinkIcon } from "lucide-react";
+import { SquareArrowOutUpRightIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 export default function Notebook({
@@ -78,18 +78,17 @@ export default function Notebook({
             <div className="flex items-center gap-2">
               <Badge className="tabular-nums">{notebook._count.notes}</Badge>
 
-              {policy.canOptions && (
-                <NotebookOptions
-                  notebook={notebook}
-                  alignStart
-                  className={buttonVariants({ variant: "ghost", size: "sm" })}
-                />
-              )}
+              <NotebookOptions
+                mode={mode}
+                notebook={notebook}
+                className={buttonVariants({ variant: "ghost", size: "sm" })}
+              />
             </div>
           </CardTitle>
 
           <CardDescription>
             <p>{t("description", { count: notebook._count.notes })}</p>
+            {mode === "trash" && <p className="mt-1">{t("restore")}</p>}
           </CardDescription>
         </CardHeader>
 
@@ -99,7 +98,7 @@ export default function Notebook({
               href={notebookURL}
               className={buttonVariants({ variant: "outline", size: "sm" })}
             >
-              <ExternalLinkIcon /> {tCommon("view")}
+              <SquareArrowOutUpRightIcon /> {tCommon("view")}
             </Link>
           )}
 

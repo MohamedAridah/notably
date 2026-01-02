@@ -12,11 +12,14 @@ import MobileSheet from "@/components/utils/mobile-sheet";
 import NavLinks from "@/components/utils/nav-links";
 import AuthButtons from "@/components/utils/auth-buttons";
 import { SheetFooter } from "@/components/ui/sheet";
-import { UserAsIcon } from "@/components/user";
+import { UserAsIcon, UserMenuLink } from "@/components/user";
 import LocaleSwitcher from "@/components/utils/locale-switcher";
 import { Loader2 } from "lucide-react";
 
-export const HeroHeader = ({ ...props }: React.ComponentProps<"nav">) => {
+export const HeroHeader = ({
+  menuLinks,
+  ...props
+}: React.ComponentProps<"nav"> & { menuLinks?: UserMenuLink[] }) => {
   const { data: session, isPending } = authClient.useSession();
   const authenticated = session?.session?.userId;
 
@@ -66,7 +69,7 @@ export const HeroHeader = ({ ...props }: React.ComponentProps<"nav">) => {
               {isPending ? (
                 <Loader2 className="animate-spin size-4 text-foreground" />
               ) : authenticated ? (
-                <UserAsIcon />
+                <UserAsIcon links={menuLinks} />
               ) : (
                 <div className="hidden lg:block">
                   <AuthButtons />
@@ -76,7 +79,7 @@ export const HeroHeader = ({ ...props }: React.ComponentProps<"nav">) => {
               <MobileSheet>
                 <NavLinks className="flex flex-col gap-4 p-4 pt-0 font-medium" />
                 <SheetFooter>
-                  {authenticated ? <UserAsIcon asModal/> : <AuthButtons />}
+                  {authenticated ? <UserAsIcon asModal /> : <AuthButtons />}
                 </SheetFooter>
               </MobileSheet>
             </div>

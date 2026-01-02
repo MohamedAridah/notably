@@ -18,7 +18,7 @@ import {
   NoteCardMode,
   NoteModePolicies,
 } from "@/components/(notes)/note-mode-policies";
-import { ExternalLinkIcon } from "lucide-react";
+import { SquareArrowOutUpRightIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 export default function NoteCard({
@@ -70,20 +70,18 @@ export default function NoteCard({
             )}
           </div>
 
-          {policy.canOptions && (
-            <NoteOptions
-              note={{
-                notebookId: note.notebookId as string,
-                noteId: note.id,
-                noteTitle: note.title || "Untitled Note",
-                note_url: noteURL,
-                notebook_url: notebookURL,
-                isFavorite: note.isFavorite,
-              }}
-              alignStart={true}
-              className={buttonVariants({ variant: "ghost", size: "sm" })}
-            />
-          )}
+          <NoteOptions
+            mode={mode}
+            note={{
+              notebookId: note.notebookId as string,
+              noteId: note.id,
+              noteTitle: note.title || "Untitled Note",
+              note_url: noteURL,
+              notebook_url: notebookURL,
+              isFavorite: note.isFavorite,
+            }}
+            className={buttonVariants({ variant: "ghost", size: "sm" })}
+          />
         </CardTitle>
         <CardDescription>
           {mode === "default" ? (
@@ -115,7 +113,7 @@ export default function NoteCard({
             href={noteURL}
             className={buttonVariants({ variant: "outline", size: "sm" })}
           >
-            <ExternalLinkIcon /> {tCommon("view")}
+            <SquareArrowOutUpRightIcon /> {tCommon("view")}
           </Link>
         )}
 

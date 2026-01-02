@@ -44,7 +44,8 @@
     }
   },
   "NotebookCard": {
-    "description": "هذا الدفتر يحتوى على {count} ملاحظة."
+    "description": "هذا الدفتر يحتوى على {count} ملاحظة.",
+    "restore": "قم باستعادة الدفتر لعرض تفاصيله وملاحظاته."
   },
   "NotebookTable": {
     "name": "اسم الدفتر",
@@ -232,6 +233,9 @@
     "label": "اختر اللغة"
   },
   "NoteOptionsMenu": {
+    "toasts": {
+      "duplicate-loading": "جار نسخ الملاجظة..."
+    },
     "triggerAriaLabel": "فتح قائمة خيارات الملاحظة"
   },
   "NotebookOptionsMenu": {
@@ -239,6 +243,8 @@
   },
   "FavoriteButton": {
     "toasts": {
+      "adding": "جارٍ الاضافة الى المفضلة...",
+      "removing": "جارٍ الازالة من المفضلة...",
       "disabled": "لا يمكن استخدام المفضلة أثناء وجود الدفتر أو الملاحظة في سلة المهملات. يرجى الاستعادة أولاً."
     },
     "labels": {
@@ -249,10 +255,13 @@
   "Common": {
     "something__went__wrong": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.",
     "actions": {
-      "details": "التفاصيل",
+      "details": "فتح في نافذة جديدة",
       "view": "عرض",
       "update": "تحديث",
-      "move__to__notebook": "نقل إلى الدفتر",
+      "rename": "إعادة تسمية",
+      "move__to__notebook": "نقل إلى",
+      "duplicate": "نسخ",
+      "copy-link": "نسخ الرابط",
       "restore": "استعادة",
       "delete": "حذف",
       "tryAgain": "المحاولة مرة اخرى",
@@ -332,6 +341,7 @@
       "SUCCESS_NOTE_UPDATED": "تم تحديث الملاحظة بنجاح",
       "SUCCESS_MOVE_NOTE_TO_TRASH": "تم نقل الملاحظة إلى سلة المهملات بنجاح",
       "SUCCESS_RESTORE_NOTE": "تمت استعادة الملاحظة بنجاح",
+      "SUCCESS_DUPLICATE_NOTE": "تم نسخ الملاحظة بنجاح",
       "SUCCESS_DELETE_NOTE": "تم حذف الملاحظة بنجاح",
       "SUCCESS_DELETE_EMPTY_NOTES": "تم حذف الملاحظات الفارغة بنجاح",
       "SUCCESS_ADD_NOTE_TO_FAVORITE": "تمت إضافة الملاحظة إلى المفضلة بنجاح",
@@ -340,10 +350,11 @@
       "ERROR_FETCH_NOTE": "فشل تحميل الملاحظة",
       "ERROR_NOTE_CREATION": "فشل إنشاء الملاحظة",
       "ERROR_NOTE_UPDATE": "فشل تحديث الملاحظة",
-      "ERROR_NOTE_TRASH": "فشلت استعادة الملاحظة",
+      "ERROR_NOTE_TRASH": "فشل نقل الملاحظة إلى سلة المهملات",
       "ERROR_DELETE_NOTE": "فشل حذف الملاحظة",
+      "ERROR_DUPLICATE_NOTE": "فشل نسخ الملاحظة",
       "ERROR_DELETE_EMPTY_NOTES": "فشل حذف الملاحظات الفارغة",
-      "ERROR_NOTE_RESTORE": "فشل نقل الملاحظة إلى سلة المهملات",
+      "ERROR_NOTE_RESTORE": "فشلت استعادة الملاحظة",
       "ERROR_ADD_NOTE_TO_FAVORITE": "فشلت إضافة الملاحظة إلى المفضلة",
       "ERROR_REMOVE_NOTE_FROM_FAVORITE": "فشلت إزالة الملاحظة من المفضلة",
       "ERROR_NOTE_EMPTY": "الملاحظة غير موجودة أو غير مصرح بالوصول إليها",

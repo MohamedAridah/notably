@@ -47,7 +47,8 @@
     }
   },
   "NotebookCard": {
-    "description": "This notebook contains {count,plural, one {# note.} other {# notes.}}"
+    "description": "This notebook contains {count,plural, one {# note.} other {# notes.}}",
+    "restore": "Restore notebook to view its details and notes."
   },
   "NotebookTable": {
     "name": "Notebook Name",
@@ -232,6 +233,9 @@
     "label": "Language"
   },
   "NoteOptionsMenu": {
+    "toasts": {
+      "duplicate-loading": "Duplicating note..."
+    },
     "triggerAriaLabel": "Open note options menu"
   },
   "NotebookOptionsMenu": {
@@ -239,6 +243,8 @@
   },
   "FavoriteButton": {
     "toasts": {
+      "adding": "Adding to favorites...",
+      "removing": "Removing from favorites...",
       "disabled": "Favorites are disabled in trash mode. Restore notebook or note first to enable."
     },
     "labels": {
@@ -249,10 +255,13 @@
   "Common": {
     "something__went__wrong": "Sorry, something went wrong.",
     "actions": {
-      "details": "Details",
+      "details": "Open in new tap",
       "view": "View",
       "update": "Update",
-      "move__to__notebook": "Move to notebook",
+      "rename": "Rename",
+      "move__to__notebook": "Move to",
+      "duplicate": "Duplicate",
+      "copy-link": "Copy link",
       "restore": "Restore",
       "delete": "Delete",
       "tryAgain": "Try again",
@@ -335,6 +344,7 @@
       "SUCCESS_NOTE_UPDATED": "Note updated successfully",
       "SUCCESS_MOVE_NOTE_TO_TRASH": "Note moved to trash successfully.",
       "SUCCESS_RESTORE_NOTE": "Note restored successfully.",
+      "SUCCESS_DUPLICATE_NOTE": "Note duplicated successfully.",
       "SUCCESS_DELETE_NOTE": "Note deleted successfully",
       "SUCCESS_DELETE_EMPTY_NOTES": "Empty notes deleted successfully",
       "SUCCESS_ADD_NOTE_TO_FAVORITE": "Note added to your favorites successfully.",
@@ -344,10 +354,11 @@
       "ERROR_FETCH_NOTE": "Failed to fetch note.",
       "ERROR_NOTE_CREATION": "Failed to create note",
       "ERROR_NOTE_UPDATE": "Failed to update note",
-      "ERROR_NOTE_TRASH": "Failed to restore note.",
+      "ERROR_NOTE_TRASH": "Failed to trash note.",
       "ERROR_DELETE_NOTE": "Failed to delete note",
       "ERROR_DELETE_EMPTY_NOTES": "Failed to delete empty notes",
-      "ERROR_NOTE_RESTORE": "Failed to trash note.",
+      "ERROR_NOTE_RESTORE": "Failed to restore note.",
+      "ERROR_DUPLICATE_NOTE": "Failed to duplicated note.",
       "ERROR_ADD_NOTE_TO_FAVORITE": "Failed to add note to favorites.",
       "ERROR_REMOVE_NOTE_FROM_FAVORITE": "Failed to remove note from favorites.",
       "ERROR_NOTE_EMPTY": "Note not found or unauthorized.",

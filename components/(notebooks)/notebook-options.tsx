@@ -24,22 +24,22 @@ import {
 } from "@/components/(notebooks)/notebook-mode-policies";
 import {
   MoreHorizontal,
-  ExternalLinkIcon,
+  MoveUpRightIcon,
   PenSquare,
   Trash2,
-  RotateCwIcon,
+  Undo2,
+  LinkIcon,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { copyToClipboard } from "@/helpers/copy-to-clipboard";
 
 interface NotebookOptionsProps extends React.ComponentProps<"div"> {
   notebook: Pick<Notebook, "id" | "name" | "isFavorite">;
-  alignStart?: boolean;
   mode?: NotebookCardMode;
 }
 
 export default function NotebookOptions({
   notebook,
-  alignStart = false,
   mode = "default",
   ...props
 }: NotebookOptionsProps) {
@@ -48,8 +48,7 @@ export default function NotebookOptions({
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isRestoreDialogOpen, setIsRestoreDialogOpen] = useState(false);
-  const { canEdit, favoriteInteractive, canView, canRestore, canCreate } =
-    NotebookModePolicies[mode];
+  const policy = NotebookModePolicies[mode];
 
   return (
     <>
@@ -61,10 +60,8 @@ export default function NotebookOptions({
           <MoreHorizontal className="size-4" />
           <span className="sr-only">{t("triggerAriaLabel")}</span>
         </DropdownMenuTrigger>
-        <DropdownMenuContent
-          className={`pointer-events-auto ${alignStart ? "me-3" : ""}`}
-        >
-          {canView && (
+        <DropdownMenuContent className={`pointer-events-auto min-w-50`}>
+          {policy.canView && (
             <DropdownMenuItem>
               <Link
                 href={`/dashboard/notebook/${notebook.id}`}
@@ -72,19 +69,34 @@ export default function NotebookOptions({
               >
                 <IconMenu
                   text={actions("details")}
-                  icon={<ExternalLinkIcon className="size-4" />}
+                  icon={<MoveUpRightIcon className="size-4" />}
                 />
               </Link>
             </DropdownMenuItem>
           )}
 
-          {canCreate && (
+          {policy.canCopyLink && (
+            <DropdownMenuItem>
+              <IconMenu
+                text={actions("copy-link")}
+                icon={<LinkIcon className="size-4" />}
+                onClick={async () =>
+                  await copyToClipboard(
+                    process.env.NEXT_PUBLIC_BASE_URL +
+                      `/dashboard/notebook/${notebook.id}`
+                  )
+                }
+              />
+            </DropdownMenuItem>
+          )}
+
+          {policy.canCreate && (
             <DropdownMenuItem>
               <CreateNoteDialog notebookId={notebook.id} asLabel />
             </DropdownMenuItem>
           )}
 
-          {favoriteInteractive && (
+          {policy.favoriteInteractive && (
             <DropdownMenuItem>
               <FavoriteButton
                 isFavorite={notebook.isFavorite}
@@ -92,25 +104,25 @@ export default function NotebookOptions({
                 onToggle={setNotebookFavoriteAction}
                 iconStyles="size-3.5"
                 withText
-                disabled={!favoriteInteractive}
+                disabled={!policy.favoriteInteractive}
               />
             </DropdownMenuItem>
           )}
 
-          {canEdit && (
+          {policy.canEdit && (
             <DropdownMenuItem onSelect={() => setIsEditDialogOpen(true)}>
               <IconMenu
-                text={actions("update")}
+                text={actions("rename")}
                 icon={<PenSquare className="size-4" />}
               />
             </DropdownMenuItem>
           )}
 
-          {canRestore && (
+          {policy.canRestore && (
             <DropdownMenuItem onSelect={() => setIsRestoreDialogOpen(true)}>
               <IconMenu
                 text={actions("restore")}
-                icon={<RotateCwIcon className="size-4" />}
+                icon={<Undo2 className="size-4" />}
               />
             </DropdownMenuItem>
           )}

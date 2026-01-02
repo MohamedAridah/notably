@@ -119,7 +119,6 @@ export default function NoteTable({
                   noteTitle: note.title,
                   isFavorite: note.isFavorite,
                 }}
-                alignStart
                 mode={mode}
               />
             );

@@ -10,6 +10,7 @@ export const NotebookModePolicies = {
     canOptions: true,
     canCreate: true,
     canRestore: false,
+    canCopyLink: true,
     deleteAction: "move-to-trash" as const,
   },
   trash: {
@@ -20,6 +21,7 @@ export const NotebookModePolicies = {
     canOptions: false,
     canCreate: false,
     canRestore: true,
+    canCopyLink: false,
     deleteAction: "delete-permanently" as const,
   },
   // archive: {

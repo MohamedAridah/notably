@@ -177,6 +177,49 @@ export async function createNoteInDB(
 }
 
 /**
+ * Duplicate existed note
+ */
+export async function duplicateNoteInDB(userId: string, noteId: string) {
+  if (!userId) {
+    return {
+      success: false,
+      code: ServerErrorCodes.AUTH.INVALID_USER_ID,
+    };
+  }
+
+  console.log("DB Query: duplicateNote for user:", userId);
+
+  try {
+    const original = await prisma.note.findUnique({
+      where: { id: noteId },
+    });
+
+    const { id, createdAt, deletedAt, updatedAt, ...rest } = original as Note;
+
+    const duplicated = await prisma.note.create({
+      data: {
+        ...rest,
+        title: `${original?.title ?? "Untitled Note (copy)"} (copy)`,
+        content: original?.content as Prisma.InputJsonValue,
+      },
+    });
+
+    return {
+      success: true,
+      notebookId: original?.notebookId,
+      noteId: duplicated.id,
+      code: ServerErrorCodes.NOTES.SUCCESS_DUPLICATE,
+    };
+  } catch (error) {
+    console.error("DB Error in duplicateNoteInDB:", error);
+    return {
+      success: false,
+      code: ServerErrorCodes.NOTES.ERROR_DUPLICATE,
+    };
+  }
+}
+
+/**
  * Update existing note
  */
 export async function updateNoteInDB(

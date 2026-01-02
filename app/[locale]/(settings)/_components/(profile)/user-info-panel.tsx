@@ -58,7 +58,11 @@ const UserInfoPanel = () => {
               {t("info.memberSince")}
             </p>
             <p className="text-base">
-              {formatDate({ date: person?.createdAt as Date, locale })}
+              {formatDate({
+                date: person?.createdAt as Date,
+                locale,
+                dateOnly: true,
+              })}
             </p>
           </div>
 

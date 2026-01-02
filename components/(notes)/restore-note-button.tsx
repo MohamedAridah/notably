@@ -19,7 +19,7 @@ import DialogTriggerButton, {
   TriggerAppearance,
 } from "@/components/utils/dialog-trigger-button";
 import { toast } from "sonner";
-import { RotateCwIcon } from "lucide-react";
+import { Undo2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 interface RestoreNoteDialogProps {
@@ -76,7 +76,7 @@ export default function RestoreNoteDialog({
             state={isRestoring}
             idleText={t("labelShort")}
             processText={t("labelProcessing")}
-            icon={RotateCwIcon}
+            icon={Undo2}
             className="group-hover/note-buttons:opacity-100"
           />
         </AlertDialogTrigger>

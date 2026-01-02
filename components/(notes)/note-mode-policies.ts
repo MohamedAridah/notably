@@ -10,6 +10,8 @@ export const NoteModePolicies = {
     canOptions: true,
     canCreate: true,
     canRestore: false,
+    canDuplicate: true,
+    canCopyLink: true,
     deleteAction: "move-to-trash" as const,
   },
   trash: {
@@ -20,6 +22,8 @@ export const NoteModePolicies = {
     canOptions: false,
     canCreate: false,
     canRestore: true,
+    canDuplicate: false,
+    canCopyLink: false,
     deleteAction: "delete-permanently" as const,
   },
   // archive: {

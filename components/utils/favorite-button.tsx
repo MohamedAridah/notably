@@ -50,6 +50,12 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({
     setLocalFavorite(optimisticValue);
 
     startTransition(async () => {
+      const toastId = toast.loading(
+        localFavorite ? t("toasts.removing") : t("toasts.adding"),
+        {
+          position: "top-center",
+        }
+      );
       try {
         const { success, code, type, manualCode } = !disabled
           ? await onToggle(id, optimisticValue)
@@ -60,14 +66,20 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({
             };
 
         if (success) {
-          toast.success(tServerCodes(`${type}.${code}`));
+          toast.success(tServerCodes(`${type}.${code}`), {
+            id: toastId,
+          });
         } else {
           setLocalFavorite(!optimisticValue); // Rollback
-          toast.error(!manualCode ? tServerCodes(`${type}.${code}`) : code);
+          toast.error(!manualCode ? tServerCodes(`${type}.${code}`) : code, {
+            id: toastId,
+          });
         }
       } catch (error) {
         setLocalFavorite(!optimisticValue); // Rollback
-        toast.error(common("somethink__went__wrong"));
+        toast.error(common("somethink__went__wrong"), {
+          id: toastId,
+        });
         console.error("Favorite toggle error:", error);
       }
     });
@@ -97,7 +109,7 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({
       aria-pressed={localFavorite}
       aria-label={labelText}
       className={cn(
-        "hover:cursor-pointer disabled:opacity-70 transition-transform duration-100 hover:scale-105 active:scale-90",
+        "hover:cursor-pointer disabled:opacity-70 transition-transform duration-100 hover:scale-105 active:scale-90 text-gray-900 dark:text-gray-400",
         className
       )}
     >

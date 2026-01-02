@@ -102,7 +102,7 @@ export default function NotebookTable({
 
           case "options":
             return (
-              <NotebookOptions notebook={notebook} alignStart mode={mode} />
+              <NotebookOptions notebook={notebook} mode={mode} />
             );
         }
       }}

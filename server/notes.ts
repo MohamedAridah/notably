@@ -6,6 +6,7 @@ import { isUserAuthed } from "@/server/auth";
 import { getCachedNoteById, getCachedTrashedNotes } from "@/lib/cache/notes";
 import {
   createNoteInDB,
+  duplicateNoteInDB,
   deleteEmptyNotesFromDB,
   deleteNoteFromDB,
   trashNoteInDB,
@@ -47,6 +48,22 @@ export const createNoteAction = async (
     revalidatePath("/dashboard");
   }
 
+  return result;
+};
+
+/**
+ * Duplicate existed note
+ */
+export const duplicateNoteAction = async (noteId: string) => {
+  const userId = await isUserAuthed();
+  const result = await duplicateNoteInDB(userId, noteId);
+
+  if (result.success) {
+    revalidateTag(`notebooks-user-${userId}`);
+    revalidateTag(`notebook-${result.notebookId}-${userId}`);
+    revalidatePath("/dashboard");
+  }
+  
   return result;
 };
 
@@ -159,7 +176,7 @@ export const deleteEmptyNotesAction = async () => {
   if (result.success) {
     revalidateTag(`trashed-notes-user-${userId}`);
     revalidateTag(`notebooks-user-${userId}`);
-    revalidatePath("/dashboard",'layout');
+    revalidatePath("/dashboard", "layout");
   }
 
   return result;

@@ -1,7 +1,8 @@
+import { Metadata } from "next";
 import { AppSidebar } from "@/components/(sidebar)/app-sidebar";
 import PageWrapper from "@/components/page-wrapper";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { Metadata } from "next";
+import ScrollToTop from "@/components/utils/scroll-top-button";
 
 export const metadata: Metadata = {
   title: {
@@ -20,6 +21,7 @@ export default function DashboardLayout({
       <AppSidebar />
       <main className="flex-1">
         <PageWrapper>{children}</PageWrapper>
+        <ScrollToTop />
       </main>
     </SidebarProvider>
   );
