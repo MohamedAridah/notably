@@ -94,7 +94,7 @@ export function UserForNav({ links }: { links?: UserMenuLink[] }) {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex rtl:flex-row-reverse items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <UserAvarat user={user} />
-                <UserInfo user={user} className="text-end" />
+                <UserInfo user={user} className="rtl:text-end" />
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />

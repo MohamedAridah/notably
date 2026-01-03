@@ -57,6 +57,7 @@ export default function NoteOptions({
 }: NoteOptionsProps) {
   const t = useTranslations("NoteOptionsMenu");
   const tActions = useTranslations("Common.actions");
+  const tClipboard = useTranslations("Clipboard");
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isMoveDialogOpen, setIsMoveDialogOpen] = useState(false);
@@ -92,7 +93,8 @@ export default function NoteOptions({
                 icon={<LinkIcon className="size-4" />}
                 onClick={async () =>
                   await copyToClipboard(
-                    process.env.NEXT_PUBLIC_BASE_URL + note.note_url
+                    process.env.NEXT_PUBLIC_BASE_URL + note.note_url,
+                    tClipboard
                   )
                 }
               />
@@ -180,6 +182,7 @@ export default function NoteOptions({
         withTrigger={false}
         isOpen={isDeleteDialogOpen}
         setIsOpen={setIsDeleteDialogOpen}
+        mode={mode === "default" ? "move-to-trash" : "delete-permanently"}
         callbackURL={note.notebook_url}
       />
 

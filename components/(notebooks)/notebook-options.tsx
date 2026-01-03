@@ -45,6 +45,7 @@ export default function NotebookOptions({
 }: NotebookOptionsProps) {
   const t = useTranslations("NotebookOptionsMenu");
   const actions = useTranslations("Common.actions");
+  const tClipboard = useTranslations("Clipboard");
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isRestoreDialogOpen, setIsRestoreDialogOpen] = useState(false);
@@ -83,7 +84,8 @@ export default function NotebookOptions({
                 onClick={async () =>
                   await copyToClipboard(
                     process.env.NEXT_PUBLIC_BASE_URL +
-                      `/dashboard/notebook/${notebook.id}`
+                      `/dashboard/notebook/${notebook.id}`,
+                    tClipboard
                   )
                 }
               />
@@ -153,6 +155,7 @@ export default function NotebookOptions({
         withTrigger={false}
         isOpen={isDeleteDialogOpen}
         setIsOpen={setIsDeleteDialogOpen}
+        mode={mode === "default" ? "move-to-trash" : "delete-permanently"}
         // callbackURL={mode === "default" ? "/dashboard" : undefined}
       />
 

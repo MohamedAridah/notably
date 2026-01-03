@@ -187,7 +187,7 @@ export default function RichTextEditor({
         ref={editorRef}
         editor={editor}
         role="presentation"
-        className="max-w-[900px] mx-auto flex flex-col flex-1 pt-[1rem] sm:pt-[4rem] pb-[7vh] sm:pb-[12vh] sm:px-[3rem]"
+        className="max-w-[900px] mx-auto flex flex-col flex-1 pt-[1rem] sm:pt-[4rem] pb-[7vh] sm:pb-[12vh] px-5 sm:px-[3rem]"
       />
     </EditorContext.Provider>
   );

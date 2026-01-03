@@ -9,8 +9,10 @@ import {
 } from "motion/react";
 import { ArrowUpIcon } from "lucide-react";
 
+const THRESHOLD = 240;
+
 export default function ScrollToTop({
-  threshold = 225,
+  threshold = THRESHOLD,
 }: {
   threshold?: number;
 }) {
@@ -25,20 +27,22 @@ export default function ScrollToTop({
 
   return (
     <motion.button
+      type="button"
+      role="progressbar"
       aria-label="Scroll to top"
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       initial={{ opacity: 0, scale: 0 }}
       animate={visible ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0 }}
       transition={{ duration: 0.25, ease: "easeOut" }}
       className={`
-        fixed bottom-6 end-4 z-50 h-10 w-10 flex items-center justify-center rounded-full border bg-background hover:cursor-pointer`}
+        fixed bottom-6 end-4 z-50 size-9 flex items-center justify-center rounded-full border bg-background hover:cursor-pointer`}
     >
       {/* Progress Ring */}
       <svg className="absolute h-12 w-12 -rotate-90">
         <motion.circle
           cx="24"
           cy="24"
-          r="20"
+          r="18"
           fill="none"
           stroke="currentColor"
           strokeWidth="2"
@@ -49,7 +53,7 @@ export default function ScrollToTop({
       </svg>
 
       <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.9 }}>
-        <ArrowUpIcon className="h-5 w-5" />
+        <ArrowUpIcon className="size-4.5" />
       </motion.div>
     </motion.button>
   );

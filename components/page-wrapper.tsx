@@ -9,7 +9,7 @@ export default function PageWrapper({ children }: PageWrapperProps) {
     <section className="flex flex-col flex-1 w-full gap-4">
       <DashboardHeader />
 
-      <section className="flex flex-col flex-1 w-full gap-4 p-5 pt-0">
+      <section className="flex flex-col flex-1 w-full gap-4 pb-5 [&_>*]:px-5">
         {children}
       </section>
     </section>

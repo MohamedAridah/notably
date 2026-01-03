@@ -149,7 +149,7 @@ export default async function NotePage({ params }: { params: Params }) {
           <DocumentDetails document={note} />
         </Suspense>
 
-        <section className="mt-10 mb-5">
+        <section className="mt-10 mb-5 px-0!">
           <RichTextEditorClient content={note.content} noteId={noteId} />
         </section>
       </>

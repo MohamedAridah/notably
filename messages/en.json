@@ -232,6 +232,10 @@
     "en": "English",
     "label": "Language"
   },
+  "Clipboard": {
+    "success": "Copied successfully",
+    "error": "Failed to copy."
+  },
   "NoteOptionsMenu": {
     "toasts": {
       "duplicate-loading": "Duplicating note..."
@@ -304,8 +308,9 @@
       "SUCCESS_PASSWORD_RESET_EMAIL_SENT": "Please check your email for a password reset link.",
       "SUCCESS_PASSWORD_RESET": "Password reset successfully. You can now sign in.",
 
-      "ERROR_EMAIL_ALREADY_EXISTS": "Email already exists.",
+      "ERROR_EMAIL_ALREADY_EXISTS": "User already exists. Use another email.",
       "ERROR_INVALID_CREDENTIALS": "Invalid email or password.",
+      "ERROR_EMAIL_NOT_VERIFIED": "Email not verified",
       "ERROR_INVALID_TOKEN": "Invalid token.",
       "ERROR_INVALID_USER_ID": "Invalid user ID provided",
       "ERROR_NOT_AUTHENTICATED": "User not authenticated.",

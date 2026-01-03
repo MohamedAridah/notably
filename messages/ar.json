@@ -232,6 +232,10 @@
     "en": "الانجليزية",
     "label": "اختر اللغة"
   },
+  "Clipboard": {
+    "success": "تم نسخ الرابط بنجاح",
+    "error": "تعذر نسخ الرابط"
+  },
   "NoteOptionsMenu": {
     "toasts": {
       "duplicate-loading": "جار نسخ الملاجظة..."
@@ -304,8 +308,9 @@
       "SUCCESS_PASSWORD_RESET_EMAIL_SENT": "يرجى التحقق من بريدك الإلكتروني للحصول على رابط إعادة تعيين كلمة المرور.",
       "SUCCESS_PASSWORD_RESET": "تمت إعادة تعيين كلمة المرور بنجاح. يمكنك الآن تسجيل الدخول.",
 
-      "ERROR_EMAIL_ALREADY_EXISTS": "البريد الإلكتروني مستخدم بالفعل.",
+      "ERROR_EMAIL_ALREADY_EXISTS": "المستخدم موجود بالفعل. يرجى استخدام بريد إلكتروني آخر.",
       "ERROR_INVALID_CREDENTIALS": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+      "ERROR_EMAIL_NOT_VERIFIED": "البريد الإلكتروني غير مُفعَّل",
       "ERROR_INVALID_TOKEN": "رمز الوصول غير صالح.",
       "ERROR_INVALID_USER_ID": "معرف المستخدم غير موجود",
       "ERROR_NOT_AUTHENTICATED": "المستخدم غير مصرح له.",

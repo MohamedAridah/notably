@@ -6,6 +6,9 @@ export const mapBetterAuthError = (error: unknown): string | null => {
   if (e.statusCode === 401 || e.status === 401) {
     return ServerErrorCodes.AUTH.INVALID_CREDENTIALS;
   }
+  if (e.statusCode === 403 || e.status === 403) {
+    return ServerErrorCodes.AUTH.EMAIL_NOT_VERIFIED;
+  }
   if (e.statusCode === 422 || e.status === 422) {
     return ServerErrorCodes.AUTH.EMAIL_EXISTS;
   }
